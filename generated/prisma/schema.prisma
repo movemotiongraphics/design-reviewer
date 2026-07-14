@@ -1,0 +1,185 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
+  // Further reading:
+  // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
+  // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+  url      = env("DATABASE_URL")
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  createdBy   User   @relation(fields: [createdById], references: [id])
+  createdById String
+
+  @@index([name])
+}
+
+// ---------------------------------------------------------------------------
+// APK screenshot node-map viewer (V1)
+// ---------------------------------------------------------------------------
+
+model Project {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  builds ApkBuild[]
+}
+
+model ApkBuild {
+  id        String  @id @default(cuid())
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  fileName    String
+  filePath    String
+  packageName String?
+  versionName String?
+  versionCode String?
+  uploadedAt  DateTime @default(now())
+
+  runs ReviewRun[]
+
+  @@index([projectId])
+}
+
+model ReviewRun {
+  id         String   @id @default(cuid())
+  apkBuildId String
+  apkBuild   ApkBuild @relation(fields: [apkBuildId], references: [id], onDelete: Cascade)
+
+  status           ReviewRunStatus @default(queued)
+  maxDepth         Int             @default(2)
+  maxNodes         Int             @default(30)
+  maxTapsPerScreen Int             @default(6)
+
+  startedAt    DateTime?
+  completedAt  DateTime?
+  errorMessage String?
+
+  nodes ScreenNode[]
+  edges ScreenEdge[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([apkBuildId])
+  @@index([status])
+}
+
+enum ReviewRunStatus {
+  queued
+  preparing_emulator
+  installing_apk
+  launching_app
+  exploring
+  completed
+  failed
+  cancelled
+}
+
+model ScreenNode {
+  id          String    @id @default(cuid())
+  reviewRunId String
+  reviewRun   ReviewRun @relation(fields: [reviewRunId], references: [id], onDelete: Cascade)
+
+  screenshotPath String
+  activityName   String?
+  stateName      String?
+  uiTreeJson     Json?
+  depth          Int
+  hash           String
+  clickableCount Int     @default(0)
+
+  outgoingEdges ScreenEdge[] @relation("FromNode")
+  incomingEdges ScreenEdge[] @relation("ToNode")
+
+  createdAt DateTime @default(now())
+
+  @@index([reviewRunId])
+  @@index([hash])
+}
+
+model ScreenEdge {
+  id          String    @id @default(cuid())
+  reviewRunId String
+  reviewRun   ReviewRun @relation(fields: [reviewRunId], references: [id], onDelete: Cascade)
+
+  fromNodeId String?
+  fromNode   ScreenNode? @relation("FromNode", fields: [fromNodeId], references: [id], onDelete: SetNull)
+
+  toNodeId String
+  toNode   ScreenNode @relation("ToNode", fields: [toNodeId], references: [id], onDelete: Cascade)
+
+  actionType   String
+  targetLabel  String?
+  targetText   String?
+  targetBounds Json?
+
+  createdAt DateTime @default(now())
+
+  @@index([reviewRunId])
+  @@index([fromNodeId])
+  @@index([toNodeId])
+}
+
+// Necessary for Next auth
+model Account {
+  id                       String  @id @default(cuid())
+  userId                   String
+  type                     String
+  provider                 String
+  providerAccountId        String
+  refresh_token            String? // @db.Text
+  access_token             String? // @db.Text
+  expires_at               Int?
+  token_type               String?
+  scope                    String?
+  id_token                 String? // @db.Text
+  session_state            String?
+  user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refresh_token_expires_in Int?
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  posts         Post[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
