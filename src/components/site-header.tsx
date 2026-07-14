@@ -7,7 +7,7 @@ export function SiteHeader() {
       <div className="mx-auto flex h-14 max-w-6xl items-center gap-2 px-4">
         <Link href="/projects" className="flex items-center gap-2 font-semibold">
           <Smartphone className="size-5" />
-          APK Node Map
+          APK UI Review
         </Link>
       </div>
     </header>

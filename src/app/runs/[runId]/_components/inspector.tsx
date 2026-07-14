@@ -1,28 +1,45 @@
 "use client";
 
-import { ArrowDownRight, ArrowUpRight, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+  ArrowDownRight,
+  ArrowUpRight,
+  Loader2,
+  RotateCcw,
+  Undo2,
+  X,
+} from "lucide-react";
+import { toast } from "sonner";
 
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
-import { describeAction, type UiTreeSummary } from "~/lib/screen";
-import type { RouterOutputs } from "~/trpc/react";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
+import {
+  describeAction,
+  displayNodeName,
+  NODE_TYPE_LABELS,
+  NODE_TYPES,
+  type Hotspot,
+} from "~/lib/screen";
+import { api, type RouterOutputs } from "~/trpc/react";
+import { CommentsPanel } from "./comments-panel";
+import { CopyPngButton } from "./copy-png-button";
+import { HotspotOverlay } from "./hotspot-overlay";
+import type { ExplorationApi } from "./use-exploration";
 
 type GraphData = RouterOutputs["reviewRun"]["getGraph"];
 export type GraphNode = GraphData["nodes"][number];
 export type GraphEdge = GraphData["edges"][number];
 
+/** @deprecated use displayNodeName */
 export function nodeLabel(node: {
+  name?: string | null;
   stateName: string | null;
   activityName: string | null;
+  depth?: number;
 }): string {
-  return node.stateName ?? node.activityName ?? "Screen";
-}
-
-function parseUiTree(value: unknown): UiTreeSummary | null {
-  if (value && typeof value === "object" && "clickables" in value) {
-    return value as UiTreeSummary;
-  }
-  return null;
+  return displayNodeName(node);
 }
 
 function Field({ label, value }: { label: string; value: React.ReactNode }) {
@@ -35,45 +52,206 @@ function Field({ label, value }: { label: string; value: React.ReactNode }) {
 }
 
 export function Inspector({
+  runId,
+  runStatus: _runStatus,
   node,
   nodes,
   edges,
+  exploration,
+  showHotspots,
+  onShowHotspotsChange,
+  hotspots,
   onClose,
+  onSelectNode,
 }: {
+  runId: string;
+  runStatus: string;
   node: GraphNode;
   nodes: GraphNode[];
   edges: GraphEdge[];
+  exploration: ExplorationApi;
+  showHotspots: boolean;
+  onShowHotspotsChange: (show: boolean) => void;
+  hotspots: Hotspot[];
   onClose: () => void;
+  onSelectNode: (id: string) => void;
 }) {
+  const utils = api.useUtils();
+  const { interactive, exploring, onHotspotClick, onPressBack, onResume, onResetRoot } =
+    exploration;
   const byId = new Map(nodes.map((n) => [n.id, n]));
   const incoming = edges.filter((e) => e.toNodeId === node.id);
   const outgoing = edges.filter((e) => e.fromNodeId === node.id);
-  const uiTree = parseUiTree(node.uiTreeJson);
+
+  const [name, setName] = useState(node.name ?? "");
+  const [flowName, setFlowName] = useState(node.flowName ?? "");
+  const [nodeType, setNodeType] = useState(node.nodeType ?? "");
+
+  useEffect(() => {
+    setName(node.name ?? "");
+    setFlowName(node.flowName ?? "");
+    setNodeType(node.nodeType ?? "");
+  }, [node.id, node.name, node.flowName, node.nodeType]);
+
+  const updateMeta = api.screenNode.updateMetadata.useMutation({
+    onSuccess: async () => {
+      toast.success("Node updated");
+      await utils.reviewRun.getGraph.invalidate({ runId });
+    },
+    onError: (err) => toast.error(err.message),
+  });
 
   return (
-    <aside className="flex h-full w-[340px] shrink-0 flex-col border-l bg-background">
+    <aside className="flex h-full w-[360px] shrink-0 flex-col border-l bg-background">
       <div className="flex items-center justify-between border-b px-4 py-3">
-        <h2 className="font-semibold">{nodeLabel(node)}</h2>
+        <h2 className="truncate font-semibold" title={displayNodeName(node)}>
+          {displayNodeName(node)}
+        </h2>
         <Button variant="ghost" size="icon" onClick={onClose}>
           <X className="size-4" />
         </Button>
       </div>
 
       <div className="min-h-0 flex-1 space-y-4 overflow-y-auto p-4">
-        <div className="overflow-hidden rounded-lg border bg-muted">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={node.screenshotUrl}
-            alt={nodeLabel(node)}
-            className="mx-auto max-h-[420px] w-auto object-contain"
-          />
+        {exploring ? (
+          <div className="flex items-center gap-2 rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 text-sm text-sky-900 dark:border-sky-900 dark:bg-sky-950 dark:text-sky-100">
+            <Loader2 className="size-4 animate-spin" />
+            Exploring action…
+          </div>
+        ) : null}
+
+        <div className="space-y-2">
+          <div className="flex items-center justify-between gap-2">
+            <Label className="text-xs">Hotspots</Label>
+            <div className="flex items-center gap-1">
+              <Button
+                type="button"
+                size="sm"
+                variant={showHotspots ? "secondary" : "outline"}
+                onClick={() => onShowHotspotsChange(!showHotspots)}
+              >
+                {showHotspots ? "On" : "Off"}
+              </Button>
+              <CopyPngButton screenshotUrl={node.screenshotUrl} />
+            </div>
+          </div>
+          <div className="overflow-hidden rounded-lg border bg-muted">
+            <HotspotOverlay
+              screenshotUrl={node.screenshotUrl}
+              alt={displayNodeName(node)}
+              hotspots={hotspots}
+              enabled={showHotspots}
+              busy={exploring || !interactive}
+              onHotspotClick={(h) => void onHotspotClick(node.id, h)}
+            />
+          </div>
+          {!interactive ? (
+            <p className="text-xs text-muted-foreground">
+              Hotspot taps require an active session (Awaiting input).
+            </p>
+          ) : (
+            <p className="text-xs text-muted-foreground">
+              Click a safe hotspot to explore. Risky actions are blocked.
+            </p>
+          )}
         </div>
+
+        {interactive ? (
+          <div className="flex flex-wrap gap-1.5">
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              disabled={exploring}
+              onClick={() => void onPressBack(node.id)}
+            >
+              <Undo2 className="size-3.5" />
+              Back
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              disabled={exploring}
+              onClick={() => void onResume(node.id)}
+            >
+              Resume here
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              disabled={exploring}
+              onClick={() => void onResetRoot()}
+            >
+              <RotateCcw className="size-3.5" />
+              Reset to root
+            </Button>
+          </div>
+        ) : null}
+
+        <form
+          className="space-y-2 rounded-lg border p-3"
+          onSubmit={(e) => {
+            e.preventDefault();
+            updateMeta.mutate({
+              id: node.id,
+              name,
+              flowName: flowName || null,
+              nodeType: nodeType
+                ? (nodeType as (typeof NODE_TYPES)[number])
+                : null,
+            });
+          }}
+        >
+          <div className="space-y-1">
+            <Label htmlFor="node-name">Name</Label>
+            <Input
+              id="node-name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder={displayNodeName({ ...node, name: null })}
+            />
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="flow-name">Flow</Label>
+            <Input
+              id="flow-name"
+              value={flowName}
+              onChange={(e) => setFlowName(e.target.value)}
+              placeholder="e.g. Onboarding"
+            />
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="node-type">Node type</Label>
+            <select
+              id="node-type"
+              className="border-input bg-background flex h-9 w-full rounded-md border px-2 text-sm"
+              value={nodeType}
+              onChange={(e) => setNodeType(e.target.value)}
+            >
+              <option value="">—</option>
+              {NODE_TYPES.map((t) => (
+                <option key={t} value={t}>
+                  {NODE_TYPE_LABELS[t] ?? t}
+                </option>
+              ))}
+            </select>
+          </div>
+          <Button type="submit" size="sm" disabled={updateMeta.isPending}>
+            Save metadata
+          </Button>
+        </form>
 
         <dl className="divide-y">
           <Field label="Activity" value={node.activityName ?? "—"} />
           <Field label="State" value={node.stateName ?? "—"} />
           <Field label="Depth" value={node.depth} />
           <Field label="Clickables" value={node.clickableCount} />
+          <Field
+            label="Open comments"
+            value={node.commentSummary.openCount}
+          />
           <Field
             label="Hash"
             value={
@@ -93,9 +271,13 @@ export function Inspector({
                 const from = e.fromNodeId ? byId.get(e.fromNodeId) : null;
                 return (
                   <li key={e.id} className="text-muted-foreground">
-                    <span className="text-foreground">
-                      {from ? nodeLabel(from) : "Launch"}
-                    </span>{" "}
+                    <button
+                      type="button"
+                      className="text-foreground hover:underline"
+                      onClick={() => from && onSelectNode(from.id)}
+                    >
+                      {from ? displayNodeName(from) : "Launch"}
+                    </button>{" "}
                     → {describeAction(e)}
                   </li>
                 );
@@ -118,9 +300,13 @@ export function Inspector({
                 return (
                   <li key={e.id} className="text-muted-foreground">
                     {describeAction(e)} →{" "}
-                    <span className="text-foreground">
-                      {to ? nodeLabel(to) : "?"}
-                    </span>
+                    <button
+                      type="button"
+                      className="text-foreground hover:underline"
+                      onClick={() => to && onSelectNode(to.id)}
+                    >
+                      {to ? displayNodeName(to) : "?"}
+                    </button>
                   </li>
                 );
               })}
@@ -130,22 +316,27 @@ export function Inspector({
           )}
         </section>
 
-        <section>
-          <h3 className="mb-1 text-sm font-semibold">UI tree summary</h3>
-          {uiTree && uiTree.clickables.length > 0 ? (
+        {showHotspots && hotspots.length > 0 ? (
+          <section>
+            <h3 className="mb-1 text-sm font-semibold">
+              Hotspots ({hotspots.length})
+            </h3>
             <div className="flex flex-wrap gap-1">
-              {uiTree.clickables.slice(0, 30).map((c, i) => (
-                <Badge key={i} variant="outline" className="font-normal">
-                  {c.label ?? c.className ?? "element"}
+              {hotspots.slice(0, 40).map((h) => (
+                <Badge
+                  key={h.id}
+                  variant={h.isRisky ? "destructive" : "outline"}
+                  className="font-normal"
+                >
+                  {h.label ?? h.className ?? "element"}
+                  {h.isRisky ? " · blocked" : ""}
                 </Badge>
               ))}
             </div>
-          ) : (
-            <p className="text-sm text-muted-foreground">
-              No UI hierarchy captured.
-            </p>
-          )}
-        </section>
+          </section>
+        ) : null}
+
+        <CommentsPanel screenNodeId={node.id} />
       </div>
     </aside>
   );

@@ -2,12 +2,18 @@ import { promises as fs } from "node:fs";
 
 import type { ReviewRunStatus } from "../generated/prisma";
 import { absArtifactPath } from "../src/server/artifacts";
-import { AndroidDevice, startEmulator } from "./appium";
+import { AndroidDevice, startEmulator, sleep } from "./appium";
 import { db } from "./db";
-import { exploreApp } from "./explore";
 import { createLogger } from "./log";
+import {
+  captureRootOnly,
+  ensureSessionForNode,
+  processExplorationAction,
+} from "./manualExplore";
 
 const POLL_MS = 3000;
+/** How often to check for pending hotspot taps while a session is open. */
+const ACTION_POLL_MS = 50;
 const log = createLogger("worker");
 
 function appiumUrl(): string {
@@ -33,9 +39,23 @@ async function failRun(runId: string, message: string): Promise<void> {
   });
 }
 
+async function failStuckActions(runId: string): Promise<void> {
+  await db.explorationAction.updateMany({
+    where: { reviewRunId: runId, status: "running" },
+    data: {
+      status: "failed",
+      errorMessage: "Worker restarted before action finished",
+      completedAt: new Date(),
+    },
+  });
+}
+
+/**
+ * Interactive V2 session: capture root (or resume), then process ExplorationAction
+ * rows until the run is completed/cancelled/failed.
+ */
 async function processRun(runId: string): Promise<void> {
   const runLog = log.child(runId.slice(0, 8));
-  runLog.info("run picked up");
 
   const run = await db.reviewRun.findUnique({
     where: { id: runId },
@@ -46,10 +66,18 @@ async function processRun(runId: string): Promise<void> {
     return;
   }
 
+  const isResume = run.status === "awaiting_input";
+  runLog.info(isResume ? "resuming interactive session" : "run picked up");
+
   let device: AndroidDevice | null = null;
 
   try {
-    await setStatus(runId, "preparing_emulator", { startedAt: new Date() });
+    if (isResume) {
+      await failStuckActions(runId);
+    } else {
+      await setStatus(runId, "preparing_emulator", { startedAt: new Date() });
+    }
+
     startEmulator(runLog);
 
     device = await AndroidDevice.waitForDevice({
@@ -65,7 +93,9 @@ async function processRun(runId: string): Promise<void> {
       throw new Error(`APK file missing at ${apkPath}`);
     }
 
-    await setStatus(runId, "installing_apk");
+    if (!isResume) {
+      await setStatus(runId, "installing_apk");
+    }
     await device.installApk(apkPath);
     runLog.info("APK installed", { path: apkPath });
 
@@ -77,23 +107,79 @@ async function processRun(runId: string): Promise<void> {
     }
     runLog.info("package name detected", { packageName });
 
-    await setStatus(runId, "launching_app");
+    if (!isResume) {
+      await setStatus(runId, "launching_app");
+    }
     await device.launchApp(packageName);
     runLog.info("app launched", { packageName });
 
-    await setStatus(runId, "exploring");
-    await exploreApp({
-      reviewRunId: runId,
-      device,
-      appPackage: packageName,
-      maxDepth: run.maxDepth,
-      maxNodes: run.maxNodes,
-      maxTapsPerScreen: run.maxTapsPerScreen,
-      log: runLog,
-    });
+    if (!isResume) {
+      await setStatus(runId, "exploring");
+      await captureRootOnly({
+        reviewRunId: runId,
+        device,
+        maxNodes: run.maxNodes,
+        log: runLog,
+        appPackage: packageName,
+      });
+    } else if (run.currentNodeId) {
+      // Bring emulator back to the last known node before accepting taps.
+      await ensureSessionForNode({
+        reviewRunId: runId,
+        nodeId: run.currentNodeId,
+        device,
+        appPackage: packageName,
+        log: runLog,
+        currentNodeId: null,
+      });
+    }
 
-    await setStatus(runId, "completed", { completedAt: new Date() });
-    runLog.info("run completed");
+    await setStatus(runId, "awaiting_input");
+    runLog.info(
+      isResume
+        ? "session resumed; awaiting manual exploration"
+        : "root captured; awaiting manual exploration",
+    );
+
+    // Keep Appium session alive and process queued actions.
+    for (;;) {
+      const current = await db.reviewRun.findUnique({
+        where: { id: runId },
+        select: { status: true },
+      });
+      if (!current) break;
+      if (
+        current.status === "completed" ||
+        current.status === "cancelled" ||
+        current.status === "failed"
+      ) {
+        runLog.info("session ended", { status: current.status });
+        break;
+      }
+      if (current.status !== "awaiting_input") {
+        runLog.warn("unexpected status during action loop", {
+          status: current.status,
+        });
+        break;
+      }
+
+      const action = await db.explorationAction.findFirst({
+        where: { reviewRunId: runId, status: "pending" },
+        orderBy: { createdAt: "asc" },
+      });
+
+      if (action) {
+        await processExplorationAction({
+          actionId: action.id,
+          device,
+          appPackage: packageName,
+          maxNodes: run.maxNodes,
+          log: runLog,
+        });
+      } else {
+        await sleep(ACTION_POLL_MS);
+      }
+    }
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     await failRun(runId, message);
@@ -105,30 +191,34 @@ async function processRun(runId: string): Promise<void> {
 }
 
 async function pollOnce(): Promise<boolean> {
-  const run = await db.reviewRun.findFirst({
-    where: { status: "queued" },
-    orderBy: { createdAt: "asc" },
-  });
+  // Fresh runs first, then orphaned interactive sessions (worker restart).
+  const run =
+    (await db.reviewRun.findFirst({
+      where: { status: "queued" },
+      orderBy: { createdAt: "asc" },
+    })) ??
+    (await db.reviewRun.findFirst({
+      where: { status: "awaiting_input" },
+      orderBy: { updatedAt: "asc" },
+    }));
+
   if (!run) return false;
   await processRun(run.id);
   return true;
 }
 
 async function main(): Promise<void> {
-  log.info("APK worker started", { appiumUrl: appiumUrl() });
+  log.info("APK worker started (V2 interactive)", { appiumUrl: appiumUrl() });
 
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
+  for (;;) {
     try {
-      const processed = await pollOnce();
-      if (!processed) {
-        await new Promise((r) => setTimeout(r, POLL_MS));
-      }
+      const worked = await pollOnce();
+      if (!worked) await sleep(POLL_MS);
     } catch (err) {
       log.error("poll loop error", {
         error: err instanceof Error ? err.message : String(err),
       });
-      await new Promise((r) => setTimeout(r, POLL_MS));
+      await sleep(POLL_MS);
     }
   }
 }

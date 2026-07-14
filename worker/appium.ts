@@ -25,7 +25,7 @@ export interface ConnectOptions {
  */
 export function startEmulator(log: Logger): void {
   log.info(
-    "Assuming an Android emulator is already running (V1 does not boot AVDs).",
+    "Assuming an Android emulator is already running (worker does not boot AVDs).",
   );
 }
 
@@ -53,7 +53,8 @@ export class AndroidDevice {
         platformName: "Android",
         "appium:automationName": "UiAutomator2",
         "appium:deviceName": "Android Emulator",
-        "appium:newCommandTimeout": 300,
+        // Long-lived interactive sessions; reset on each Appium command.
+        "appium:newCommandTimeout": 3600,
         "appium:autoGrantPermissions": true,
         "appium:noReset": false,
         "appium:fullReset": false,
@@ -72,6 +73,8 @@ export class AndroidDevice {
 
   /** Capture a screenshot and return the raw PNG bytes. */
   async screenshotBuffer(): Promise<Buffer> {
+    // Brief pause so animations / layout settle before capture.
+    await sleep(200);
     const base64 = await this.driver.takeScreenshot();
     return Buffer.from(base64, "base64");
   }

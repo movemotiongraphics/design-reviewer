@@ -204,7 +204,7 @@ export function ProjectDetailClient({ projectId }: { projectId: string }) {
                   ) : (
                     <Play className="size-4" />
                   )}
-                  Start exploration
+                  Start UI review
                 </Button>
               </CardContent>
             </Card>

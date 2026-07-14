@@ -1,8 +1,8 @@
-# APK Node Map Viewer (V1)
+# APK UI Review Tool (V2)
 
-Upload an Android `.apk`, run a controlled exploration in an emulator, and view reachable screens as an interactive node graph.
+Upload an Android `.apk`, capture the root screen on an emulator, then manually explore the app by clicking hotspots on screenshots. Review and comment on each screen in a React Flow graph.
 
-**Flow:** APK → emulator exploration → screenshots → nodes/edges → React Flow graph viewer.
+**Flow:** APK → root screenshot → hotspot tap → emulator action → new node/edge → comments & review.
 
 ## Daily startup (every session)
 
@@ -24,7 +24,7 @@ Also: Docker Postgres running (`docker start design-reviewer-db`), and an AVD al
 | 3 | Worker | `source ~/.zshrc` → `cd` to repo → `npm run worker:apk` |
 | 4 | Web | `cd` to repo → `npm run dev` → open http://localhost:3000 |
 
-**Quick sanity checks before starting an exploration:**
+**Quick sanity checks before starting a review:**
 
 ```bash
 echo $ANDROID_HOME          # /Users/<you>/Library/Android/sdk
@@ -32,7 +32,9 @@ adb devices                 # emulator-XXXX  device
 curl -s http://127.0.0.1:4723/status   # Appium JSON status
 ```
 
-Then in the UI: project → upload APK (if needed) → **Start exploration**. Failed runs do not retry — start a new one.
+Then in the UI: project → upload APK (if needed) → **Start UI review**. The worker captures the root screen and the run enters **Awaiting input**. Open the root node, enable hotspots, and click a safe hotspot to explore.
+
+**End session:** use **End session** on the run page (or stop the worker). Failed runs do not retry — start a new one.
 
 **Stop:** `Ctrl+C` in Appium / worker / web terminals; quit the emulator window (or `adb emu kill`).
 
@@ -120,14 +122,22 @@ npm run appium           # listens on http://127.0.0.1:4723
 npm run worker:apk
 ```
 
-## Usage
+## Usage (V2 manual review)
 
 1. Open [http://localhost:3000](http://localhost:3000) → redirects to **Projects**.
-2. Create a project.
-3. Upload an `.apk` build.
-4. Click **Start exploration** (optionally tune max depth / nodes / taps per screen).
-5. Open the run page — status polls automatically while the worker runs.
-6. When screens are captured, the React Flow graph appears. Click a node to inspect its screenshot, metadata, and UI tree summary.
+2. Create a project and upload an `.apk` build.
+3. Click **Start UI review**.
+4. Open the run page — status polls until **Awaiting input** and the root node appears.
+5. Click the root node → toggle **Hotspots** → click a safe hotspot.
+6. The worker taps the emulator, captures the next screen, and adds a node + edge.
+7. Rename nodes, set flow/type, add comments with issue tags, search/filter, drag to organise, copy PNG.
+
+### Session controls
+
+- **Back** — press Android back and capture the resulting screen
+- **Resume here** — replay the path from root to the selected node
+- **Reset to root** — relaunch the app and return to the root screen
+- **End session** — mark the run completed and release the Appium session
 
 ## Architecture
 
@@ -135,11 +145,11 @@ npm run worker:apk
 Browser ──tRPC/upload──► Next.js app ──Prisma──► PostgreSQL
                               │
                               └── writes APKs/screenshots ──► artifacts/
-Worker (worker:apk) ──polls queued runs──► PostgreSQL
+Worker (worker:apk) ──polls queued runs + ExplorationAction──► PostgreSQL
        └── webdriverio ──► Appium ──► Android emulator
 ```
 
-The worker runs **outside** the web request lifecycle. The web app only enqueues a `ReviewRun`; the worker picks it up, drives the emulator, and writes nodes/edges back to the database.
+The worker runs **outside** the web request lifecycle. The web app enqueues a `ReviewRun`; the worker installs the APK, captures the root screen, then keeps an Appium session open while status is `awaiting_input`. Hotspot taps create `ExplorationAction` rows that the worker executes.
 
 ## Artifact storage
 
@@ -157,7 +167,7 @@ Screenshots are served through `/api/artifacts/...`.
 | Script | Description |
 |--------|-------------|
 | `npm run dev` | Next.js dev server |
-| `npm run worker:apk` | Poll and process queued review runs |
+| `npm run worker:apk` | Poll and process queued review runs (interactive session) |
 | `npm run appium` | Start Appium server |
 | `npm run db:push` | Push Prisma schema to DB |
 | `npm run db:generate` | Create + apply a migration |
@@ -172,19 +182,23 @@ For colleagues to use the web app **without** installing Android tooling locally
 - Run the **worker + Appium + emulator** on a dedicated Linux VM or bare-metal host with KVM nested virtualization enabled.
 - Point `APPIUM_URL` on the worker at its local Appium instance; share the same `DATABASE_URL` and `ARTIFACTS_DIR` (or object storage in a future version).
 
-V1 uses local filesystem artifacts — for multi-host deployment you'll want a shared volume or S3-compatible storage (not implemented yet).
+V2 uses local filesystem artifacts — for multi-host deployment you'll want a shared volume or S3-compatible storage (not implemented yet).
 
-## Known limitations (V1)
+## Known limitations (V2)
 
-- **Android APK only** — no iOS / IPA
-- **Single APK** — no `.aab` or split APKs
-- **Exact screenshot hash only** — near-duplicate screens create separate nodes (perceptual hashing planned)
-- **No Figma comparison** or AI review
-- **No login / locale automation**
-- **Shallow, conservative crawl** — skips risky taps (delete, pay, logout, etc.)
+- **Manual exploration depends on emulator session state.** If the session is lost, path replay may fail — restart the run.
+- **Exact screenshot hashing can be brittle** — near-duplicate screens may create separate nodes (perceptual hashing planned).
+- **Hotspots depend on accessibility / UI hierarchy quality.** Some screens expose few or overlapping clickables.
+- **WebViews may expose limited elements** — native UiAutomator hierarchy only.
+- **Risky actions are blocked** (delete, pay, logout, checkout, etc.).
+- **No Figma comparison yet**
+- **No AI visual review yet**
+- **No iOS / IPA support yet**
+- **No automatic locale or data permutations yet**
+- **No full autonomous crawler in V2** — exploration is user-driven from the web UI
+- **Android APK only** — no `.aab` or split APKs
+- **Emulator must be running** before the worker starts a run (does not boot AVDs automatically)
 - **May not work** with apps that block emulators or detect automation
-- **Limited WebView introspection** — native UiAutomator hierarchy only
-- **Emulator must be running** before the worker starts a run (V1 does not boot AVDs automatically)
 
 ## Troubleshooting
 
@@ -194,5 +208,6 @@ V1 uses local filesystem artifacts — for multi-host deployment you'll want a s
 | Worker stuck on "Preparing emulator" / "Queued" forever | Emulator booted (`adb devices`), Appium up (`npm run appium`), worker running (`npm run worker:apk`) |
 | "Package name unknown" | Re-upload the APK; metadata parsing failed |
 | "APK file missing" | Check `artifacts/apks/...` exists and `ARTIFACTS_DIR` matches between web + worker |
+| Hotspot tap fails / replay error | Session may be out of sync — try **Resume here** or **Reset to root**, or start a new run |
 | Install failed | Confirm APK architecture matches emulator (arm64 vs x86) |
 | Run failed immediately | Run `npx appium driver doctor uiautomator2` |

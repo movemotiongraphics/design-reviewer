@@ -9,6 +9,7 @@ export const RUN_STATUSES = [
   "installing_apk",
   "launching_app",
   "exploring",
+  "awaiting_input",
   "completed",
   "failed",
   "cancelled",
@@ -22,6 +23,7 @@ export const RUN_STATUS_LABELS: Record<RunStatus, string> = {
   installing_apk: "Installing APK",
   launching_app: "Launching app",
   exploring: "Exploring",
+  awaiting_input: "Awaiting input",
   completed: "Completed",
   failed: "Failed",
   cancelled: "Cancelled",
@@ -35,8 +37,13 @@ const IN_PROGRESS: ReadonlySet<RunStatus> = new Set<RunStatus>([
   "exploring",
 ]);
 
+/** Run is live and accepting manual exploration actions. */
+export function isRunInteractive(status: string): boolean {
+  return status === "awaiting_input";
+}
+
 export function isRunInProgress(status: string): boolean {
-  return IN_PROGRESS.has(status as RunStatus);
+  return IN_PROGRESS.has(status as RunStatus) || isRunInteractive(status);
 }
 
 export type BadgeVariant = "default" | "secondary" | "destructive" | "outline";
@@ -49,6 +56,8 @@ export function runStatusVariant(status: string): BadgeVariant {
       return "destructive";
     case "cancelled":
       return "outline";
+    case "awaiting_input":
+      return "default";
     default:
       return "secondary";
   }

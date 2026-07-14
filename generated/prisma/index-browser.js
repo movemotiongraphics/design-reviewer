@@ -154,6 +154,7 @@ exports.Prisma.ReviewRunScalarFieldEnum = {
   maxDepth: 'maxDepth',
   maxNodes: 'maxNodes',
   maxTapsPerScreen: 'maxTapsPerScreen',
+  currentNodeId: 'currentNodeId',
   startedAt: 'startedAt',
   completedAt: 'completedAt',
   errorMessage: 'errorMessage',
@@ -167,6 +168,11 @@ exports.Prisma.ScreenNodeScalarFieldEnum = {
   screenshotPath: 'screenshotPath',
   activityName: 'activityName',
   stateName: 'stateName',
+  name: 'name',
+  flowName: 'flowName',
+  nodeType: 'nodeType',
+  positionX: 'positionX',
+  positionY: 'positionY',
   uiTreeJson: 'uiTreeJson',
   depth: 'depth',
   hash: 'hash',
@@ -184,6 +190,35 @@ exports.Prisma.ScreenEdgeScalarFieldEnum = {
   targetText: 'targetText',
   targetBounds: 'targetBounds',
   createdAt: 'createdAt'
+};
+
+exports.Prisma.NodeCommentScalarFieldEnum = {
+  id: 'id',
+  screenNodeId: 'screenNodeId',
+  body: 'body',
+  issueType: 'issueType',
+  status: 'status',
+  createdById: 'createdById',
+  createdByName: 'createdByName',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ExplorationActionScalarFieldEnum = {
+  id: 'id',
+  reviewRunId: 'reviewRunId',
+  type: 'type',
+  status: 'status',
+  fromNodeId: 'fromNodeId',
+  targetNodeId: 'targetNodeId',
+  hotspotKey: 'hotspotKey',
+  targetLabel: 'targetLabel',
+  targetBounds: 'targetBounds',
+  resultNodeId: 'resultNodeId',
+  isExistingNode: 'isExistingNode',
+  errorMessage: 'errorMessage',
+  createdAt: 'createdAt',
+  completedAt: 'completedAt'
 };
 
 exports.Prisma.AccountScalarFieldEnum = {
@@ -254,9 +289,40 @@ exports.ReviewRunStatus = exports.$Enums.ReviewRunStatus = {
   installing_apk: 'installing_apk',
   launching_app: 'launching_app',
   exploring: 'exploring',
+  awaiting_input: 'awaiting_input',
   completed: 'completed',
   failed: 'failed',
   cancelled: 'cancelled'
+};
+
+exports.IssueType = exports.$Enums.IssueType = {
+  layout: 'layout',
+  typography: 'typography',
+  color: 'color',
+  spacing: 'spacing',
+  copy: 'copy',
+  broken_state: 'broken_state',
+  accessibility: 'accessibility'
+};
+
+exports.CommentStatus = exports.$Enums.CommentStatus = {
+  open: 'open',
+  resolved: 'resolved',
+  ignored: 'ignored'
+};
+
+exports.ExplorationActionType = exports.$Enums.ExplorationActionType = {
+  tap: 'tap',
+  back: 'back',
+  reset_to_root: 'reset_to_root',
+  resume_from_node: 'resume_from_node'
+};
+
+exports.ExplorationActionStatus = exports.$Enums.ExplorationActionStatus = {
+  pending: 'pending',
+  running: 'running',
+  completed: 'completed',
+  failed: 'failed'
 };
 
 exports.Prisma.ModelName = {
@@ -266,6 +332,8 @@ exports.Prisma.ModelName = {
   ReviewRun: 'ReviewRun',
   ScreenNode: 'ScreenNode',
   ScreenEdge: 'ScreenEdge',
+  NodeComment: 'NodeComment',
+  ExplorationAction: 'ExplorationAction',
   Account: 'Account',
   Session: 'Session',
   User: 'User',

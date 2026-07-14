@@ -1,15 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, TriangleAlert } from "lucide-react";
+import { ArrowLeft, Square, TriangleAlert } from "lucide-react";
+import { toast } from "sonner";
 
 import { RunStatusBadge } from "~/components/run-status-badge";
+import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
-import { isRunInProgress } from "~/lib/run-status";
+import { isRunInProgress, isRunInteractive } from "~/lib/run-status";
 import { api } from "~/trpc/react";
 import { GraphViewer } from "./graph-viewer";
 
 export function RunClient({ runId }: { runId: string }) {
+  const utils = api.useUtils();
   const run = api.reviewRun.get.useQuery(
     { id: runId },
     {
@@ -19,6 +22,14 @@ export function RunClient({ runId }: { runId: string }) {
       },
     },
   );
+
+  const endSession = api.reviewRun.endSession.useMutation({
+    onSuccess: async () => {
+      toast.success("Session ended");
+      await utils.reviewRun.get.invalidate({ id: runId });
+    },
+    onError: (err) => toast.error(err.message),
+  });
 
   if (run.isLoading) {
     return (
@@ -39,6 +50,7 @@ export function RunClient({ runId }: { runId: string }) {
   const data = run.data;
   const nodeCount = data._count.nodes;
   const inProgress = isRunInProgress(data.status);
+  const interactive = isRunInteractive(data.status);
 
   return (
     <div className="flex h-[calc(100vh-3.5rem)] flex-col">
@@ -55,9 +67,24 @@ export function RunClient({ runId }: { runId: string }) {
             <h1 className="text-lg font-semibold">{data.apkBuild.fileName}</h1>
             <p className="text-xs text-muted-foreground">
               {data._count.nodes} nodes · {data._count.edges} edges
+              {interactive ? " · click hotspots to explore" : ""}
             </p>
           </div>
-          <RunStatusBadge status={data.status} />
+          <div className="flex items-center gap-2">
+            <RunStatusBadge status={data.status} />
+            {interactive ? (
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                disabled={endSession.isPending}
+                onClick={() => endSession.mutate({ runId })}
+              >
+                <Square className="size-3.5" />
+                End session
+              </Button>
+            ) : null}
+          </div>
         </div>
       </div>
 
@@ -81,12 +108,16 @@ export function RunClient({ runId }: { runId: string }) {
 
       <div className="min-h-0 flex-1">
         {nodeCount > 0 ? (
-          <GraphViewer runId={runId} poll={inProgress} />
+          <GraphViewer
+            runId={runId}
+            runStatus={data.status}
+            poll={inProgress}
+          />
         ) : (
           <div className="flex h-full items-center justify-center px-4">
             <p className="text-sm text-muted-foreground">
               {inProgress
-                ? "Exploring the app… screens will appear here as they are captured."
+                ? "Preparing session… the root screen will appear when captured."
                 : "No screens were captured for this run."}
             </p>
           </div>

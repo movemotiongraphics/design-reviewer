@@ -1,6 +1,8 @@
 import { apkRouter } from "~/server/api/routers/apk";
+import { nodeCommentRouter } from "~/server/api/routers/nodeComment";
 import { projectRouter } from "~/server/api/routers/project";
 import { reviewRunRouter } from "~/server/api/routers/reviewRun";
+import { screenNodeRouter } from "~/server/api/routers/screenNode";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 
 /**
@@ -12,6 +14,8 @@ export const appRouter = createTRPCRouter({
   project: projectRouter,
   apk: apkRouter,
   reviewRun: reviewRunRouter,
+  screenNode: screenNodeRouter,
+  nodeComment: nodeCommentRouter,
 });
 
 // export type definition of API

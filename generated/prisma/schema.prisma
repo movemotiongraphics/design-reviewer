@@ -28,7 +28,7 @@ model Post {
 }
 
 // ---------------------------------------------------------------------------
-// APK screenshot node-map viewer (V1)
+// APK screenshot node-map viewer (V2 — manual UI review)
 // ---------------------------------------------------------------------------
 
 model Project {
@@ -67,12 +67,16 @@ model ReviewRun {
   maxNodes         Int             @default(30)
   maxTapsPerScreen Int             @default(6)
 
+  /// Node the emulator is believed to be on during interactive exploration.
+  currentNodeId String?
+
   startedAt    DateTime?
   completedAt  DateTime?
   errorMessage String?
 
-  nodes ScreenNode[]
-  edges ScreenEdge[]
+  nodes   ScreenNode[]
+  edges   ScreenEdge[]
+  actions ExplorationAction[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -87,6 +91,7 @@ enum ReviewRunStatus {
   installing_apk
   launching_app
   exploring
+  awaiting_input
   completed
   failed
   cancelled
@@ -100,13 +105,21 @@ model ScreenNode {
   screenshotPath String
   activityName   String?
   stateName      String?
+  /// User-editable display name (falls back to stateName / activityName).
+  name           String?
+  flowName       String?
+  /// page | modal | bottom_sheet | dropdown | tab | error | empty | loading | unknown
+  nodeType       String?
+  positionX      Float?
+  positionY      Float?
   uiTreeJson     Json?
   depth          Int
   hash           String
   clickableCount Int     @default(0)
 
-  outgoingEdges ScreenEdge[] @relation("FromNode")
-  incomingEdges ScreenEdge[] @relation("ToNode")
+  outgoingEdges ScreenEdge[]  @relation("FromNode")
+  incomingEdges ScreenEdge[]  @relation("ToNode")
+  comments      NodeComment[]
 
   createdAt DateTime @default(now())
 
@@ -135,6 +148,81 @@ model ScreenEdge {
   @@index([reviewRunId])
   @@index([fromNodeId])
   @@index([toNodeId])
+}
+
+model NodeComment {
+  id           String     @id @default(cuid())
+  screenNodeId String
+  screenNode   ScreenNode @relation(fields: [screenNodeId], references: [id], onDelete: Cascade)
+
+  body      String
+  issueType IssueType?
+  status    CommentStatus @default(open)
+
+  createdById   String?
+  createdByName String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([screenNodeId])
+  @@index([issueType])
+  @@index([status])
+}
+
+enum IssueType {
+  layout
+  typography
+  color
+  spacing
+  copy
+  broken_state
+  accessibility
+}
+
+enum CommentStatus {
+  open
+  resolved
+  ignored
+}
+
+model ExplorationAction {
+  id          String    @id @default(cuid())
+  reviewRunId String
+  reviewRun   ReviewRun @relation(fields: [reviewRunId], references: [id], onDelete: Cascade)
+
+  type   ExplorationActionType
+  status ExplorationActionStatus @default(pending)
+
+  fromNodeId   String?
+  targetNodeId String?
+  hotspotKey   String?
+  targetLabel  String?
+  targetBounds Json?
+
+  resultNodeId   String?
+  isExistingNode Boolean @default(false)
+  errorMessage   String?
+
+  createdAt   DateTime  @default(now())
+  completedAt DateTime?
+
+  @@index([reviewRunId])
+  @@index([status])
+}
+
+enum ExplorationActionType {
+  tap
+  back
+  reset_to_root
+  resume_from_node
+}
+
+enum ExplorationActionStatus {
+  pending
+  running
+  completed
+  failed
 }
 
 // Necessary for Next auth

@@ -44,6 +44,16 @@ export type ScreenNode = $Result.DefaultSelection<Prisma.$ScreenNodePayload>
  */
 export type ScreenEdge = $Result.DefaultSelection<Prisma.$ScreenEdgePayload>
 /**
+ * Model NodeComment
+ * 
+ */
+export type NodeComment = $Result.DefaultSelection<Prisma.$NodeCommentPayload>
+/**
+ * Model ExplorationAction
+ * 
+ */
+export type ExplorationAction = $Result.DefaultSelection<Prisma.$ExplorationActionPayload>
+/**
  * Model Account
  * 
  */
@@ -74,6 +84,7 @@ export namespace $Enums {
   installing_apk: 'installing_apk',
   launching_app: 'launching_app',
   exploring: 'exploring',
+  awaiting_input: 'awaiting_input',
   completed: 'completed',
   failed: 'failed',
   cancelled: 'cancelled'
@@ -81,11 +92,69 @@ export namespace $Enums {
 
 export type ReviewRunStatus = (typeof ReviewRunStatus)[keyof typeof ReviewRunStatus]
 
+
+export const IssueType: {
+  layout: 'layout',
+  typography: 'typography',
+  color: 'color',
+  spacing: 'spacing',
+  copy: 'copy',
+  broken_state: 'broken_state',
+  accessibility: 'accessibility'
+};
+
+export type IssueType = (typeof IssueType)[keyof typeof IssueType]
+
+
+export const CommentStatus: {
+  open: 'open',
+  resolved: 'resolved',
+  ignored: 'ignored'
+};
+
+export type CommentStatus = (typeof CommentStatus)[keyof typeof CommentStatus]
+
+
+export const ExplorationActionType: {
+  tap: 'tap',
+  back: 'back',
+  reset_to_root: 'reset_to_root',
+  resume_from_node: 'resume_from_node'
+};
+
+export type ExplorationActionType = (typeof ExplorationActionType)[keyof typeof ExplorationActionType]
+
+
+export const ExplorationActionStatus: {
+  pending: 'pending',
+  running: 'running',
+  completed: 'completed',
+  failed: 'failed'
+};
+
+export type ExplorationActionStatus = (typeof ExplorationActionStatus)[keyof typeof ExplorationActionStatus]
+
 }
 
 export type ReviewRunStatus = $Enums.ReviewRunStatus
 
 export const ReviewRunStatus: typeof $Enums.ReviewRunStatus
+
+export type IssueType = $Enums.IssueType
+
+export const IssueType: typeof $Enums.IssueType
+
+export type CommentStatus = $Enums.CommentStatus
+
+export const CommentStatus: typeof $Enums.CommentStatus
+
+export type ExplorationActionType = $Enums.ExplorationActionType
+
+export const ExplorationActionType: typeof $Enums.ExplorationActionType
+
+export type ExplorationActionStatus = $Enums.ExplorationActionStatus
+
+export const ExplorationActionStatus: typeof $Enums.ExplorationActionStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -264,6 +333,26 @@ export class PrismaClient<
     * ```
     */
   get screenEdge(): Prisma.ScreenEdgeDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.nodeComment`: Exposes CRUD operations for the **NodeComment** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more NodeComments
+    * const nodeComments = await prisma.nodeComment.findMany()
+    * ```
+    */
+  get nodeComment(): Prisma.NodeCommentDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.explorationAction`: Exposes CRUD operations for the **ExplorationAction** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ExplorationActions
+    * const explorationActions = await prisma.explorationAction.findMany()
+    * ```
+    */
+  get explorationAction(): Prisma.ExplorationActionDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.account`: Exposes CRUD operations for the **Account** model.
@@ -751,6 +840,8 @@ export namespace Prisma {
     ReviewRun: 'ReviewRun',
     ScreenNode: 'ScreenNode',
     ScreenEdge: 'ScreenEdge',
+    NodeComment: 'NodeComment',
+    ExplorationAction: 'ExplorationAction',
     Account: 'Account',
     Session: 'Session',
     User: 'User',
@@ -773,7 +864,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "post" | "project" | "apkBuild" | "reviewRun" | "screenNode" | "screenEdge" | "account" | "session" | "user" | "verificationToken"
+      modelProps: "post" | "project" | "apkBuild" | "reviewRun" | "screenNode" | "screenEdge" | "nodeComment" | "explorationAction" | "account" | "session" | "user" | "verificationToken"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1221,6 +1312,154 @@ export namespace Prisma {
           }
         }
       }
+      NodeComment: {
+        payload: Prisma.$NodeCommentPayload<ExtArgs>
+        fields: Prisma.NodeCommentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.NodeCommentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NodeCommentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.NodeCommentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NodeCommentPayload>
+          }
+          findFirst: {
+            args: Prisma.NodeCommentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NodeCommentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.NodeCommentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NodeCommentPayload>
+          }
+          findMany: {
+            args: Prisma.NodeCommentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NodeCommentPayload>[]
+          }
+          create: {
+            args: Prisma.NodeCommentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NodeCommentPayload>
+          }
+          createMany: {
+            args: Prisma.NodeCommentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.NodeCommentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NodeCommentPayload>[]
+          }
+          delete: {
+            args: Prisma.NodeCommentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NodeCommentPayload>
+          }
+          update: {
+            args: Prisma.NodeCommentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NodeCommentPayload>
+          }
+          deleteMany: {
+            args: Prisma.NodeCommentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.NodeCommentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.NodeCommentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NodeCommentPayload>[]
+          }
+          upsert: {
+            args: Prisma.NodeCommentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NodeCommentPayload>
+          }
+          aggregate: {
+            args: Prisma.NodeCommentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateNodeComment>
+          }
+          groupBy: {
+            args: Prisma.NodeCommentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<NodeCommentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.NodeCommentCountArgs<ExtArgs>
+            result: $Utils.Optional<NodeCommentCountAggregateOutputType> | number
+          }
+        }
+      }
+      ExplorationAction: {
+        payload: Prisma.$ExplorationActionPayload<ExtArgs>
+        fields: Prisma.ExplorationActionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ExplorationActionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExplorationActionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ExplorationActionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExplorationActionPayload>
+          }
+          findFirst: {
+            args: Prisma.ExplorationActionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExplorationActionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ExplorationActionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExplorationActionPayload>
+          }
+          findMany: {
+            args: Prisma.ExplorationActionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExplorationActionPayload>[]
+          }
+          create: {
+            args: Prisma.ExplorationActionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExplorationActionPayload>
+          }
+          createMany: {
+            args: Prisma.ExplorationActionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ExplorationActionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExplorationActionPayload>[]
+          }
+          delete: {
+            args: Prisma.ExplorationActionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExplorationActionPayload>
+          }
+          update: {
+            args: Prisma.ExplorationActionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExplorationActionPayload>
+          }
+          deleteMany: {
+            args: Prisma.ExplorationActionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ExplorationActionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ExplorationActionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExplorationActionPayload>[]
+          }
+          upsert: {
+            args: Prisma.ExplorationActionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExplorationActionPayload>
+          }
+          aggregate: {
+            args: Prisma.ExplorationActionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateExplorationAction>
+          }
+          groupBy: {
+            args: Prisma.ExplorationActionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ExplorationActionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ExplorationActionCountArgs<ExtArgs>
+            result: $Utils.Optional<ExplorationActionCountAggregateOutputType> | number
+          }
+        }
+      }
       Account: {
         payload: Prisma.$AccountPayload<ExtArgs>
         fields: Prisma.AccountFieldRefs
@@ -1619,6 +1858,8 @@ export namespace Prisma {
     reviewRun?: ReviewRunOmit
     screenNode?: ScreenNodeOmit
     screenEdge?: ScreenEdgeOmit
+    nodeComment?: NodeCommentOmit
+    explorationAction?: ExplorationActionOmit
     account?: AccountOmit
     session?: SessionOmit
     user?: UserOmit
@@ -1767,11 +2008,13 @@ export namespace Prisma {
   export type ReviewRunCountOutputType = {
     nodes: number
     edges: number
+    actions: number
   }
 
   export type ReviewRunCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     nodes?: boolean | ReviewRunCountOutputTypeCountNodesArgs
     edges?: boolean | ReviewRunCountOutputTypeCountEdgesArgs
+    actions?: boolean | ReviewRunCountOutputTypeCountActionsArgs
   }
 
   // Custom InputTypes
@@ -1799,6 +2042,13 @@ export namespace Prisma {
     where?: ScreenEdgeWhereInput
   }
 
+  /**
+   * ReviewRunCountOutputType without action
+   */
+  export type ReviewRunCountOutputTypeCountActionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ExplorationActionWhereInput
+  }
+
 
   /**
    * Count Type ScreenNodeCountOutputType
@@ -1807,11 +2057,13 @@ export namespace Prisma {
   export type ScreenNodeCountOutputType = {
     outgoingEdges: number
     incomingEdges: number
+    comments: number
   }
 
   export type ScreenNodeCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     outgoingEdges?: boolean | ScreenNodeCountOutputTypeCountOutgoingEdgesArgs
     incomingEdges?: boolean | ScreenNodeCountOutputTypeCountIncomingEdgesArgs
+    comments?: boolean | ScreenNodeCountOutputTypeCountCommentsArgs
   }
 
   // Custom InputTypes
@@ -1837,6 +2089,13 @@ export namespace Prisma {
    */
   export type ScreenNodeCountOutputTypeCountIncomingEdgesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ScreenEdgeWhereInput
+  }
+
+  /**
+   * ScreenNodeCountOutputType without action
+   */
+  export type ScreenNodeCountOutputTypeCountCommentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: NodeCommentWhereInput
   }
 
 
@@ -5200,6 +5459,7 @@ export namespace Prisma {
     maxDepth: number | null
     maxNodes: number | null
     maxTapsPerScreen: number | null
+    currentNodeId: string | null
     startedAt: Date | null
     completedAt: Date | null
     errorMessage: string | null
@@ -5214,6 +5474,7 @@ export namespace Prisma {
     maxDepth: number | null
     maxNodes: number | null
     maxTapsPerScreen: number | null
+    currentNodeId: string | null
     startedAt: Date | null
     completedAt: Date | null
     errorMessage: string | null
@@ -5228,6 +5489,7 @@ export namespace Prisma {
     maxDepth: number
     maxNodes: number
     maxTapsPerScreen: number
+    currentNodeId: number
     startedAt: number
     completedAt: number
     errorMessage: number
@@ -5256,6 +5518,7 @@ export namespace Prisma {
     maxDepth?: true
     maxNodes?: true
     maxTapsPerScreen?: true
+    currentNodeId?: true
     startedAt?: true
     completedAt?: true
     errorMessage?: true
@@ -5270,6 +5533,7 @@ export namespace Prisma {
     maxDepth?: true
     maxNodes?: true
     maxTapsPerScreen?: true
+    currentNodeId?: true
     startedAt?: true
     completedAt?: true
     errorMessage?: true
@@ -5284,6 +5548,7 @@ export namespace Prisma {
     maxDepth?: true
     maxNodes?: true
     maxTapsPerScreen?: true
+    currentNodeId?: true
     startedAt?: true
     completedAt?: true
     errorMessage?: true
@@ -5385,6 +5650,7 @@ export namespace Prisma {
     maxDepth: number
     maxNodes: number
     maxTapsPerScreen: number
+    currentNodeId: string | null
     startedAt: Date | null
     completedAt: Date | null
     errorMessage: string | null
@@ -5418,6 +5684,7 @@ export namespace Prisma {
     maxDepth?: boolean
     maxNodes?: boolean
     maxTapsPerScreen?: boolean
+    currentNodeId?: boolean
     startedAt?: boolean
     completedAt?: boolean
     errorMessage?: boolean
@@ -5426,6 +5693,7 @@ export namespace Prisma {
     apkBuild?: boolean | ApkBuildDefaultArgs<ExtArgs>
     nodes?: boolean | ReviewRun$nodesArgs<ExtArgs>
     edges?: boolean | ReviewRun$edgesArgs<ExtArgs>
+    actions?: boolean | ReviewRun$actionsArgs<ExtArgs>
     _count?: boolean | ReviewRunCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["reviewRun"]>
 
@@ -5436,6 +5704,7 @@ export namespace Prisma {
     maxDepth?: boolean
     maxNodes?: boolean
     maxTapsPerScreen?: boolean
+    currentNodeId?: boolean
     startedAt?: boolean
     completedAt?: boolean
     errorMessage?: boolean
@@ -5451,6 +5720,7 @@ export namespace Prisma {
     maxDepth?: boolean
     maxNodes?: boolean
     maxTapsPerScreen?: boolean
+    currentNodeId?: boolean
     startedAt?: boolean
     completedAt?: boolean
     errorMessage?: boolean
@@ -5466,6 +5736,7 @@ export namespace Prisma {
     maxDepth?: boolean
     maxNodes?: boolean
     maxTapsPerScreen?: boolean
+    currentNodeId?: boolean
     startedAt?: boolean
     completedAt?: boolean
     errorMessage?: boolean
@@ -5473,11 +5744,12 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ReviewRunOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "apkBuildId" | "status" | "maxDepth" | "maxNodes" | "maxTapsPerScreen" | "startedAt" | "completedAt" | "errorMessage" | "createdAt" | "updatedAt", ExtArgs["result"]["reviewRun"]>
+  export type ReviewRunOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "apkBuildId" | "status" | "maxDepth" | "maxNodes" | "maxTapsPerScreen" | "currentNodeId" | "startedAt" | "completedAt" | "errorMessage" | "createdAt" | "updatedAt", ExtArgs["result"]["reviewRun"]>
   export type ReviewRunInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     apkBuild?: boolean | ApkBuildDefaultArgs<ExtArgs>
     nodes?: boolean | ReviewRun$nodesArgs<ExtArgs>
     edges?: boolean | ReviewRun$edgesArgs<ExtArgs>
+    actions?: boolean | ReviewRun$actionsArgs<ExtArgs>
     _count?: boolean | ReviewRunCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ReviewRunIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5493,6 +5765,7 @@ export namespace Prisma {
       apkBuild: Prisma.$ApkBuildPayload<ExtArgs>
       nodes: Prisma.$ScreenNodePayload<ExtArgs>[]
       edges: Prisma.$ScreenEdgePayload<ExtArgs>[]
+      actions: Prisma.$ExplorationActionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5501,6 +5774,10 @@ export namespace Prisma {
       maxDepth: number
       maxNodes: number
       maxTapsPerScreen: number
+      /**
+       * Node the emulator is believed to be on during interactive exploration.
+       */
+      currentNodeId: string | null
       startedAt: Date | null
       completedAt: Date | null
       errorMessage: string | null
@@ -5903,6 +6180,7 @@ export namespace Prisma {
     apkBuild<T extends ApkBuildDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ApkBuildDefaultArgs<ExtArgs>>): Prisma__ApkBuildClient<$Result.GetResult<Prisma.$ApkBuildPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     nodes<T extends ReviewRun$nodesArgs<ExtArgs> = {}>(args?: Subset<T, ReviewRun$nodesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScreenNodePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     edges<T extends ReviewRun$edgesArgs<ExtArgs> = {}>(args?: Subset<T, ReviewRun$edgesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScreenEdgePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    actions<T extends ReviewRun$actionsArgs<ExtArgs> = {}>(args?: Subset<T, ReviewRun$actionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExplorationActionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5938,6 +6216,7 @@ export namespace Prisma {
     readonly maxDepth: FieldRef<"ReviewRun", 'Int'>
     readonly maxNodes: FieldRef<"ReviewRun", 'Int'>
     readonly maxTapsPerScreen: FieldRef<"ReviewRun", 'Int'>
+    readonly currentNodeId: FieldRef<"ReviewRun", 'String'>
     readonly startedAt: FieldRef<"ReviewRun", 'DateTime'>
     readonly completedAt: FieldRef<"ReviewRun", 'DateTime'>
     readonly errorMessage: FieldRef<"ReviewRun", 'String'>
@@ -6387,6 +6666,30 @@ export namespace Prisma {
   }
 
   /**
+   * ReviewRun.actions
+   */
+  export type ReviewRun$actionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExplorationAction
+     */
+    select?: ExplorationActionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExplorationAction
+     */
+    omit?: ExplorationActionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExplorationActionInclude<ExtArgs> | null
+    where?: ExplorationActionWhereInput
+    orderBy?: ExplorationActionOrderByWithRelationInput | ExplorationActionOrderByWithRelationInput[]
+    cursor?: ExplorationActionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ExplorationActionScalarFieldEnum | ExplorationActionScalarFieldEnum[]
+  }
+
+  /**
    * ReviewRun without action
    */
   export type ReviewRunDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6418,11 +6721,15 @@ export namespace Prisma {
   }
 
   export type ScreenNodeAvgAggregateOutputType = {
+    positionX: number | null
+    positionY: number | null
     depth: number | null
     clickableCount: number | null
   }
 
   export type ScreenNodeSumAggregateOutputType = {
+    positionX: number | null
+    positionY: number | null
     depth: number | null
     clickableCount: number | null
   }
@@ -6433,6 +6740,11 @@ export namespace Prisma {
     screenshotPath: string | null
     activityName: string | null
     stateName: string | null
+    name: string | null
+    flowName: string | null
+    nodeType: string | null
+    positionX: number | null
+    positionY: number | null
     depth: number | null
     hash: string | null
     clickableCount: number | null
@@ -6445,6 +6757,11 @@ export namespace Prisma {
     screenshotPath: string | null
     activityName: string | null
     stateName: string | null
+    name: string | null
+    flowName: string | null
+    nodeType: string | null
+    positionX: number | null
+    positionY: number | null
     depth: number | null
     hash: string | null
     clickableCount: number | null
@@ -6457,6 +6774,11 @@ export namespace Prisma {
     screenshotPath: number
     activityName: number
     stateName: number
+    name: number
+    flowName: number
+    nodeType: number
+    positionX: number
+    positionY: number
     uiTreeJson: number
     depth: number
     hash: number
@@ -6467,11 +6789,15 @@ export namespace Prisma {
 
 
   export type ScreenNodeAvgAggregateInputType = {
+    positionX?: true
+    positionY?: true
     depth?: true
     clickableCount?: true
   }
 
   export type ScreenNodeSumAggregateInputType = {
+    positionX?: true
+    positionY?: true
     depth?: true
     clickableCount?: true
   }
@@ -6482,6 +6808,11 @@ export namespace Prisma {
     screenshotPath?: true
     activityName?: true
     stateName?: true
+    name?: true
+    flowName?: true
+    nodeType?: true
+    positionX?: true
+    positionY?: true
     depth?: true
     hash?: true
     clickableCount?: true
@@ -6494,6 +6825,11 @@ export namespace Prisma {
     screenshotPath?: true
     activityName?: true
     stateName?: true
+    name?: true
+    flowName?: true
+    nodeType?: true
+    positionX?: true
+    positionY?: true
     depth?: true
     hash?: true
     clickableCount?: true
@@ -6506,6 +6842,11 @@ export namespace Prisma {
     screenshotPath?: true
     activityName?: true
     stateName?: true
+    name?: true
+    flowName?: true
+    nodeType?: true
+    positionX?: true
+    positionY?: true
     uiTreeJson?: true
     depth?: true
     hash?: true
@@ -6606,6 +6947,11 @@ export namespace Prisma {
     screenshotPath: string
     activityName: string | null
     stateName: string | null
+    name: string | null
+    flowName: string | null
+    nodeType: string | null
+    positionX: number | null
+    positionY: number | null
     uiTreeJson: JsonValue | null
     depth: number
     hash: string
@@ -6638,6 +6984,11 @@ export namespace Prisma {
     screenshotPath?: boolean
     activityName?: boolean
     stateName?: boolean
+    name?: boolean
+    flowName?: boolean
+    nodeType?: boolean
+    positionX?: boolean
+    positionY?: boolean
     uiTreeJson?: boolean
     depth?: boolean
     hash?: boolean
@@ -6646,6 +6997,7 @@ export namespace Prisma {
     reviewRun?: boolean | ReviewRunDefaultArgs<ExtArgs>
     outgoingEdges?: boolean | ScreenNode$outgoingEdgesArgs<ExtArgs>
     incomingEdges?: boolean | ScreenNode$incomingEdgesArgs<ExtArgs>
+    comments?: boolean | ScreenNode$commentsArgs<ExtArgs>
     _count?: boolean | ScreenNodeCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["screenNode"]>
 
@@ -6655,6 +7007,11 @@ export namespace Prisma {
     screenshotPath?: boolean
     activityName?: boolean
     stateName?: boolean
+    name?: boolean
+    flowName?: boolean
+    nodeType?: boolean
+    positionX?: boolean
+    positionY?: boolean
     uiTreeJson?: boolean
     depth?: boolean
     hash?: boolean
@@ -6669,6 +7026,11 @@ export namespace Prisma {
     screenshotPath?: boolean
     activityName?: boolean
     stateName?: boolean
+    name?: boolean
+    flowName?: boolean
+    nodeType?: boolean
+    positionX?: boolean
+    positionY?: boolean
     uiTreeJson?: boolean
     depth?: boolean
     hash?: boolean
@@ -6683,6 +7045,11 @@ export namespace Prisma {
     screenshotPath?: boolean
     activityName?: boolean
     stateName?: boolean
+    name?: boolean
+    flowName?: boolean
+    nodeType?: boolean
+    positionX?: boolean
+    positionY?: boolean
     uiTreeJson?: boolean
     depth?: boolean
     hash?: boolean
@@ -6690,11 +7057,12 @@ export namespace Prisma {
     createdAt?: boolean
   }
 
-  export type ScreenNodeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "reviewRunId" | "screenshotPath" | "activityName" | "stateName" | "uiTreeJson" | "depth" | "hash" | "clickableCount" | "createdAt", ExtArgs["result"]["screenNode"]>
+  export type ScreenNodeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "reviewRunId" | "screenshotPath" | "activityName" | "stateName" | "name" | "flowName" | "nodeType" | "positionX" | "positionY" | "uiTreeJson" | "depth" | "hash" | "clickableCount" | "createdAt", ExtArgs["result"]["screenNode"]>
   export type ScreenNodeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     reviewRun?: boolean | ReviewRunDefaultArgs<ExtArgs>
     outgoingEdges?: boolean | ScreenNode$outgoingEdgesArgs<ExtArgs>
     incomingEdges?: boolean | ScreenNode$incomingEdgesArgs<ExtArgs>
+    comments?: boolean | ScreenNode$commentsArgs<ExtArgs>
     _count?: boolean | ScreenNodeCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ScreenNodeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6710,6 +7078,7 @@ export namespace Prisma {
       reviewRun: Prisma.$ReviewRunPayload<ExtArgs>
       outgoingEdges: Prisma.$ScreenEdgePayload<ExtArgs>[]
       incomingEdges: Prisma.$ScreenEdgePayload<ExtArgs>[]
+      comments: Prisma.$NodeCommentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -6717,6 +7086,17 @@ export namespace Prisma {
       screenshotPath: string
       activityName: string | null
       stateName: string | null
+      /**
+       * User-editable display name (falls back to stateName / activityName).
+       */
+      name: string | null
+      flowName: string | null
+      /**
+       * page | modal | bottom_sheet | dropdown | tab | error | empty | loading | unknown
+       */
+      nodeType: string | null
+      positionX: number | null
+      positionY: number | null
       uiTreeJson: Prisma.JsonValue | null
       depth: number
       hash: string
@@ -7119,6 +7499,7 @@ export namespace Prisma {
     reviewRun<T extends ReviewRunDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ReviewRunDefaultArgs<ExtArgs>>): Prisma__ReviewRunClient<$Result.GetResult<Prisma.$ReviewRunPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     outgoingEdges<T extends ScreenNode$outgoingEdgesArgs<ExtArgs> = {}>(args?: Subset<T, ScreenNode$outgoingEdgesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScreenEdgePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     incomingEdges<T extends ScreenNode$incomingEdgesArgs<ExtArgs> = {}>(args?: Subset<T, ScreenNode$incomingEdgesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScreenEdgePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    comments<T extends ScreenNode$commentsArgs<ExtArgs> = {}>(args?: Subset<T, ScreenNode$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NodeCommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7153,6 +7534,11 @@ export namespace Prisma {
     readonly screenshotPath: FieldRef<"ScreenNode", 'String'>
     readonly activityName: FieldRef<"ScreenNode", 'String'>
     readonly stateName: FieldRef<"ScreenNode", 'String'>
+    readonly name: FieldRef<"ScreenNode", 'String'>
+    readonly flowName: FieldRef<"ScreenNode", 'String'>
+    readonly nodeType: FieldRef<"ScreenNode", 'String'>
+    readonly positionX: FieldRef<"ScreenNode", 'Float'>
+    readonly positionY: FieldRef<"ScreenNode", 'Float'>
     readonly uiTreeJson: FieldRef<"ScreenNode", 'Json'>
     readonly depth: FieldRef<"ScreenNode", 'Int'>
     readonly hash: FieldRef<"ScreenNode", 'String'>
@@ -7599,6 +7985,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ScreenEdgeScalarFieldEnum | ScreenEdgeScalarFieldEnum[]
+  }
+
+  /**
+   * ScreenNode.comments
+   */
+  export type ScreenNode$commentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NodeComment
+     */
+    select?: NodeCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NodeComment
+     */
+    omit?: NodeCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NodeCommentInclude<ExtArgs> | null
+    where?: NodeCommentWhereInput
+    orderBy?: NodeCommentOrderByWithRelationInput | NodeCommentOrderByWithRelationInput[]
+    cursor?: NodeCommentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: NodeCommentScalarFieldEnum | NodeCommentScalarFieldEnum[]
   }
 
   /**
@@ -8758,6 +9168,2287 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ScreenEdgeInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model NodeComment
+   */
+
+  export type AggregateNodeComment = {
+    _count: NodeCommentCountAggregateOutputType | null
+    _min: NodeCommentMinAggregateOutputType | null
+    _max: NodeCommentMaxAggregateOutputType | null
+  }
+
+  export type NodeCommentMinAggregateOutputType = {
+    id: string | null
+    screenNodeId: string | null
+    body: string | null
+    issueType: $Enums.IssueType | null
+    status: $Enums.CommentStatus | null
+    createdById: string | null
+    createdByName: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type NodeCommentMaxAggregateOutputType = {
+    id: string | null
+    screenNodeId: string | null
+    body: string | null
+    issueType: $Enums.IssueType | null
+    status: $Enums.CommentStatus | null
+    createdById: string | null
+    createdByName: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type NodeCommentCountAggregateOutputType = {
+    id: number
+    screenNodeId: number
+    body: number
+    issueType: number
+    status: number
+    createdById: number
+    createdByName: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type NodeCommentMinAggregateInputType = {
+    id?: true
+    screenNodeId?: true
+    body?: true
+    issueType?: true
+    status?: true
+    createdById?: true
+    createdByName?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type NodeCommentMaxAggregateInputType = {
+    id?: true
+    screenNodeId?: true
+    body?: true
+    issueType?: true
+    status?: true
+    createdById?: true
+    createdByName?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type NodeCommentCountAggregateInputType = {
+    id?: true
+    screenNodeId?: true
+    body?: true
+    issueType?: true
+    status?: true
+    createdById?: true
+    createdByName?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type NodeCommentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which NodeComment to aggregate.
+     */
+    where?: NodeCommentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of NodeComments to fetch.
+     */
+    orderBy?: NodeCommentOrderByWithRelationInput | NodeCommentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: NodeCommentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` NodeComments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` NodeComments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned NodeComments
+    **/
+    _count?: true | NodeCommentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: NodeCommentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: NodeCommentMaxAggregateInputType
+  }
+
+  export type GetNodeCommentAggregateType<T extends NodeCommentAggregateArgs> = {
+        [P in keyof T & keyof AggregateNodeComment]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateNodeComment[P]>
+      : GetScalarType<T[P], AggregateNodeComment[P]>
+  }
+
+
+
+
+  export type NodeCommentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: NodeCommentWhereInput
+    orderBy?: NodeCommentOrderByWithAggregationInput | NodeCommentOrderByWithAggregationInput[]
+    by: NodeCommentScalarFieldEnum[] | NodeCommentScalarFieldEnum
+    having?: NodeCommentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: NodeCommentCountAggregateInputType | true
+    _min?: NodeCommentMinAggregateInputType
+    _max?: NodeCommentMaxAggregateInputType
+  }
+
+  export type NodeCommentGroupByOutputType = {
+    id: string
+    screenNodeId: string
+    body: string
+    issueType: $Enums.IssueType | null
+    status: $Enums.CommentStatus
+    createdById: string | null
+    createdByName: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: NodeCommentCountAggregateOutputType | null
+    _min: NodeCommentMinAggregateOutputType | null
+    _max: NodeCommentMaxAggregateOutputType | null
+  }
+
+  type GetNodeCommentGroupByPayload<T extends NodeCommentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<NodeCommentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof NodeCommentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], NodeCommentGroupByOutputType[P]>
+            : GetScalarType<T[P], NodeCommentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type NodeCommentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    screenNodeId?: boolean
+    body?: boolean
+    issueType?: boolean
+    status?: boolean
+    createdById?: boolean
+    createdByName?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    screenNode?: boolean | ScreenNodeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["nodeComment"]>
+
+  export type NodeCommentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    screenNodeId?: boolean
+    body?: boolean
+    issueType?: boolean
+    status?: boolean
+    createdById?: boolean
+    createdByName?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    screenNode?: boolean | ScreenNodeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["nodeComment"]>
+
+  export type NodeCommentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    screenNodeId?: boolean
+    body?: boolean
+    issueType?: boolean
+    status?: boolean
+    createdById?: boolean
+    createdByName?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    screenNode?: boolean | ScreenNodeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["nodeComment"]>
+
+  export type NodeCommentSelectScalar = {
+    id?: boolean
+    screenNodeId?: boolean
+    body?: boolean
+    issueType?: boolean
+    status?: boolean
+    createdById?: boolean
+    createdByName?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type NodeCommentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "screenNodeId" | "body" | "issueType" | "status" | "createdById" | "createdByName" | "createdAt" | "updatedAt", ExtArgs["result"]["nodeComment"]>
+  export type NodeCommentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    screenNode?: boolean | ScreenNodeDefaultArgs<ExtArgs>
+  }
+  export type NodeCommentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    screenNode?: boolean | ScreenNodeDefaultArgs<ExtArgs>
+  }
+  export type NodeCommentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    screenNode?: boolean | ScreenNodeDefaultArgs<ExtArgs>
+  }
+
+  export type $NodeCommentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "NodeComment"
+    objects: {
+      screenNode: Prisma.$ScreenNodePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      screenNodeId: string
+      body: string
+      issueType: $Enums.IssueType | null
+      status: $Enums.CommentStatus
+      createdById: string | null
+      createdByName: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["nodeComment"]>
+    composites: {}
+  }
+
+  type NodeCommentGetPayload<S extends boolean | null | undefined | NodeCommentDefaultArgs> = $Result.GetResult<Prisma.$NodeCommentPayload, S>
+
+  type NodeCommentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<NodeCommentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: NodeCommentCountAggregateInputType | true
+    }
+
+  export interface NodeCommentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['NodeComment'], meta: { name: 'NodeComment' } }
+    /**
+     * Find zero or one NodeComment that matches the filter.
+     * @param {NodeCommentFindUniqueArgs} args - Arguments to find a NodeComment
+     * @example
+     * // Get one NodeComment
+     * const nodeComment = await prisma.nodeComment.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends NodeCommentFindUniqueArgs>(args: SelectSubset<T, NodeCommentFindUniqueArgs<ExtArgs>>): Prisma__NodeCommentClient<$Result.GetResult<Prisma.$NodeCommentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one NodeComment that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {NodeCommentFindUniqueOrThrowArgs} args - Arguments to find a NodeComment
+     * @example
+     * // Get one NodeComment
+     * const nodeComment = await prisma.nodeComment.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends NodeCommentFindUniqueOrThrowArgs>(args: SelectSubset<T, NodeCommentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__NodeCommentClient<$Result.GetResult<Prisma.$NodeCommentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first NodeComment that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NodeCommentFindFirstArgs} args - Arguments to find a NodeComment
+     * @example
+     * // Get one NodeComment
+     * const nodeComment = await prisma.nodeComment.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends NodeCommentFindFirstArgs>(args?: SelectSubset<T, NodeCommentFindFirstArgs<ExtArgs>>): Prisma__NodeCommentClient<$Result.GetResult<Prisma.$NodeCommentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first NodeComment that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NodeCommentFindFirstOrThrowArgs} args - Arguments to find a NodeComment
+     * @example
+     * // Get one NodeComment
+     * const nodeComment = await prisma.nodeComment.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends NodeCommentFindFirstOrThrowArgs>(args?: SelectSubset<T, NodeCommentFindFirstOrThrowArgs<ExtArgs>>): Prisma__NodeCommentClient<$Result.GetResult<Prisma.$NodeCommentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more NodeComments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NodeCommentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all NodeComments
+     * const nodeComments = await prisma.nodeComment.findMany()
+     * 
+     * // Get first 10 NodeComments
+     * const nodeComments = await prisma.nodeComment.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const nodeCommentWithIdOnly = await prisma.nodeComment.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends NodeCommentFindManyArgs>(args?: SelectSubset<T, NodeCommentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NodeCommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a NodeComment.
+     * @param {NodeCommentCreateArgs} args - Arguments to create a NodeComment.
+     * @example
+     * // Create one NodeComment
+     * const NodeComment = await prisma.nodeComment.create({
+     *   data: {
+     *     // ... data to create a NodeComment
+     *   }
+     * })
+     * 
+     */
+    create<T extends NodeCommentCreateArgs>(args: SelectSubset<T, NodeCommentCreateArgs<ExtArgs>>): Prisma__NodeCommentClient<$Result.GetResult<Prisma.$NodeCommentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many NodeComments.
+     * @param {NodeCommentCreateManyArgs} args - Arguments to create many NodeComments.
+     * @example
+     * // Create many NodeComments
+     * const nodeComment = await prisma.nodeComment.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends NodeCommentCreateManyArgs>(args?: SelectSubset<T, NodeCommentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many NodeComments and returns the data saved in the database.
+     * @param {NodeCommentCreateManyAndReturnArgs} args - Arguments to create many NodeComments.
+     * @example
+     * // Create many NodeComments
+     * const nodeComment = await prisma.nodeComment.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many NodeComments and only return the `id`
+     * const nodeCommentWithIdOnly = await prisma.nodeComment.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends NodeCommentCreateManyAndReturnArgs>(args?: SelectSubset<T, NodeCommentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NodeCommentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a NodeComment.
+     * @param {NodeCommentDeleteArgs} args - Arguments to delete one NodeComment.
+     * @example
+     * // Delete one NodeComment
+     * const NodeComment = await prisma.nodeComment.delete({
+     *   where: {
+     *     // ... filter to delete one NodeComment
+     *   }
+     * })
+     * 
+     */
+    delete<T extends NodeCommentDeleteArgs>(args: SelectSubset<T, NodeCommentDeleteArgs<ExtArgs>>): Prisma__NodeCommentClient<$Result.GetResult<Prisma.$NodeCommentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one NodeComment.
+     * @param {NodeCommentUpdateArgs} args - Arguments to update one NodeComment.
+     * @example
+     * // Update one NodeComment
+     * const nodeComment = await prisma.nodeComment.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends NodeCommentUpdateArgs>(args: SelectSubset<T, NodeCommentUpdateArgs<ExtArgs>>): Prisma__NodeCommentClient<$Result.GetResult<Prisma.$NodeCommentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more NodeComments.
+     * @param {NodeCommentDeleteManyArgs} args - Arguments to filter NodeComments to delete.
+     * @example
+     * // Delete a few NodeComments
+     * const { count } = await prisma.nodeComment.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends NodeCommentDeleteManyArgs>(args?: SelectSubset<T, NodeCommentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more NodeComments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NodeCommentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many NodeComments
+     * const nodeComment = await prisma.nodeComment.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends NodeCommentUpdateManyArgs>(args: SelectSubset<T, NodeCommentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more NodeComments and returns the data updated in the database.
+     * @param {NodeCommentUpdateManyAndReturnArgs} args - Arguments to update many NodeComments.
+     * @example
+     * // Update many NodeComments
+     * const nodeComment = await prisma.nodeComment.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more NodeComments and only return the `id`
+     * const nodeCommentWithIdOnly = await prisma.nodeComment.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends NodeCommentUpdateManyAndReturnArgs>(args: SelectSubset<T, NodeCommentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NodeCommentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one NodeComment.
+     * @param {NodeCommentUpsertArgs} args - Arguments to update or create a NodeComment.
+     * @example
+     * // Update or create a NodeComment
+     * const nodeComment = await prisma.nodeComment.upsert({
+     *   create: {
+     *     // ... data to create a NodeComment
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the NodeComment we want to update
+     *   }
+     * })
+     */
+    upsert<T extends NodeCommentUpsertArgs>(args: SelectSubset<T, NodeCommentUpsertArgs<ExtArgs>>): Prisma__NodeCommentClient<$Result.GetResult<Prisma.$NodeCommentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of NodeComments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NodeCommentCountArgs} args - Arguments to filter NodeComments to count.
+     * @example
+     * // Count the number of NodeComments
+     * const count = await prisma.nodeComment.count({
+     *   where: {
+     *     // ... the filter for the NodeComments we want to count
+     *   }
+     * })
+    **/
+    count<T extends NodeCommentCountArgs>(
+      args?: Subset<T, NodeCommentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], NodeCommentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a NodeComment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NodeCommentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends NodeCommentAggregateArgs>(args: Subset<T, NodeCommentAggregateArgs>): Prisma.PrismaPromise<GetNodeCommentAggregateType<T>>
+
+    /**
+     * Group by NodeComment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NodeCommentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends NodeCommentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: NodeCommentGroupByArgs['orderBy'] }
+        : { orderBy?: NodeCommentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, NodeCommentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetNodeCommentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the NodeComment model
+   */
+  readonly fields: NodeCommentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for NodeComment.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__NodeCommentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    screenNode<T extends ScreenNodeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ScreenNodeDefaultArgs<ExtArgs>>): Prisma__ScreenNodeClient<$Result.GetResult<Prisma.$ScreenNodePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the NodeComment model
+   */
+  interface NodeCommentFieldRefs {
+    readonly id: FieldRef<"NodeComment", 'String'>
+    readonly screenNodeId: FieldRef<"NodeComment", 'String'>
+    readonly body: FieldRef<"NodeComment", 'String'>
+    readonly issueType: FieldRef<"NodeComment", 'IssueType'>
+    readonly status: FieldRef<"NodeComment", 'CommentStatus'>
+    readonly createdById: FieldRef<"NodeComment", 'String'>
+    readonly createdByName: FieldRef<"NodeComment", 'String'>
+    readonly createdAt: FieldRef<"NodeComment", 'DateTime'>
+    readonly updatedAt: FieldRef<"NodeComment", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * NodeComment findUnique
+   */
+  export type NodeCommentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NodeComment
+     */
+    select?: NodeCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NodeComment
+     */
+    omit?: NodeCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NodeCommentInclude<ExtArgs> | null
+    /**
+     * Filter, which NodeComment to fetch.
+     */
+    where: NodeCommentWhereUniqueInput
+  }
+
+  /**
+   * NodeComment findUniqueOrThrow
+   */
+  export type NodeCommentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NodeComment
+     */
+    select?: NodeCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NodeComment
+     */
+    omit?: NodeCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NodeCommentInclude<ExtArgs> | null
+    /**
+     * Filter, which NodeComment to fetch.
+     */
+    where: NodeCommentWhereUniqueInput
+  }
+
+  /**
+   * NodeComment findFirst
+   */
+  export type NodeCommentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NodeComment
+     */
+    select?: NodeCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NodeComment
+     */
+    omit?: NodeCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NodeCommentInclude<ExtArgs> | null
+    /**
+     * Filter, which NodeComment to fetch.
+     */
+    where?: NodeCommentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of NodeComments to fetch.
+     */
+    orderBy?: NodeCommentOrderByWithRelationInput | NodeCommentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for NodeComments.
+     */
+    cursor?: NodeCommentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` NodeComments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` NodeComments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of NodeComments.
+     */
+    distinct?: NodeCommentScalarFieldEnum | NodeCommentScalarFieldEnum[]
+  }
+
+  /**
+   * NodeComment findFirstOrThrow
+   */
+  export type NodeCommentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NodeComment
+     */
+    select?: NodeCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NodeComment
+     */
+    omit?: NodeCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NodeCommentInclude<ExtArgs> | null
+    /**
+     * Filter, which NodeComment to fetch.
+     */
+    where?: NodeCommentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of NodeComments to fetch.
+     */
+    orderBy?: NodeCommentOrderByWithRelationInput | NodeCommentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for NodeComments.
+     */
+    cursor?: NodeCommentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` NodeComments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` NodeComments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of NodeComments.
+     */
+    distinct?: NodeCommentScalarFieldEnum | NodeCommentScalarFieldEnum[]
+  }
+
+  /**
+   * NodeComment findMany
+   */
+  export type NodeCommentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NodeComment
+     */
+    select?: NodeCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NodeComment
+     */
+    omit?: NodeCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NodeCommentInclude<ExtArgs> | null
+    /**
+     * Filter, which NodeComments to fetch.
+     */
+    where?: NodeCommentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of NodeComments to fetch.
+     */
+    orderBy?: NodeCommentOrderByWithRelationInput | NodeCommentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing NodeComments.
+     */
+    cursor?: NodeCommentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` NodeComments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` NodeComments.
+     */
+    skip?: number
+    distinct?: NodeCommentScalarFieldEnum | NodeCommentScalarFieldEnum[]
+  }
+
+  /**
+   * NodeComment create
+   */
+  export type NodeCommentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NodeComment
+     */
+    select?: NodeCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NodeComment
+     */
+    omit?: NodeCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NodeCommentInclude<ExtArgs> | null
+    /**
+     * The data needed to create a NodeComment.
+     */
+    data: XOR<NodeCommentCreateInput, NodeCommentUncheckedCreateInput>
+  }
+
+  /**
+   * NodeComment createMany
+   */
+  export type NodeCommentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many NodeComments.
+     */
+    data: NodeCommentCreateManyInput | NodeCommentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * NodeComment createManyAndReturn
+   */
+  export type NodeCommentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NodeComment
+     */
+    select?: NodeCommentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the NodeComment
+     */
+    omit?: NodeCommentOmit<ExtArgs> | null
+    /**
+     * The data used to create many NodeComments.
+     */
+    data: NodeCommentCreateManyInput | NodeCommentCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NodeCommentIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * NodeComment update
+   */
+  export type NodeCommentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NodeComment
+     */
+    select?: NodeCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NodeComment
+     */
+    omit?: NodeCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NodeCommentInclude<ExtArgs> | null
+    /**
+     * The data needed to update a NodeComment.
+     */
+    data: XOR<NodeCommentUpdateInput, NodeCommentUncheckedUpdateInput>
+    /**
+     * Choose, which NodeComment to update.
+     */
+    where: NodeCommentWhereUniqueInput
+  }
+
+  /**
+   * NodeComment updateMany
+   */
+  export type NodeCommentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update NodeComments.
+     */
+    data: XOR<NodeCommentUpdateManyMutationInput, NodeCommentUncheckedUpdateManyInput>
+    /**
+     * Filter which NodeComments to update
+     */
+    where?: NodeCommentWhereInput
+    /**
+     * Limit how many NodeComments to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * NodeComment updateManyAndReturn
+   */
+  export type NodeCommentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NodeComment
+     */
+    select?: NodeCommentSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the NodeComment
+     */
+    omit?: NodeCommentOmit<ExtArgs> | null
+    /**
+     * The data used to update NodeComments.
+     */
+    data: XOR<NodeCommentUpdateManyMutationInput, NodeCommentUncheckedUpdateManyInput>
+    /**
+     * Filter which NodeComments to update
+     */
+    where?: NodeCommentWhereInput
+    /**
+     * Limit how many NodeComments to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NodeCommentIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * NodeComment upsert
+   */
+  export type NodeCommentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NodeComment
+     */
+    select?: NodeCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NodeComment
+     */
+    omit?: NodeCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NodeCommentInclude<ExtArgs> | null
+    /**
+     * The filter to search for the NodeComment to update in case it exists.
+     */
+    where: NodeCommentWhereUniqueInput
+    /**
+     * In case the NodeComment found by the `where` argument doesn't exist, create a new NodeComment with this data.
+     */
+    create: XOR<NodeCommentCreateInput, NodeCommentUncheckedCreateInput>
+    /**
+     * In case the NodeComment was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<NodeCommentUpdateInput, NodeCommentUncheckedUpdateInput>
+  }
+
+  /**
+   * NodeComment delete
+   */
+  export type NodeCommentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NodeComment
+     */
+    select?: NodeCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NodeComment
+     */
+    omit?: NodeCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NodeCommentInclude<ExtArgs> | null
+    /**
+     * Filter which NodeComment to delete.
+     */
+    where: NodeCommentWhereUniqueInput
+  }
+
+  /**
+   * NodeComment deleteMany
+   */
+  export type NodeCommentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which NodeComments to delete
+     */
+    where?: NodeCommentWhereInput
+    /**
+     * Limit how many NodeComments to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * NodeComment without action
+   */
+  export type NodeCommentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NodeComment
+     */
+    select?: NodeCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NodeComment
+     */
+    omit?: NodeCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NodeCommentInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ExplorationAction
+   */
+
+  export type AggregateExplorationAction = {
+    _count: ExplorationActionCountAggregateOutputType | null
+    _min: ExplorationActionMinAggregateOutputType | null
+    _max: ExplorationActionMaxAggregateOutputType | null
+  }
+
+  export type ExplorationActionMinAggregateOutputType = {
+    id: string | null
+    reviewRunId: string | null
+    type: $Enums.ExplorationActionType | null
+    status: $Enums.ExplorationActionStatus | null
+    fromNodeId: string | null
+    targetNodeId: string | null
+    hotspotKey: string | null
+    targetLabel: string | null
+    resultNodeId: string | null
+    isExistingNode: boolean | null
+    errorMessage: string | null
+    createdAt: Date | null
+    completedAt: Date | null
+  }
+
+  export type ExplorationActionMaxAggregateOutputType = {
+    id: string | null
+    reviewRunId: string | null
+    type: $Enums.ExplorationActionType | null
+    status: $Enums.ExplorationActionStatus | null
+    fromNodeId: string | null
+    targetNodeId: string | null
+    hotspotKey: string | null
+    targetLabel: string | null
+    resultNodeId: string | null
+    isExistingNode: boolean | null
+    errorMessage: string | null
+    createdAt: Date | null
+    completedAt: Date | null
+  }
+
+  export type ExplorationActionCountAggregateOutputType = {
+    id: number
+    reviewRunId: number
+    type: number
+    status: number
+    fromNodeId: number
+    targetNodeId: number
+    hotspotKey: number
+    targetLabel: number
+    targetBounds: number
+    resultNodeId: number
+    isExistingNode: number
+    errorMessage: number
+    createdAt: number
+    completedAt: number
+    _all: number
+  }
+
+
+  export type ExplorationActionMinAggregateInputType = {
+    id?: true
+    reviewRunId?: true
+    type?: true
+    status?: true
+    fromNodeId?: true
+    targetNodeId?: true
+    hotspotKey?: true
+    targetLabel?: true
+    resultNodeId?: true
+    isExistingNode?: true
+    errorMessage?: true
+    createdAt?: true
+    completedAt?: true
+  }
+
+  export type ExplorationActionMaxAggregateInputType = {
+    id?: true
+    reviewRunId?: true
+    type?: true
+    status?: true
+    fromNodeId?: true
+    targetNodeId?: true
+    hotspotKey?: true
+    targetLabel?: true
+    resultNodeId?: true
+    isExistingNode?: true
+    errorMessage?: true
+    createdAt?: true
+    completedAt?: true
+  }
+
+  export type ExplorationActionCountAggregateInputType = {
+    id?: true
+    reviewRunId?: true
+    type?: true
+    status?: true
+    fromNodeId?: true
+    targetNodeId?: true
+    hotspotKey?: true
+    targetLabel?: true
+    targetBounds?: true
+    resultNodeId?: true
+    isExistingNode?: true
+    errorMessage?: true
+    createdAt?: true
+    completedAt?: true
+    _all?: true
+  }
+
+  export type ExplorationActionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ExplorationAction to aggregate.
+     */
+    where?: ExplorationActionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ExplorationActions to fetch.
+     */
+    orderBy?: ExplorationActionOrderByWithRelationInput | ExplorationActionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ExplorationActionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ExplorationActions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ExplorationActions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ExplorationActions
+    **/
+    _count?: true | ExplorationActionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ExplorationActionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ExplorationActionMaxAggregateInputType
+  }
+
+  export type GetExplorationActionAggregateType<T extends ExplorationActionAggregateArgs> = {
+        [P in keyof T & keyof AggregateExplorationAction]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateExplorationAction[P]>
+      : GetScalarType<T[P], AggregateExplorationAction[P]>
+  }
+
+
+
+
+  export type ExplorationActionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ExplorationActionWhereInput
+    orderBy?: ExplorationActionOrderByWithAggregationInput | ExplorationActionOrderByWithAggregationInput[]
+    by: ExplorationActionScalarFieldEnum[] | ExplorationActionScalarFieldEnum
+    having?: ExplorationActionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ExplorationActionCountAggregateInputType | true
+    _min?: ExplorationActionMinAggregateInputType
+    _max?: ExplorationActionMaxAggregateInputType
+  }
+
+  export type ExplorationActionGroupByOutputType = {
+    id: string
+    reviewRunId: string
+    type: $Enums.ExplorationActionType
+    status: $Enums.ExplorationActionStatus
+    fromNodeId: string | null
+    targetNodeId: string | null
+    hotspotKey: string | null
+    targetLabel: string | null
+    targetBounds: JsonValue | null
+    resultNodeId: string | null
+    isExistingNode: boolean
+    errorMessage: string | null
+    createdAt: Date
+    completedAt: Date | null
+    _count: ExplorationActionCountAggregateOutputType | null
+    _min: ExplorationActionMinAggregateOutputType | null
+    _max: ExplorationActionMaxAggregateOutputType | null
+  }
+
+  type GetExplorationActionGroupByPayload<T extends ExplorationActionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ExplorationActionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ExplorationActionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ExplorationActionGroupByOutputType[P]>
+            : GetScalarType<T[P], ExplorationActionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ExplorationActionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    reviewRunId?: boolean
+    type?: boolean
+    status?: boolean
+    fromNodeId?: boolean
+    targetNodeId?: boolean
+    hotspotKey?: boolean
+    targetLabel?: boolean
+    targetBounds?: boolean
+    resultNodeId?: boolean
+    isExistingNode?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+    completedAt?: boolean
+    reviewRun?: boolean | ReviewRunDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["explorationAction"]>
+
+  export type ExplorationActionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    reviewRunId?: boolean
+    type?: boolean
+    status?: boolean
+    fromNodeId?: boolean
+    targetNodeId?: boolean
+    hotspotKey?: boolean
+    targetLabel?: boolean
+    targetBounds?: boolean
+    resultNodeId?: boolean
+    isExistingNode?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+    completedAt?: boolean
+    reviewRun?: boolean | ReviewRunDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["explorationAction"]>
+
+  export type ExplorationActionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    reviewRunId?: boolean
+    type?: boolean
+    status?: boolean
+    fromNodeId?: boolean
+    targetNodeId?: boolean
+    hotspotKey?: boolean
+    targetLabel?: boolean
+    targetBounds?: boolean
+    resultNodeId?: boolean
+    isExistingNode?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+    completedAt?: boolean
+    reviewRun?: boolean | ReviewRunDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["explorationAction"]>
+
+  export type ExplorationActionSelectScalar = {
+    id?: boolean
+    reviewRunId?: boolean
+    type?: boolean
+    status?: boolean
+    fromNodeId?: boolean
+    targetNodeId?: boolean
+    hotspotKey?: boolean
+    targetLabel?: boolean
+    targetBounds?: boolean
+    resultNodeId?: boolean
+    isExistingNode?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+    completedAt?: boolean
+  }
+
+  export type ExplorationActionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "reviewRunId" | "type" | "status" | "fromNodeId" | "targetNodeId" | "hotspotKey" | "targetLabel" | "targetBounds" | "resultNodeId" | "isExistingNode" | "errorMessage" | "createdAt" | "completedAt", ExtArgs["result"]["explorationAction"]>
+  export type ExplorationActionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    reviewRun?: boolean | ReviewRunDefaultArgs<ExtArgs>
+  }
+  export type ExplorationActionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    reviewRun?: boolean | ReviewRunDefaultArgs<ExtArgs>
+  }
+  export type ExplorationActionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    reviewRun?: boolean | ReviewRunDefaultArgs<ExtArgs>
+  }
+
+  export type $ExplorationActionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ExplorationAction"
+    objects: {
+      reviewRun: Prisma.$ReviewRunPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      reviewRunId: string
+      type: $Enums.ExplorationActionType
+      status: $Enums.ExplorationActionStatus
+      fromNodeId: string | null
+      targetNodeId: string | null
+      hotspotKey: string | null
+      targetLabel: string | null
+      targetBounds: Prisma.JsonValue | null
+      resultNodeId: string | null
+      isExistingNode: boolean
+      errorMessage: string | null
+      createdAt: Date
+      completedAt: Date | null
+    }, ExtArgs["result"]["explorationAction"]>
+    composites: {}
+  }
+
+  type ExplorationActionGetPayload<S extends boolean | null | undefined | ExplorationActionDefaultArgs> = $Result.GetResult<Prisma.$ExplorationActionPayload, S>
+
+  type ExplorationActionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ExplorationActionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ExplorationActionCountAggregateInputType | true
+    }
+
+  export interface ExplorationActionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ExplorationAction'], meta: { name: 'ExplorationAction' } }
+    /**
+     * Find zero or one ExplorationAction that matches the filter.
+     * @param {ExplorationActionFindUniqueArgs} args - Arguments to find a ExplorationAction
+     * @example
+     * // Get one ExplorationAction
+     * const explorationAction = await prisma.explorationAction.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ExplorationActionFindUniqueArgs>(args: SelectSubset<T, ExplorationActionFindUniqueArgs<ExtArgs>>): Prisma__ExplorationActionClient<$Result.GetResult<Prisma.$ExplorationActionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ExplorationAction that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ExplorationActionFindUniqueOrThrowArgs} args - Arguments to find a ExplorationAction
+     * @example
+     * // Get one ExplorationAction
+     * const explorationAction = await prisma.explorationAction.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ExplorationActionFindUniqueOrThrowArgs>(args: SelectSubset<T, ExplorationActionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ExplorationActionClient<$Result.GetResult<Prisma.$ExplorationActionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ExplorationAction that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExplorationActionFindFirstArgs} args - Arguments to find a ExplorationAction
+     * @example
+     * // Get one ExplorationAction
+     * const explorationAction = await prisma.explorationAction.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ExplorationActionFindFirstArgs>(args?: SelectSubset<T, ExplorationActionFindFirstArgs<ExtArgs>>): Prisma__ExplorationActionClient<$Result.GetResult<Prisma.$ExplorationActionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ExplorationAction that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExplorationActionFindFirstOrThrowArgs} args - Arguments to find a ExplorationAction
+     * @example
+     * // Get one ExplorationAction
+     * const explorationAction = await prisma.explorationAction.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ExplorationActionFindFirstOrThrowArgs>(args?: SelectSubset<T, ExplorationActionFindFirstOrThrowArgs<ExtArgs>>): Prisma__ExplorationActionClient<$Result.GetResult<Prisma.$ExplorationActionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ExplorationActions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExplorationActionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ExplorationActions
+     * const explorationActions = await prisma.explorationAction.findMany()
+     * 
+     * // Get first 10 ExplorationActions
+     * const explorationActions = await prisma.explorationAction.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const explorationActionWithIdOnly = await prisma.explorationAction.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ExplorationActionFindManyArgs>(args?: SelectSubset<T, ExplorationActionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExplorationActionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ExplorationAction.
+     * @param {ExplorationActionCreateArgs} args - Arguments to create a ExplorationAction.
+     * @example
+     * // Create one ExplorationAction
+     * const ExplorationAction = await prisma.explorationAction.create({
+     *   data: {
+     *     // ... data to create a ExplorationAction
+     *   }
+     * })
+     * 
+     */
+    create<T extends ExplorationActionCreateArgs>(args: SelectSubset<T, ExplorationActionCreateArgs<ExtArgs>>): Prisma__ExplorationActionClient<$Result.GetResult<Prisma.$ExplorationActionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ExplorationActions.
+     * @param {ExplorationActionCreateManyArgs} args - Arguments to create many ExplorationActions.
+     * @example
+     * // Create many ExplorationActions
+     * const explorationAction = await prisma.explorationAction.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ExplorationActionCreateManyArgs>(args?: SelectSubset<T, ExplorationActionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ExplorationActions and returns the data saved in the database.
+     * @param {ExplorationActionCreateManyAndReturnArgs} args - Arguments to create many ExplorationActions.
+     * @example
+     * // Create many ExplorationActions
+     * const explorationAction = await prisma.explorationAction.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ExplorationActions and only return the `id`
+     * const explorationActionWithIdOnly = await prisma.explorationAction.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ExplorationActionCreateManyAndReturnArgs>(args?: SelectSubset<T, ExplorationActionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExplorationActionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ExplorationAction.
+     * @param {ExplorationActionDeleteArgs} args - Arguments to delete one ExplorationAction.
+     * @example
+     * // Delete one ExplorationAction
+     * const ExplorationAction = await prisma.explorationAction.delete({
+     *   where: {
+     *     // ... filter to delete one ExplorationAction
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ExplorationActionDeleteArgs>(args: SelectSubset<T, ExplorationActionDeleteArgs<ExtArgs>>): Prisma__ExplorationActionClient<$Result.GetResult<Prisma.$ExplorationActionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ExplorationAction.
+     * @param {ExplorationActionUpdateArgs} args - Arguments to update one ExplorationAction.
+     * @example
+     * // Update one ExplorationAction
+     * const explorationAction = await prisma.explorationAction.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ExplorationActionUpdateArgs>(args: SelectSubset<T, ExplorationActionUpdateArgs<ExtArgs>>): Prisma__ExplorationActionClient<$Result.GetResult<Prisma.$ExplorationActionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ExplorationActions.
+     * @param {ExplorationActionDeleteManyArgs} args - Arguments to filter ExplorationActions to delete.
+     * @example
+     * // Delete a few ExplorationActions
+     * const { count } = await prisma.explorationAction.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ExplorationActionDeleteManyArgs>(args?: SelectSubset<T, ExplorationActionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ExplorationActions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExplorationActionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ExplorationActions
+     * const explorationAction = await prisma.explorationAction.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ExplorationActionUpdateManyArgs>(args: SelectSubset<T, ExplorationActionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ExplorationActions and returns the data updated in the database.
+     * @param {ExplorationActionUpdateManyAndReturnArgs} args - Arguments to update many ExplorationActions.
+     * @example
+     * // Update many ExplorationActions
+     * const explorationAction = await prisma.explorationAction.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ExplorationActions and only return the `id`
+     * const explorationActionWithIdOnly = await prisma.explorationAction.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ExplorationActionUpdateManyAndReturnArgs>(args: SelectSubset<T, ExplorationActionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExplorationActionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ExplorationAction.
+     * @param {ExplorationActionUpsertArgs} args - Arguments to update or create a ExplorationAction.
+     * @example
+     * // Update or create a ExplorationAction
+     * const explorationAction = await prisma.explorationAction.upsert({
+     *   create: {
+     *     // ... data to create a ExplorationAction
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ExplorationAction we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ExplorationActionUpsertArgs>(args: SelectSubset<T, ExplorationActionUpsertArgs<ExtArgs>>): Prisma__ExplorationActionClient<$Result.GetResult<Prisma.$ExplorationActionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ExplorationActions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExplorationActionCountArgs} args - Arguments to filter ExplorationActions to count.
+     * @example
+     * // Count the number of ExplorationActions
+     * const count = await prisma.explorationAction.count({
+     *   where: {
+     *     // ... the filter for the ExplorationActions we want to count
+     *   }
+     * })
+    **/
+    count<T extends ExplorationActionCountArgs>(
+      args?: Subset<T, ExplorationActionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ExplorationActionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ExplorationAction.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExplorationActionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ExplorationActionAggregateArgs>(args: Subset<T, ExplorationActionAggregateArgs>): Prisma.PrismaPromise<GetExplorationActionAggregateType<T>>
+
+    /**
+     * Group by ExplorationAction.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExplorationActionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ExplorationActionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ExplorationActionGroupByArgs['orderBy'] }
+        : { orderBy?: ExplorationActionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ExplorationActionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetExplorationActionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ExplorationAction model
+   */
+  readonly fields: ExplorationActionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ExplorationAction.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ExplorationActionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    reviewRun<T extends ReviewRunDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ReviewRunDefaultArgs<ExtArgs>>): Prisma__ReviewRunClient<$Result.GetResult<Prisma.$ReviewRunPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ExplorationAction model
+   */
+  interface ExplorationActionFieldRefs {
+    readonly id: FieldRef<"ExplorationAction", 'String'>
+    readonly reviewRunId: FieldRef<"ExplorationAction", 'String'>
+    readonly type: FieldRef<"ExplorationAction", 'ExplorationActionType'>
+    readonly status: FieldRef<"ExplorationAction", 'ExplorationActionStatus'>
+    readonly fromNodeId: FieldRef<"ExplorationAction", 'String'>
+    readonly targetNodeId: FieldRef<"ExplorationAction", 'String'>
+    readonly hotspotKey: FieldRef<"ExplorationAction", 'String'>
+    readonly targetLabel: FieldRef<"ExplorationAction", 'String'>
+    readonly targetBounds: FieldRef<"ExplorationAction", 'Json'>
+    readonly resultNodeId: FieldRef<"ExplorationAction", 'String'>
+    readonly isExistingNode: FieldRef<"ExplorationAction", 'Boolean'>
+    readonly errorMessage: FieldRef<"ExplorationAction", 'String'>
+    readonly createdAt: FieldRef<"ExplorationAction", 'DateTime'>
+    readonly completedAt: FieldRef<"ExplorationAction", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ExplorationAction findUnique
+   */
+  export type ExplorationActionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExplorationAction
+     */
+    select?: ExplorationActionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExplorationAction
+     */
+    omit?: ExplorationActionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExplorationActionInclude<ExtArgs> | null
+    /**
+     * Filter, which ExplorationAction to fetch.
+     */
+    where: ExplorationActionWhereUniqueInput
+  }
+
+  /**
+   * ExplorationAction findUniqueOrThrow
+   */
+  export type ExplorationActionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExplorationAction
+     */
+    select?: ExplorationActionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExplorationAction
+     */
+    omit?: ExplorationActionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExplorationActionInclude<ExtArgs> | null
+    /**
+     * Filter, which ExplorationAction to fetch.
+     */
+    where: ExplorationActionWhereUniqueInput
+  }
+
+  /**
+   * ExplorationAction findFirst
+   */
+  export type ExplorationActionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExplorationAction
+     */
+    select?: ExplorationActionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExplorationAction
+     */
+    omit?: ExplorationActionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExplorationActionInclude<ExtArgs> | null
+    /**
+     * Filter, which ExplorationAction to fetch.
+     */
+    where?: ExplorationActionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ExplorationActions to fetch.
+     */
+    orderBy?: ExplorationActionOrderByWithRelationInput | ExplorationActionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ExplorationActions.
+     */
+    cursor?: ExplorationActionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ExplorationActions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ExplorationActions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ExplorationActions.
+     */
+    distinct?: ExplorationActionScalarFieldEnum | ExplorationActionScalarFieldEnum[]
+  }
+
+  /**
+   * ExplorationAction findFirstOrThrow
+   */
+  export type ExplorationActionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExplorationAction
+     */
+    select?: ExplorationActionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExplorationAction
+     */
+    omit?: ExplorationActionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExplorationActionInclude<ExtArgs> | null
+    /**
+     * Filter, which ExplorationAction to fetch.
+     */
+    where?: ExplorationActionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ExplorationActions to fetch.
+     */
+    orderBy?: ExplorationActionOrderByWithRelationInput | ExplorationActionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ExplorationActions.
+     */
+    cursor?: ExplorationActionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ExplorationActions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ExplorationActions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ExplorationActions.
+     */
+    distinct?: ExplorationActionScalarFieldEnum | ExplorationActionScalarFieldEnum[]
+  }
+
+  /**
+   * ExplorationAction findMany
+   */
+  export type ExplorationActionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExplorationAction
+     */
+    select?: ExplorationActionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExplorationAction
+     */
+    omit?: ExplorationActionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExplorationActionInclude<ExtArgs> | null
+    /**
+     * Filter, which ExplorationActions to fetch.
+     */
+    where?: ExplorationActionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ExplorationActions to fetch.
+     */
+    orderBy?: ExplorationActionOrderByWithRelationInput | ExplorationActionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ExplorationActions.
+     */
+    cursor?: ExplorationActionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ExplorationActions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ExplorationActions.
+     */
+    skip?: number
+    distinct?: ExplorationActionScalarFieldEnum | ExplorationActionScalarFieldEnum[]
+  }
+
+  /**
+   * ExplorationAction create
+   */
+  export type ExplorationActionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExplorationAction
+     */
+    select?: ExplorationActionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExplorationAction
+     */
+    omit?: ExplorationActionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExplorationActionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ExplorationAction.
+     */
+    data: XOR<ExplorationActionCreateInput, ExplorationActionUncheckedCreateInput>
+  }
+
+  /**
+   * ExplorationAction createMany
+   */
+  export type ExplorationActionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ExplorationActions.
+     */
+    data: ExplorationActionCreateManyInput | ExplorationActionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ExplorationAction createManyAndReturn
+   */
+  export type ExplorationActionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExplorationAction
+     */
+    select?: ExplorationActionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExplorationAction
+     */
+    omit?: ExplorationActionOmit<ExtArgs> | null
+    /**
+     * The data used to create many ExplorationActions.
+     */
+    data: ExplorationActionCreateManyInput | ExplorationActionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExplorationActionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ExplorationAction update
+   */
+  export type ExplorationActionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExplorationAction
+     */
+    select?: ExplorationActionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExplorationAction
+     */
+    omit?: ExplorationActionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExplorationActionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ExplorationAction.
+     */
+    data: XOR<ExplorationActionUpdateInput, ExplorationActionUncheckedUpdateInput>
+    /**
+     * Choose, which ExplorationAction to update.
+     */
+    where: ExplorationActionWhereUniqueInput
+  }
+
+  /**
+   * ExplorationAction updateMany
+   */
+  export type ExplorationActionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ExplorationActions.
+     */
+    data: XOR<ExplorationActionUpdateManyMutationInput, ExplorationActionUncheckedUpdateManyInput>
+    /**
+     * Filter which ExplorationActions to update
+     */
+    where?: ExplorationActionWhereInput
+    /**
+     * Limit how many ExplorationActions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ExplorationAction updateManyAndReturn
+   */
+  export type ExplorationActionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExplorationAction
+     */
+    select?: ExplorationActionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExplorationAction
+     */
+    omit?: ExplorationActionOmit<ExtArgs> | null
+    /**
+     * The data used to update ExplorationActions.
+     */
+    data: XOR<ExplorationActionUpdateManyMutationInput, ExplorationActionUncheckedUpdateManyInput>
+    /**
+     * Filter which ExplorationActions to update
+     */
+    where?: ExplorationActionWhereInput
+    /**
+     * Limit how many ExplorationActions to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExplorationActionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ExplorationAction upsert
+   */
+  export type ExplorationActionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExplorationAction
+     */
+    select?: ExplorationActionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExplorationAction
+     */
+    omit?: ExplorationActionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExplorationActionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ExplorationAction to update in case it exists.
+     */
+    where: ExplorationActionWhereUniqueInput
+    /**
+     * In case the ExplorationAction found by the `where` argument doesn't exist, create a new ExplorationAction with this data.
+     */
+    create: XOR<ExplorationActionCreateInput, ExplorationActionUncheckedCreateInput>
+    /**
+     * In case the ExplorationAction was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ExplorationActionUpdateInput, ExplorationActionUncheckedUpdateInput>
+  }
+
+  /**
+   * ExplorationAction delete
+   */
+  export type ExplorationActionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExplorationAction
+     */
+    select?: ExplorationActionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExplorationAction
+     */
+    omit?: ExplorationActionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExplorationActionInclude<ExtArgs> | null
+    /**
+     * Filter which ExplorationAction to delete.
+     */
+    where: ExplorationActionWhereUniqueInput
+  }
+
+  /**
+   * ExplorationAction deleteMany
+   */
+  export type ExplorationActionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ExplorationActions to delete
+     */
+    where?: ExplorationActionWhereInput
+    /**
+     * Limit how many ExplorationActions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ExplorationAction without action
+   */
+  export type ExplorationActionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExplorationAction
+     */
+    select?: ExplorationActionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExplorationAction
+     */
+    omit?: ExplorationActionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExplorationActionInclude<ExtArgs> | null
   }
 
 
@@ -13157,6 +15848,7 @@ export namespace Prisma {
     maxDepth: 'maxDepth',
     maxNodes: 'maxNodes',
     maxTapsPerScreen: 'maxTapsPerScreen',
+    currentNodeId: 'currentNodeId',
     startedAt: 'startedAt',
     completedAt: 'completedAt',
     errorMessage: 'errorMessage',
@@ -13173,6 +15865,11 @@ export namespace Prisma {
     screenshotPath: 'screenshotPath',
     activityName: 'activityName',
     stateName: 'stateName',
+    name: 'name',
+    flowName: 'flowName',
+    nodeType: 'nodeType',
+    positionX: 'positionX',
+    positionY: 'positionY',
     uiTreeJson: 'uiTreeJson',
     depth: 'depth',
     hash: 'hash',
@@ -13196,6 +15893,41 @@ export namespace Prisma {
   };
 
   export type ScreenEdgeScalarFieldEnum = (typeof ScreenEdgeScalarFieldEnum)[keyof typeof ScreenEdgeScalarFieldEnum]
+
+
+  export const NodeCommentScalarFieldEnum: {
+    id: 'id',
+    screenNodeId: 'screenNodeId',
+    body: 'body',
+    issueType: 'issueType',
+    status: 'status',
+    createdById: 'createdById',
+    createdByName: 'createdByName',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type NodeCommentScalarFieldEnum = (typeof NodeCommentScalarFieldEnum)[keyof typeof NodeCommentScalarFieldEnum]
+
+
+  export const ExplorationActionScalarFieldEnum: {
+    id: 'id',
+    reviewRunId: 'reviewRunId',
+    type: 'type',
+    status: 'status',
+    fromNodeId: 'fromNodeId',
+    targetNodeId: 'targetNodeId',
+    hotspotKey: 'hotspotKey',
+    targetLabel: 'targetLabel',
+    targetBounds: 'targetBounds',
+    resultNodeId: 'resultNodeId',
+    isExistingNode: 'isExistingNode',
+    errorMessage: 'errorMessage',
+    createdAt: 'createdAt',
+    completedAt: 'completedAt'
+  };
+
+  export type ExplorationActionScalarFieldEnum = (typeof ExplorationActionScalarFieldEnum)[keyof typeof ExplorationActionScalarFieldEnum]
 
 
   export const AccountScalarFieldEnum: {
@@ -13350,6 +16082,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Json'
    */
   export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
@@ -13364,16 +16110,65 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Float'
+   * Reference to a field of type 'IssueType'
    */
-  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+  export type EnumIssueTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'IssueType'>
     
 
 
   /**
-   * Reference to a field of type 'Float[]'
+   * Reference to a field of type 'IssueType[]'
    */
-  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+  export type ListEnumIssueTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'IssueType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'CommentStatus'
+   */
+  export type EnumCommentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CommentStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'CommentStatus[]'
+   */
+  export type ListEnumCommentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CommentStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ExplorationActionType'
+   */
+  export type EnumExplorationActionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ExplorationActionType'>
+    
+
+
+  /**
+   * Reference to a field of type 'ExplorationActionType[]'
+   */
+  export type ListEnumExplorationActionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ExplorationActionType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ExplorationActionStatus'
+   */
+  export type EnumExplorationActionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ExplorationActionStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'ExplorationActionStatus[]'
+   */
+  export type ListEnumExplorationActionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ExplorationActionStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
   /**
    * Deep Input Types
@@ -13570,6 +16365,7 @@ export namespace Prisma {
     maxDepth?: IntFilter<"ReviewRun"> | number
     maxNodes?: IntFilter<"ReviewRun"> | number
     maxTapsPerScreen?: IntFilter<"ReviewRun"> | number
+    currentNodeId?: StringNullableFilter<"ReviewRun"> | string | null
     startedAt?: DateTimeNullableFilter<"ReviewRun"> | Date | string | null
     completedAt?: DateTimeNullableFilter<"ReviewRun"> | Date | string | null
     errorMessage?: StringNullableFilter<"ReviewRun"> | string | null
@@ -13578,6 +16374,7 @@ export namespace Prisma {
     apkBuild?: XOR<ApkBuildScalarRelationFilter, ApkBuildWhereInput>
     nodes?: ScreenNodeListRelationFilter
     edges?: ScreenEdgeListRelationFilter
+    actions?: ExplorationActionListRelationFilter
   }
 
   export type ReviewRunOrderByWithRelationInput = {
@@ -13587,6 +16384,7 @@ export namespace Prisma {
     maxDepth?: SortOrder
     maxNodes?: SortOrder
     maxTapsPerScreen?: SortOrder
+    currentNodeId?: SortOrderInput | SortOrder
     startedAt?: SortOrderInput | SortOrder
     completedAt?: SortOrderInput | SortOrder
     errorMessage?: SortOrderInput | SortOrder
@@ -13595,6 +16393,7 @@ export namespace Prisma {
     apkBuild?: ApkBuildOrderByWithRelationInput
     nodes?: ScreenNodeOrderByRelationAggregateInput
     edges?: ScreenEdgeOrderByRelationAggregateInput
+    actions?: ExplorationActionOrderByRelationAggregateInput
   }
 
   export type ReviewRunWhereUniqueInput = Prisma.AtLeast<{
@@ -13607,6 +16406,7 @@ export namespace Prisma {
     maxDepth?: IntFilter<"ReviewRun"> | number
     maxNodes?: IntFilter<"ReviewRun"> | number
     maxTapsPerScreen?: IntFilter<"ReviewRun"> | number
+    currentNodeId?: StringNullableFilter<"ReviewRun"> | string | null
     startedAt?: DateTimeNullableFilter<"ReviewRun"> | Date | string | null
     completedAt?: DateTimeNullableFilter<"ReviewRun"> | Date | string | null
     errorMessage?: StringNullableFilter<"ReviewRun"> | string | null
@@ -13615,6 +16415,7 @@ export namespace Prisma {
     apkBuild?: XOR<ApkBuildScalarRelationFilter, ApkBuildWhereInput>
     nodes?: ScreenNodeListRelationFilter
     edges?: ScreenEdgeListRelationFilter
+    actions?: ExplorationActionListRelationFilter
   }, "id">
 
   export type ReviewRunOrderByWithAggregationInput = {
@@ -13624,6 +16425,7 @@ export namespace Prisma {
     maxDepth?: SortOrder
     maxNodes?: SortOrder
     maxTapsPerScreen?: SortOrder
+    currentNodeId?: SortOrderInput | SortOrder
     startedAt?: SortOrderInput | SortOrder
     completedAt?: SortOrderInput | SortOrder
     errorMessage?: SortOrderInput | SortOrder
@@ -13646,6 +16448,7 @@ export namespace Prisma {
     maxDepth?: IntWithAggregatesFilter<"ReviewRun"> | number
     maxNodes?: IntWithAggregatesFilter<"ReviewRun"> | number
     maxTapsPerScreen?: IntWithAggregatesFilter<"ReviewRun"> | number
+    currentNodeId?: StringNullableWithAggregatesFilter<"ReviewRun"> | string | null
     startedAt?: DateTimeNullableWithAggregatesFilter<"ReviewRun"> | Date | string | null
     completedAt?: DateTimeNullableWithAggregatesFilter<"ReviewRun"> | Date | string | null
     errorMessage?: StringNullableWithAggregatesFilter<"ReviewRun"> | string | null
@@ -13662,6 +16465,11 @@ export namespace Prisma {
     screenshotPath?: StringFilter<"ScreenNode"> | string
     activityName?: StringNullableFilter<"ScreenNode"> | string | null
     stateName?: StringNullableFilter<"ScreenNode"> | string | null
+    name?: StringNullableFilter<"ScreenNode"> | string | null
+    flowName?: StringNullableFilter<"ScreenNode"> | string | null
+    nodeType?: StringNullableFilter<"ScreenNode"> | string | null
+    positionX?: FloatNullableFilter<"ScreenNode"> | number | null
+    positionY?: FloatNullableFilter<"ScreenNode"> | number | null
     uiTreeJson?: JsonNullableFilter<"ScreenNode">
     depth?: IntFilter<"ScreenNode"> | number
     hash?: StringFilter<"ScreenNode"> | string
@@ -13670,6 +16478,7 @@ export namespace Prisma {
     reviewRun?: XOR<ReviewRunScalarRelationFilter, ReviewRunWhereInput>
     outgoingEdges?: ScreenEdgeListRelationFilter
     incomingEdges?: ScreenEdgeListRelationFilter
+    comments?: NodeCommentListRelationFilter
   }
 
   export type ScreenNodeOrderByWithRelationInput = {
@@ -13678,6 +16487,11 @@ export namespace Prisma {
     screenshotPath?: SortOrder
     activityName?: SortOrderInput | SortOrder
     stateName?: SortOrderInput | SortOrder
+    name?: SortOrderInput | SortOrder
+    flowName?: SortOrderInput | SortOrder
+    nodeType?: SortOrderInput | SortOrder
+    positionX?: SortOrderInput | SortOrder
+    positionY?: SortOrderInput | SortOrder
     uiTreeJson?: SortOrderInput | SortOrder
     depth?: SortOrder
     hash?: SortOrder
@@ -13686,6 +16500,7 @@ export namespace Prisma {
     reviewRun?: ReviewRunOrderByWithRelationInput
     outgoingEdges?: ScreenEdgeOrderByRelationAggregateInput
     incomingEdges?: ScreenEdgeOrderByRelationAggregateInput
+    comments?: NodeCommentOrderByRelationAggregateInput
   }
 
   export type ScreenNodeWhereUniqueInput = Prisma.AtLeast<{
@@ -13697,6 +16512,11 @@ export namespace Prisma {
     screenshotPath?: StringFilter<"ScreenNode"> | string
     activityName?: StringNullableFilter<"ScreenNode"> | string | null
     stateName?: StringNullableFilter<"ScreenNode"> | string | null
+    name?: StringNullableFilter<"ScreenNode"> | string | null
+    flowName?: StringNullableFilter<"ScreenNode"> | string | null
+    nodeType?: StringNullableFilter<"ScreenNode"> | string | null
+    positionX?: FloatNullableFilter<"ScreenNode"> | number | null
+    positionY?: FloatNullableFilter<"ScreenNode"> | number | null
     uiTreeJson?: JsonNullableFilter<"ScreenNode">
     depth?: IntFilter<"ScreenNode"> | number
     hash?: StringFilter<"ScreenNode"> | string
@@ -13705,6 +16525,7 @@ export namespace Prisma {
     reviewRun?: XOR<ReviewRunScalarRelationFilter, ReviewRunWhereInput>
     outgoingEdges?: ScreenEdgeListRelationFilter
     incomingEdges?: ScreenEdgeListRelationFilter
+    comments?: NodeCommentListRelationFilter
   }, "id">
 
   export type ScreenNodeOrderByWithAggregationInput = {
@@ -13713,6 +16534,11 @@ export namespace Prisma {
     screenshotPath?: SortOrder
     activityName?: SortOrderInput | SortOrder
     stateName?: SortOrderInput | SortOrder
+    name?: SortOrderInput | SortOrder
+    flowName?: SortOrderInput | SortOrder
+    nodeType?: SortOrderInput | SortOrder
+    positionX?: SortOrderInput | SortOrder
+    positionY?: SortOrderInput | SortOrder
     uiTreeJson?: SortOrderInput | SortOrder
     depth?: SortOrder
     hash?: SortOrder
@@ -13734,6 +16560,11 @@ export namespace Prisma {
     screenshotPath?: StringWithAggregatesFilter<"ScreenNode"> | string
     activityName?: StringNullableWithAggregatesFilter<"ScreenNode"> | string | null
     stateName?: StringNullableWithAggregatesFilter<"ScreenNode"> | string | null
+    name?: StringNullableWithAggregatesFilter<"ScreenNode"> | string | null
+    flowName?: StringNullableWithAggregatesFilter<"ScreenNode"> | string | null
+    nodeType?: StringNullableWithAggregatesFilter<"ScreenNode"> | string | null
+    positionX?: FloatNullableWithAggregatesFilter<"ScreenNode"> | number | null
+    positionY?: FloatNullableWithAggregatesFilter<"ScreenNode"> | number | null
     uiTreeJson?: JsonNullableWithAggregatesFilter<"ScreenNode">
     depth?: IntWithAggregatesFilter<"ScreenNode"> | number
     hash?: StringWithAggregatesFilter<"ScreenNode"> | string
@@ -13820,6 +16651,181 @@ export namespace Prisma {
     targetText?: StringNullableWithAggregatesFilter<"ScreenEdge"> | string | null
     targetBounds?: JsonNullableWithAggregatesFilter<"ScreenEdge">
     createdAt?: DateTimeWithAggregatesFilter<"ScreenEdge"> | Date | string
+  }
+
+  export type NodeCommentWhereInput = {
+    AND?: NodeCommentWhereInput | NodeCommentWhereInput[]
+    OR?: NodeCommentWhereInput[]
+    NOT?: NodeCommentWhereInput | NodeCommentWhereInput[]
+    id?: StringFilter<"NodeComment"> | string
+    screenNodeId?: StringFilter<"NodeComment"> | string
+    body?: StringFilter<"NodeComment"> | string
+    issueType?: EnumIssueTypeNullableFilter<"NodeComment"> | $Enums.IssueType | null
+    status?: EnumCommentStatusFilter<"NodeComment"> | $Enums.CommentStatus
+    createdById?: StringNullableFilter<"NodeComment"> | string | null
+    createdByName?: StringNullableFilter<"NodeComment"> | string | null
+    createdAt?: DateTimeFilter<"NodeComment"> | Date | string
+    updatedAt?: DateTimeFilter<"NodeComment"> | Date | string
+    screenNode?: XOR<ScreenNodeScalarRelationFilter, ScreenNodeWhereInput>
+  }
+
+  export type NodeCommentOrderByWithRelationInput = {
+    id?: SortOrder
+    screenNodeId?: SortOrder
+    body?: SortOrder
+    issueType?: SortOrderInput | SortOrder
+    status?: SortOrder
+    createdById?: SortOrderInput | SortOrder
+    createdByName?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    screenNode?: ScreenNodeOrderByWithRelationInput
+  }
+
+  export type NodeCommentWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: NodeCommentWhereInput | NodeCommentWhereInput[]
+    OR?: NodeCommentWhereInput[]
+    NOT?: NodeCommentWhereInput | NodeCommentWhereInput[]
+    screenNodeId?: StringFilter<"NodeComment"> | string
+    body?: StringFilter<"NodeComment"> | string
+    issueType?: EnumIssueTypeNullableFilter<"NodeComment"> | $Enums.IssueType | null
+    status?: EnumCommentStatusFilter<"NodeComment"> | $Enums.CommentStatus
+    createdById?: StringNullableFilter<"NodeComment"> | string | null
+    createdByName?: StringNullableFilter<"NodeComment"> | string | null
+    createdAt?: DateTimeFilter<"NodeComment"> | Date | string
+    updatedAt?: DateTimeFilter<"NodeComment"> | Date | string
+    screenNode?: XOR<ScreenNodeScalarRelationFilter, ScreenNodeWhereInput>
+  }, "id">
+
+  export type NodeCommentOrderByWithAggregationInput = {
+    id?: SortOrder
+    screenNodeId?: SortOrder
+    body?: SortOrder
+    issueType?: SortOrderInput | SortOrder
+    status?: SortOrder
+    createdById?: SortOrderInput | SortOrder
+    createdByName?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: NodeCommentCountOrderByAggregateInput
+    _max?: NodeCommentMaxOrderByAggregateInput
+    _min?: NodeCommentMinOrderByAggregateInput
+  }
+
+  export type NodeCommentScalarWhereWithAggregatesInput = {
+    AND?: NodeCommentScalarWhereWithAggregatesInput | NodeCommentScalarWhereWithAggregatesInput[]
+    OR?: NodeCommentScalarWhereWithAggregatesInput[]
+    NOT?: NodeCommentScalarWhereWithAggregatesInput | NodeCommentScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"NodeComment"> | string
+    screenNodeId?: StringWithAggregatesFilter<"NodeComment"> | string
+    body?: StringWithAggregatesFilter<"NodeComment"> | string
+    issueType?: EnumIssueTypeNullableWithAggregatesFilter<"NodeComment"> | $Enums.IssueType | null
+    status?: EnumCommentStatusWithAggregatesFilter<"NodeComment"> | $Enums.CommentStatus
+    createdById?: StringNullableWithAggregatesFilter<"NodeComment"> | string | null
+    createdByName?: StringNullableWithAggregatesFilter<"NodeComment"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"NodeComment"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"NodeComment"> | Date | string
+  }
+
+  export type ExplorationActionWhereInput = {
+    AND?: ExplorationActionWhereInput | ExplorationActionWhereInput[]
+    OR?: ExplorationActionWhereInput[]
+    NOT?: ExplorationActionWhereInput | ExplorationActionWhereInput[]
+    id?: StringFilter<"ExplorationAction"> | string
+    reviewRunId?: StringFilter<"ExplorationAction"> | string
+    type?: EnumExplorationActionTypeFilter<"ExplorationAction"> | $Enums.ExplorationActionType
+    status?: EnumExplorationActionStatusFilter<"ExplorationAction"> | $Enums.ExplorationActionStatus
+    fromNodeId?: StringNullableFilter<"ExplorationAction"> | string | null
+    targetNodeId?: StringNullableFilter<"ExplorationAction"> | string | null
+    hotspotKey?: StringNullableFilter<"ExplorationAction"> | string | null
+    targetLabel?: StringNullableFilter<"ExplorationAction"> | string | null
+    targetBounds?: JsonNullableFilter<"ExplorationAction">
+    resultNodeId?: StringNullableFilter<"ExplorationAction"> | string | null
+    isExistingNode?: BoolFilter<"ExplorationAction"> | boolean
+    errorMessage?: StringNullableFilter<"ExplorationAction"> | string | null
+    createdAt?: DateTimeFilter<"ExplorationAction"> | Date | string
+    completedAt?: DateTimeNullableFilter<"ExplorationAction"> | Date | string | null
+    reviewRun?: XOR<ReviewRunScalarRelationFilter, ReviewRunWhereInput>
+  }
+
+  export type ExplorationActionOrderByWithRelationInput = {
+    id?: SortOrder
+    reviewRunId?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    fromNodeId?: SortOrderInput | SortOrder
+    targetNodeId?: SortOrderInput | SortOrder
+    hotspotKey?: SortOrderInput | SortOrder
+    targetLabel?: SortOrderInput | SortOrder
+    targetBounds?: SortOrderInput | SortOrder
+    resultNodeId?: SortOrderInput | SortOrder
+    isExistingNode?: SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    reviewRun?: ReviewRunOrderByWithRelationInput
+  }
+
+  export type ExplorationActionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ExplorationActionWhereInput | ExplorationActionWhereInput[]
+    OR?: ExplorationActionWhereInput[]
+    NOT?: ExplorationActionWhereInput | ExplorationActionWhereInput[]
+    reviewRunId?: StringFilter<"ExplorationAction"> | string
+    type?: EnumExplorationActionTypeFilter<"ExplorationAction"> | $Enums.ExplorationActionType
+    status?: EnumExplorationActionStatusFilter<"ExplorationAction"> | $Enums.ExplorationActionStatus
+    fromNodeId?: StringNullableFilter<"ExplorationAction"> | string | null
+    targetNodeId?: StringNullableFilter<"ExplorationAction"> | string | null
+    hotspotKey?: StringNullableFilter<"ExplorationAction"> | string | null
+    targetLabel?: StringNullableFilter<"ExplorationAction"> | string | null
+    targetBounds?: JsonNullableFilter<"ExplorationAction">
+    resultNodeId?: StringNullableFilter<"ExplorationAction"> | string | null
+    isExistingNode?: BoolFilter<"ExplorationAction"> | boolean
+    errorMessage?: StringNullableFilter<"ExplorationAction"> | string | null
+    createdAt?: DateTimeFilter<"ExplorationAction"> | Date | string
+    completedAt?: DateTimeNullableFilter<"ExplorationAction"> | Date | string | null
+    reviewRun?: XOR<ReviewRunScalarRelationFilter, ReviewRunWhereInput>
+  }, "id">
+
+  export type ExplorationActionOrderByWithAggregationInput = {
+    id?: SortOrder
+    reviewRunId?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    fromNodeId?: SortOrderInput | SortOrder
+    targetNodeId?: SortOrderInput | SortOrder
+    hotspotKey?: SortOrderInput | SortOrder
+    targetLabel?: SortOrderInput | SortOrder
+    targetBounds?: SortOrderInput | SortOrder
+    resultNodeId?: SortOrderInput | SortOrder
+    isExistingNode?: SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    _count?: ExplorationActionCountOrderByAggregateInput
+    _max?: ExplorationActionMaxOrderByAggregateInput
+    _min?: ExplorationActionMinOrderByAggregateInput
+  }
+
+  export type ExplorationActionScalarWhereWithAggregatesInput = {
+    AND?: ExplorationActionScalarWhereWithAggregatesInput | ExplorationActionScalarWhereWithAggregatesInput[]
+    OR?: ExplorationActionScalarWhereWithAggregatesInput[]
+    NOT?: ExplorationActionScalarWhereWithAggregatesInput | ExplorationActionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ExplorationAction"> | string
+    reviewRunId?: StringWithAggregatesFilter<"ExplorationAction"> | string
+    type?: EnumExplorationActionTypeWithAggregatesFilter<"ExplorationAction"> | $Enums.ExplorationActionType
+    status?: EnumExplorationActionStatusWithAggregatesFilter<"ExplorationAction"> | $Enums.ExplorationActionStatus
+    fromNodeId?: StringNullableWithAggregatesFilter<"ExplorationAction"> | string | null
+    targetNodeId?: StringNullableWithAggregatesFilter<"ExplorationAction"> | string | null
+    hotspotKey?: StringNullableWithAggregatesFilter<"ExplorationAction"> | string | null
+    targetLabel?: StringNullableWithAggregatesFilter<"ExplorationAction"> | string | null
+    targetBounds?: JsonNullableWithAggregatesFilter<"ExplorationAction">
+    resultNodeId?: StringNullableWithAggregatesFilter<"ExplorationAction"> | string | null
+    isExistingNode?: BoolWithAggregatesFilter<"ExplorationAction"> | boolean
+    errorMessage?: StringNullableWithAggregatesFilter<"ExplorationAction"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ExplorationAction"> | Date | string
+    completedAt?: DateTimeNullableWithAggregatesFilter<"ExplorationAction"> | Date | string | null
   }
 
   export type AccountWhereInput = {
@@ -14265,6 +17271,7 @@ export namespace Prisma {
     maxDepth?: number
     maxNodes?: number
     maxTapsPerScreen?: number
+    currentNodeId?: string | null
     startedAt?: Date | string | null
     completedAt?: Date | string | null
     errorMessage?: string | null
@@ -14273,6 +17280,7 @@ export namespace Prisma {
     apkBuild: ApkBuildCreateNestedOneWithoutRunsInput
     nodes?: ScreenNodeCreateNestedManyWithoutReviewRunInput
     edges?: ScreenEdgeCreateNestedManyWithoutReviewRunInput
+    actions?: ExplorationActionCreateNestedManyWithoutReviewRunInput
   }
 
   export type ReviewRunUncheckedCreateInput = {
@@ -14282,6 +17290,7 @@ export namespace Prisma {
     maxDepth?: number
     maxNodes?: number
     maxTapsPerScreen?: number
+    currentNodeId?: string | null
     startedAt?: Date | string | null
     completedAt?: Date | string | null
     errorMessage?: string | null
@@ -14289,6 +17298,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     nodes?: ScreenNodeUncheckedCreateNestedManyWithoutReviewRunInput
     edges?: ScreenEdgeUncheckedCreateNestedManyWithoutReviewRunInput
+    actions?: ExplorationActionUncheckedCreateNestedManyWithoutReviewRunInput
   }
 
   export type ReviewRunUpdateInput = {
@@ -14297,6 +17307,7 @@ export namespace Prisma {
     maxDepth?: IntFieldUpdateOperationsInput | number
     maxNodes?: IntFieldUpdateOperationsInput | number
     maxTapsPerScreen?: IntFieldUpdateOperationsInput | number
+    currentNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14305,6 +17316,7 @@ export namespace Prisma {
     apkBuild?: ApkBuildUpdateOneRequiredWithoutRunsNestedInput
     nodes?: ScreenNodeUpdateManyWithoutReviewRunNestedInput
     edges?: ScreenEdgeUpdateManyWithoutReviewRunNestedInput
+    actions?: ExplorationActionUpdateManyWithoutReviewRunNestedInput
   }
 
   export type ReviewRunUncheckedUpdateInput = {
@@ -14314,6 +17326,7 @@ export namespace Prisma {
     maxDepth?: IntFieldUpdateOperationsInput | number
     maxNodes?: IntFieldUpdateOperationsInput | number
     maxTapsPerScreen?: IntFieldUpdateOperationsInput | number
+    currentNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14321,6 +17334,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     nodes?: ScreenNodeUncheckedUpdateManyWithoutReviewRunNestedInput
     edges?: ScreenEdgeUncheckedUpdateManyWithoutReviewRunNestedInput
+    actions?: ExplorationActionUncheckedUpdateManyWithoutReviewRunNestedInput
   }
 
   export type ReviewRunCreateManyInput = {
@@ -14330,6 +17344,7 @@ export namespace Prisma {
     maxDepth?: number
     maxNodes?: number
     maxTapsPerScreen?: number
+    currentNodeId?: string | null
     startedAt?: Date | string | null
     completedAt?: Date | string | null
     errorMessage?: string | null
@@ -14343,6 +17358,7 @@ export namespace Prisma {
     maxDepth?: IntFieldUpdateOperationsInput | number
     maxNodes?: IntFieldUpdateOperationsInput | number
     maxTapsPerScreen?: IntFieldUpdateOperationsInput | number
+    currentNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14357,6 +17373,7 @@ export namespace Prisma {
     maxDepth?: IntFieldUpdateOperationsInput | number
     maxNodes?: IntFieldUpdateOperationsInput | number
     maxTapsPerScreen?: IntFieldUpdateOperationsInput | number
+    currentNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14369,6 +17386,11 @@ export namespace Prisma {
     screenshotPath: string
     activityName?: string | null
     stateName?: string | null
+    name?: string | null
+    flowName?: string | null
+    nodeType?: string | null
+    positionX?: number | null
+    positionY?: number | null
     uiTreeJson?: NullableJsonNullValueInput | InputJsonValue
     depth: number
     hash: string
@@ -14377,6 +17399,7 @@ export namespace Prisma {
     reviewRun: ReviewRunCreateNestedOneWithoutNodesInput
     outgoingEdges?: ScreenEdgeCreateNestedManyWithoutFromNodeInput
     incomingEdges?: ScreenEdgeCreateNestedManyWithoutToNodeInput
+    comments?: NodeCommentCreateNestedManyWithoutScreenNodeInput
   }
 
   export type ScreenNodeUncheckedCreateInput = {
@@ -14385,6 +17408,11 @@ export namespace Prisma {
     screenshotPath: string
     activityName?: string | null
     stateName?: string | null
+    name?: string | null
+    flowName?: string | null
+    nodeType?: string | null
+    positionX?: number | null
+    positionY?: number | null
     uiTreeJson?: NullableJsonNullValueInput | InputJsonValue
     depth: number
     hash: string
@@ -14392,6 +17420,7 @@ export namespace Prisma {
     createdAt?: Date | string
     outgoingEdges?: ScreenEdgeUncheckedCreateNestedManyWithoutFromNodeInput
     incomingEdges?: ScreenEdgeUncheckedCreateNestedManyWithoutToNodeInput
+    comments?: NodeCommentUncheckedCreateNestedManyWithoutScreenNodeInput
   }
 
   export type ScreenNodeUpdateInput = {
@@ -14399,6 +17428,11 @@ export namespace Prisma {
     screenshotPath?: StringFieldUpdateOperationsInput | string
     activityName?: NullableStringFieldUpdateOperationsInput | string | null
     stateName?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    flowName?: NullableStringFieldUpdateOperationsInput | string | null
+    nodeType?: NullableStringFieldUpdateOperationsInput | string | null
+    positionX?: NullableFloatFieldUpdateOperationsInput | number | null
+    positionY?: NullableFloatFieldUpdateOperationsInput | number | null
     uiTreeJson?: NullableJsonNullValueInput | InputJsonValue
     depth?: IntFieldUpdateOperationsInput | number
     hash?: StringFieldUpdateOperationsInput | string
@@ -14407,6 +17441,7 @@ export namespace Prisma {
     reviewRun?: ReviewRunUpdateOneRequiredWithoutNodesNestedInput
     outgoingEdges?: ScreenEdgeUpdateManyWithoutFromNodeNestedInput
     incomingEdges?: ScreenEdgeUpdateManyWithoutToNodeNestedInput
+    comments?: NodeCommentUpdateManyWithoutScreenNodeNestedInput
   }
 
   export type ScreenNodeUncheckedUpdateInput = {
@@ -14415,6 +17450,11 @@ export namespace Prisma {
     screenshotPath?: StringFieldUpdateOperationsInput | string
     activityName?: NullableStringFieldUpdateOperationsInput | string | null
     stateName?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    flowName?: NullableStringFieldUpdateOperationsInput | string | null
+    nodeType?: NullableStringFieldUpdateOperationsInput | string | null
+    positionX?: NullableFloatFieldUpdateOperationsInput | number | null
+    positionY?: NullableFloatFieldUpdateOperationsInput | number | null
     uiTreeJson?: NullableJsonNullValueInput | InputJsonValue
     depth?: IntFieldUpdateOperationsInput | number
     hash?: StringFieldUpdateOperationsInput | string
@@ -14422,6 +17462,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     outgoingEdges?: ScreenEdgeUncheckedUpdateManyWithoutFromNodeNestedInput
     incomingEdges?: ScreenEdgeUncheckedUpdateManyWithoutToNodeNestedInput
+    comments?: NodeCommentUncheckedUpdateManyWithoutScreenNodeNestedInput
   }
 
   export type ScreenNodeCreateManyInput = {
@@ -14430,6 +17471,11 @@ export namespace Prisma {
     screenshotPath: string
     activityName?: string | null
     stateName?: string | null
+    name?: string | null
+    flowName?: string | null
+    nodeType?: string | null
+    positionX?: number | null
+    positionY?: number | null
     uiTreeJson?: NullableJsonNullValueInput | InputJsonValue
     depth: number
     hash: string
@@ -14442,6 +17488,11 @@ export namespace Prisma {
     screenshotPath?: StringFieldUpdateOperationsInput | string
     activityName?: NullableStringFieldUpdateOperationsInput | string | null
     stateName?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    flowName?: NullableStringFieldUpdateOperationsInput | string | null
+    nodeType?: NullableStringFieldUpdateOperationsInput | string | null
+    positionX?: NullableFloatFieldUpdateOperationsInput | number | null
+    positionY?: NullableFloatFieldUpdateOperationsInput | number | null
     uiTreeJson?: NullableJsonNullValueInput | InputJsonValue
     depth?: IntFieldUpdateOperationsInput | number
     hash?: StringFieldUpdateOperationsInput | string
@@ -14455,6 +17506,11 @@ export namespace Prisma {
     screenshotPath?: StringFieldUpdateOperationsInput | string
     activityName?: NullableStringFieldUpdateOperationsInput | string | null
     stateName?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    flowName?: NullableStringFieldUpdateOperationsInput | string | null
+    nodeType?: NullableStringFieldUpdateOperationsInput | string | null
+    positionX?: NullableFloatFieldUpdateOperationsInput | number | null
+    positionY?: NullableFloatFieldUpdateOperationsInput | number | null
     uiTreeJson?: NullableJsonNullValueInput | InputJsonValue
     depth?: IntFieldUpdateOperationsInput | number
     hash?: StringFieldUpdateOperationsInput | string
@@ -14541,6 +17597,207 @@ export namespace Prisma {
     targetText?: NullableStringFieldUpdateOperationsInput | string | null
     targetBounds?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NodeCommentCreateInput = {
+    id?: string
+    body: string
+    issueType?: $Enums.IssueType | null
+    status?: $Enums.CommentStatus
+    createdById?: string | null
+    createdByName?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    screenNode: ScreenNodeCreateNestedOneWithoutCommentsInput
+  }
+
+  export type NodeCommentUncheckedCreateInput = {
+    id?: string
+    screenNodeId: string
+    body: string
+    issueType?: $Enums.IssueType | null
+    status?: $Enums.CommentStatus
+    createdById?: string | null
+    createdByName?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type NodeCommentUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    issueType?: NullableEnumIssueTypeFieldUpdateOperationsInput | $Enums.IssueType | null
+    status?: EnumCommentStatusFieldUpdateOperationsInput | $Enums.CommentStatus
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByName?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    screenNode?: ScreenNodeUpdateOneRequiredWithoutCommentsNestedInput
+  }
+
+  export type NodeCommentUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    screenNodeId?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    issueType?: NullableEnumIssueTypeFieldUpdateOperationsInput | $Enums.IssueType | null
+    status?: EnumCommentStatusFieldUpdateOperationsInput | $Enums.CommentStatus
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByName?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NodeCommentCreateManyInput = {
+    id?: string
+    screenNodeId: string
+    body: string
+    issueType?: $Enums.IssueType | null
+    status?: $Enums.CommentStatus
+    createdById?: string | null
+    createdByName?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type NodeCommentUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    issueType?: NullableEnumIssueTypeFieldUpdateOperationsInput | $Enums.IssueType | null
+    status?: EnumCommentStatusFieldUpdateOperationsInput | $Enums.CommentStatus
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByName?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NodeCommentUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    screenNodeId?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    issueType?: NullableEnumIssueTypeFieldUpdateOperationsInput | $Enums.IssueType | null
+    status?: EnumCommentStatusFieldUpdateOperationsInput | $Enums.CommentStatus
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByName?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExplorationActionCreateInput = {
+    id?: string
+    type: $Enums.ExplorationActionType
+    status?: $Enums.ExplorationActionStatus
+    fromNodeId?: string | null
+    targetNodeId?: string | null
+    hotspotKey?: string | null
+    targetLabel?: string | null
+    targetBounds?: NullableJsonNullValueInput | InputJsonValue
+    resultNodeId?: string | null
+    isExistingNode?: boolean
+    errorMessage?: string | null
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+    reviewRun: ReviewRunCreateNestedOneWithoutActionsInput
+  }
+
+  export type ExplorationActionUncheckedCreateInput = {
+    id?: string
+    reviewRunId: string
+    type: $Enums.ExplorationActionType
+    status?: $Enums.ExplorationActionStatus
+    fromNodeId?: string | null
+    targetNodeId?: string | null
+    hotspotKey?: string | null
+    targetLabel?: string | null
+    targetBounds?: NullableJsonNullValueInput | InputJsonValue
+    resultNodeId?: string | null
+    isExistingNode?: boolean
+    errorMessage?: string | null
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+  }
+
+  export type ExplorationActionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumExplorationActionTypeFieldUpdateOperationsInput | $Enums.ExplorationActionType
+    status?: EnumExplorationActionStatusFieldUpdateOperationsInput | $Enums.ExplorationActionStatus
+    fromNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    targetNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    hotspotKey?: NullableStringFieldUpdateOperationsInput | string | null
+    targetLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    targetBounds?: NullableJsonNullValueInput | InputJsonValue
+    resultNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    isExistingNode?: BoolFieldUpdateOperationsInput | boolean
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewRun?: ReviewRunUpdateOneRequiredWithoutActionsNestedInput
+  }
+
+  export type ExplorationActionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reviewRunId?: StringFieldUpdateOperationsInput | string
+    type?: EnumExplorationActionTypeFieldUpdateOperationsInput | $Enums.ExplorationActionType
+    status?: EnumExplorationActionStatusFieldUpdateOperationsInput | $Enums.ExplorationActionStatus
+    fromNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    targetNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    hotspotKey?: NullableStringFieldUpdateOperationsInput | string | null
+    targetLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    targetBounds?: NullableJsonNullValueInput | InputJsonValue
+    resultNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    isExistingNode?: BoolFieldUpdateOperationsInput | boolean
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ExplorationActionCreateManyInput = {
+    id?: string
+    reviewRunId: string
+    type: $Enums.ExplorationActionType
+    status?: $Enums.ExplorationActionStatus
+    fromNodeId?: string | null
+    targetNodeId?: string | null
+    hotspotKey?: string | null
+    targetLabel?: string | null
+    targetBounds?: NullableJsonNullValueInput | InputJsonValue
+    resultNodeId?: string | null
+    isExistingNode?: boolean
+    errorMessage?: string | null
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+  }
+
+  export type ExplorationActionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumExplorationActionTypeFieldUpdateOperationsInput | $Enums.ExplorationActionType
+    status?: EnumExplorationActionStatusFieldUpdateOperationsInput | $Enums.ExplorationActionStatus
+    fromNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    targetNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    hotspotKey?: NullableStringFieldUpdateOperationsInput | string | null
+    targetLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    targetBounds?: NullableJsonNullValueInput | InputJsonValue
+    resultNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    isExistingNode?: BoolFieldUpdateOperationsInput | boolean
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ExplorationActionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reviewRunId?: StringFieldUpdateOperationsInput | string
+    type?: EnumExplorationActionTypeFieldUpdateOperationsInput | $Enums.ExplorationActionType
+    status?: EnumExplorationActionStatusFieldUpdateOperationsInput | $Enums.ExplorationActionStatus
+    fromNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    targetNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    hotspotKey?: NullableStringFieldUpdateOperationsInput | string | null
+    targetLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    targetBounds?: NullableJsonNullValueInput | InputJsonValue
+    resultNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    isExistingNode?: BoolFieldUpdateOperationsInput | boolean
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type AccountCreateInput = {
@@ -15086,11 +18343,21 @@ export namespace Prisma {
     none?: ScreenEdgeWhereInput
   }
 
+  export type ExplorationActionListRelationFilter = {
+    every?: ExplorationActionWhereInput
+    some?: ExplorationActionWhereInput
+    none?: ExplorationActionWhereInput
+  }
+
   export type ScreenNodeOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type ScreenEdgeOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ExplorationActionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -15101,6 +18368,7 @@ export namespace Prisma {
     maxDepth?: SortOrder
     maxNodes?: SortOrder
     maxTapsPerScreen?: SortOrder
+    currentNodeId?: SortOrder
     startedAt?: SortOrder
     completedAt?: SortOrder
     errorMessage?: SortOrder
@@ -15121,6 +18389,7 @@ export namespace Prisma {
     maxDepth?: SortOrder
     maxNodes?: SortOrder
     maxTapsPerScreen?: SortOrder
+    currentNodeId?: SortOrder
     startedAt?: SortOrder
     completedAt?: SortOrder
     errorMessage?: SortOrder
@@ -15135,6 +18404,7 @@ export namespace Prisma {
     maxDepth?: SortOrder
     maxNodes?: SortOrder
     maxTapsPerScreen?: SortOrder
+    currentNodeId?: SortOrder
     startedAt?: SortOrder
     completedAt?: SortOrder
     errorMessage?: SortOrder
@@ -15171,6 +18441,17 @@ export namespace Prisma {
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
+
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
   export type JsonNullableFilter<$PrismaModel = never> =
     | PatchUndefined<
         Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
@@ -15200,12 +18481,27 @@ export namespace Prisma {
     isNot?: ReviewRunWhereInput
   }
 
+  export type NodeCommentListRelationFilter = {
+    every?: NodeCommentWhereInput
+    some?: NodeCommentWhereInput
+    none?: NodeCommentWhereInput
+  }
+
+  export type NodeCommentOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type ScreenNodeCountOrderByAggregateInput = {
     id?: SortOrder
     reviewRunId?: SortOrder
     screenshotPath?: SortOrder
     activityName?: SortOrder
     stateName?: SortOrder
+    name?: SortOrder
+    flowName?: SortOrder
+    nodeType?: SortOrder
+    positionX?: SortOrder
+    positionY?: SortOrder
     uiTreeJson?: SortOrder
     depth?: SortOrder
     hash?: SortOrder
@@ -15214,6 +18510,8 @@ export namespace Prisma {
   }
 
   export type ScreenNodeAvgOrderByAggregateInput = {
+    positionX?: SortOrder
+    positionY?: SortOrder
     depth?: SortOrder
     clickableCount?: SortOrder
   }
@@ -15224,6 +18522,11 @@ export namespace Prisma {
     screenshotPath?: SortOrder
     activityName?: SortOrder
     stateName?: SortOrder
+    name?: SortOrder
+    flowName?: SortOrder
+    nodeType?: SortOrder
+    positionX?: SortOrder
+    positionY?: SortOrder
     depth?: SortOrder
     hash?: SortOrder
     clickableCount?: SortOrder
@@ -15236,6 +18539,11 @@ export namespace Prisma {
     screenshotPath?: SortOrder
     activityName?: SortOrder
     stateName?: SortOrder
+    name?: SortOrder
+    flowName?: SortOrder
+    nodeType?: SortOrder
+    positionX?: SortOrder
+    positionY?: SortOrder
     depth?: SortOrder
     hash?: SortOrder
     clickableCount?: SortOrder
@@ -15243,8 +18551,26 @@ export namespace Prisma {
   }
 
   export type ScreenNodeSumOrderByAggregateInput = {
+    positionX?: SortOrder
+    positionY?: SortOrder
     depth?: SortOrder
     clickableCount?: SortOrder
+  }
+
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
   export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -15315,6 +18641,172 @@ export namespace Prisma {
     targetLabel?: SortOrder
     targetText?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type EnumIssueTypeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.IssueType | EnumIssueTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.IssueType[] | ListEnumIssueTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.IssueType[] | ListEnumIssueTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumIssueTypeNullableFilter<$PrismaModel> | $Enums.IssueType | null
+  }
+
+  export type EnumCommentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.CommentStatus | EnumCommentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.CommentStatus[] | ListEnumCommentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CommentStatus[] | ListEnumCommentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumCommentStatusFilter<$PrismaModel> | $Enums.CommentStatus
+  }
+
+  export type NodeCommentCountOrderByAggregateInput = {
+    id?: SortOrder
+    screenNodeId?: SortOrder
+    body?: SortOrder
+    issueType?: SortOrder
+    status?: SortOrder
+    createdById?: SortOrder
+    createdByName?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type NodeCommentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    screenNodeId?: SortOrder
+    body?: SortOrder
+    issueType?: SortOrder
+    status?: SortOrder
+    createdById?: SortOrder
+    createdByName?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type NodeCommentMinOrderByAggregateInput = {
+    id?: SortOrder
+    screenNodeId?: SortOrder
+    body?: SortOrder
+    issueType?: SortOrder
+    status?: SortOrder
+    createdById?: SortOrder
+    createdByName?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumIssueTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.IssueType | EnumIssueTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.IssueType[] | ListEnumIssueTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.IssueType[] | ListEnumIssueTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumIssueTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.IssueType | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumIssueTypeNullableFilter<$PrismaModel>
+    _max?: NestedEnumIssueTypeNullableFilter<$PrismaModel>
+  }
+
+  export type EnumCommentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CommentStatus | EnumCommentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.CommentStatus[] | ListEnumCommentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CommentStatus[] | ListEnumCommentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumCommentStatusWithAggregatesFilter<$PrismaModel> | $Enums.CommentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCommentStatusFilter<$PrismaModel>
+    _max?: NestedEnumCommentStatusFilter<$PrismaModel>
+  }
+
+  export type EnumExplorationActionTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.ExplorationActionType | EnumExplorationActionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ExplorationActionType[] | ListEnumExplorationActionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ExplorationActionType[] | ListEnumExplorationActionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumExplorationActionTypeFilter<$PrismaModel> | $Enums.ExplorationActionType
+  }
+
+  export type EnumExplorationActionStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ExplorationActionStatus | EnumExplorationActionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ExplorationActionStatus[] | ListEnumExplorationActionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ExplorationActionStatus[] | ListEnumExplorationActionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumExplorationActionStatusFilter<$PrismaModel> | $Enums.ExplorationActionStatus
+  }
+
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type ExplorationActionCountOrderByAggregateInput = {
+    id?: SortOrder
+    reviewRunId?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    fromNodeId?: SortOrder
+    targetNodeId?: SortOrder
+    hotspotKey?: SortOrder
+    targetLabel?: SortOrder
+    targetBounds?: SortOrder
+    resultNodeId?: SortOrder
+    isExistingNode?: SortOrder
+    errorMessage?: SortOrder
+    createdAt?: SortOrder
+    completedAt?: SortOrder
+  }
+
+  export type ExplorationActionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    reviewRunId?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    fromNodeId?: SortOrder
+    targetNodeId?: SortOrder
+    hotspotKey?: SortOrder
+    targetLabel?: SortOrder
+    resultNodeId?: SortOrder
+    isExistingNode?: SortOrder
+    errorMessage?: SortOrder
+    createdAt?: SortOrder
+    completedAt?: SortOrder
+  }
+
+  export type ExplorationActionMinOrderByAggregateInput = {
+    id?: SortOrder
+    reviewRunId?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    fromNodeId?: SortOrder
+    targetNodeId?: SortOrder
+    hotspotKey?: SortOrder
+    targetLabel?: SortOrder
+    resultNodeId?: SortOrder
+    isExistingNode?: SortOrder
+    errorMessage?: SortOrder
+    createdAt?: SortOrder
+    completedAt?: SortOrder
+  }
+
+  export type EnumExplorationActionTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ExplorationActionType | EnumExplorationActionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ExplorationActionType[] | ListEnumExplorationActionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ExplorationActionType[] | ListEnumExplorationActionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumExplorationActionTypeWithAggregatesFilter<$PrismaModel> | $Enums.ExplorationActionType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumExplorationActionTypeFilter<$PrismaModel>
+    _max?: NestedEnumExplorationActionTypeFilter<$PrismaModel>
+  }
+
+  export type EnumExplorationActionStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ExplorationActionStatus | EnumExplorationActionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ExplorationActionStatus[] | ListEnumExplorationActionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ExplorationActionStatus[] | ListEnumExplorationActionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumExplorationActionStatusWithAggregatesFilter<$PrismaModel> | $Enums.ExplorationActionStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumExplorationActionStatusFilter<$PrismaModel>
+    _max?: NestedEnumExplorationActionStatusFilter<$PrismaModel>
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type IntNullableFilter<$PrismaModel = never> = {
@@ -15657,6 +19149,13 @@ export namespace Prisma {
     connect?: ScreenEdgeWhereUniqueInput | ScreenEdgeWhereUniqueInput[]
   }
 
+  export type ExplorationActionCreateNestedManyWithoutReviewRunInput = {
+    create?: XOR<ExplorationActionCreateWithoutReviewRunInput, ExplorationActionUncheckedCreateWithoutReviewRunInput> | ExplorationActionCreateWithoutReviewRunInput[] | ExplorationActionUncheckedCreateWithoutReviewRunInput[]
+    connectOrCreate?: ExplorationActionCreateOrConnectWithoutReviewRunInput | ExplorationActionCreateOrConnectWithoutReviewRunInput[]
+    createMany?: ExplorationActionCreateManyReviewRunInputEnvelope
+    connect?: ExplorationActionWhereUniqueInput | ExplorationActionWhereUniqueInput[]
+  }
+
   export type ScreenNodeUncheckedCreateNestedManyWithoutReviewRunInput = {
     create?: XOR<ScreenNodeCreateWithoutReviewRunInput, ScreenNodeUncheckedCreateWithoutReviewRunInput> | ScreenNodeCreateWithoutReviewRunInput[] | ScreenNodeUncheckedCreateWithoutReviewRunInput[]
     connectOrCreate?: ScreenNodeCreateOrConnectWithoutReviewRunInput | ScreenNodeCreateOrConnectWithoutReviewRunInput[]
@@ -15669,6 +19168,13 @@ export namespace Prisma {
     connectOrCreate?: ScreenEdgeCreateOrConnectWithoutReviewRunInput | ScreenEdgeCreateOrConnectWithoutReviewRunInput[]
     createMany?: ScreenEdgeCreateManyReviewRunInputEnvelope
     connect?: ScreenEdgeWhereUniqueInput | ScreenEdgeWhereUniqueInput[]
+  }
+
+  export type ExplorationActionUncheckedCreateNestedManyWithoutReviewRunInput = {
+    create?: XOR<ExplorationActionCreateWithoutReviewRunInput, ExplorationActionUncheckedCreateWithoutReviewRunInput> | ExplorationActionCreateWithoutReviewRunInput[] | ExplorationActionUncheckedCreateWithoutReviewRunInput[]
+    connectOrCreate?: ExplorationActionCreateOrConnectWithoutReviewRunInput | ExplorationActionCreateOrConnectWithoutReviewRunInput[]
+    createMany?: ExplorationActionCreateManyReviewRunInputEnvelope
+    connect?: ExplorationActionWhereUniqueInput | ExplorationActionWhereUniqueInput[]
   }
 
   export type EnumReviewRunStatusFieldUpdateOperationsInput = {
@@ -15715,6 +19221,20 @@ export namespace Prisma {
     deleteMany?: ScreenEdgeScalarWhereInput | ScreenEdgeScalarWhereInput[]
   }
 
+  export type ExplorationActionUpdateManyWithoutReviewRunNestedInput = {
+    create?: XOR<ExplorationActionCreateWithoutReviewRunInput, ExplorationActionUncheckedCreateWithoutReviewRunInput> | ExplorationActionCreateWithoutReviewRunInput[] | ExplorationActionUncheckedCreateWithoutReviewRunInput[]
+    connectOrCreate?: ExplorationActionCreateOrConnectWithoutReviewRunInput | ExplorationActionCreateOrConnectWithoutReviewRunInput[]
+    upsert?: ExplorationActionUpsertWithWhereUniqueWithoutReviewRunInput | ExplorationActionUpsertWithWhereUniqueWithoutReviewRunInput[]
+    createMany?: ExplorationActionCreateManyReviewRunInputEnvelope
+    set?: ExplorationActionWhereUniqueInput | ExplorationActionWhereUniqueInput[]
+    disconnect?: ExplorationActionWhereUniqueInput | ExplorationActionWhereUniqueInput[]
+    delete?: ExplorationActionWhereUniqueInput | ExplorationActionWhereUniqueInput[]
+    connect?: ExplorationActionWhereUniqueInput | ExplorationActionWhereUniqueInput[]
+    update?: ExplorationActionUpdateWithWhereUniqueWithoutReviewRunInput | ExplorationActionUpdateWithWhereUniqueWithoutReviewRunInput[]
+    updateMany?: ExplorationActionUpdateManyWithWhereWithoutReviewRunInput | ExplorationActionUpdateManyWithWhereWithoutReviewRunInput[]
+    deleteMany?: ExplorationActionScalarWhereInput | ExplorationActionScalarWhereInput[]
+  }
+
   export type ScreenNodeUncheckedUpdateManyWithoutReviewRunNestedInput = {
     create?: XOR<ScreenNodeCreateWithoutReviewRunInput, ScreenNodeUncheckedCreateWithoutReviewRunInput> | ScreenNodeCreateWithoutReviewRunInput[] | ScreenNodeUncheckedCreateWithoutReviewRunInput[]
     connectOrCreate?: ScreenNodeCreateOrConnectWithoutReviewRunInput | ScreenNodeCreateOrConnectWithoutReviewRunInput[]
@@ -15743,6 +19263,20 @@ export namespace Prisma {
     deleteMany?: ScreenEdgeScalarWhereInput | ScreenEdgeScalarWhereInput[]
   }
 
+  export type ExplorationActionUncheckedUpdateManyWithoutReviewRunNestedInput = {
+    create?: XOR<ExplorationActionCreateWithoutReviewRunInput, ExplorationActionUncheckedCreateWithoutReviewRunInput> | ExplorationActionCreateWithoutReviewRunInput[] | ExplorationActionUncheckedCreateWithoutReviewRunInput[]
+    connectOrCreate?: ExplorationActionCreateOrConnectWithoutReviewRunInput | ExplorationActionCreateOrConnectWithoutReviewRunInput[]
+    upsert?: ExplorationActionUpsertWithWhereUniqueWithoutReviewRunInput | ExplorationActionUpsertWithWhereUniqueWithoutReviewRunInput[]
+    createMany?: ExplorationActionCreateManyReviewRunInputEnvelope
+    set?: ExplorationActionWhereUniqueInput | ExplorationActionWhereUniqueInput[]
+    disconnect?: ExplorationActionWhereUniqueInput | ExplorationActionWhereUniqueInput[]
+    delete?: ExplorationActionWhereUniqueInput | ExplorationActionWhereUniqueInput[]
+    connect?: ExplorationActionWhereUniqueInput | ExplorationActionWhereUniqueInput[]
+    update?: ExplorationActionUpdateWithWhereUniqueWithoutReviewRunInput | ExplorationActionUpdateWithWhereUniqueWithoutReviewRunInput[]
+    updateMany?: ExplorationActionUpdateManyWithWhereWithoutReviewRunInput | ExplorationActionUpdateManyWithWhereWithoutReviewRunInput[]
+    deleteMany?: ExplorationActionScalarWhereInput | ExplorationActionScalarWhereInput[]
+  }
+
   export type ReviewRunCreateNestedOneWithoutNodesInput = {
     create?: XOR<ReviewRunCreateWithoutNodesInput, ReviewRunUncheckedCreateWithoutNodesInput>
     connectOrCreate?: ReviewRunCreateOrConnectWithoutNodesInput
@@ -15763,6 +19297,13 @@ export namespace Prisma {
     connect?: ScreenEdgeWhereUniqueInput | ScreenEdgeWhereUniqueInput[]
   }
 
+  export type NodeCommentCreateNestedManyWithoutScreenNodeInput = {
+    create?: XOR<NodeCommentCreateWithoutScreenNodeInput, NodeCommentUncheckedCreateWithoutScreenNodeInput> | NodeCommentCreateWithoutScreenNodeInput[] | NodeCommentUncheckedCreateWithoutScreenNodeInput[]
+    connectOrCreate?: NodeCommentCreateOrConnectWithoutScreenNodeInput | NodeCommentCreateOrConnectWithoutScreenNodeInput[]
+    createMany?: NodeCommentCreateManyScreenNodeInputEnvelope
+    connect?: NodeCommentWhereUniqueInput | NodeCommentWhereUniqueInput[]
+  }
+
   export type ScreenEdgeUncheckedCreateNestedManyWithoutFromNodeInput = {
     create?: XOR<ScreenEdgeCreateWithoutFromNodeInput, ScreenEdgeUncheckedCreateWithoutFromNodeInput> | ScreenEdgeCreateWithoutFromNodeInput[] | ScreenEdgeUncheckedCreateWithoutFromNodeInput[]
     connectOrCreate?: ScreenEdgeCreateOrConnectWithoutFromNodeInput | ScreenEdgeCreateOrConnectWithoutFromNodeInput[]
@@ -15775,6 +19316,21 @@ export namespace Prisma {
     connectOrCreate?: ScreenEdgeCreateOrConnectWithoutToNodeInput | ScreenEdgeCreateOrConnectWithoutToNodeInput[]
     createMany?: ScreenEdgeCreateManyToNodeInputEnvelope
     connect?: ScreenEdgeWhereUniqueInput | ScreenEdgeWhereUniqueInput[]
+  }
+
+  export type NodeCommentUncheckedCreateNestedManyWithoutScreenNodeInput = {
+    create?: XOR<NodeCommentCreateWithoutScreenNodeInput, NodeCommentUncheckedCreateWithoutScreenNodeInput> | NodeCommentCreateWithoutScreenNodeInput[] | NodeCommentUncheckedCreateWithoutScreenNodeInput[]
+    connectOrCreate?: NodeCommentCreateOrConnectWithoutScreenNodeInput | NodeCommentCreateOrConnectWithoutScreenNodeInput[]
+    createMany?: NodeCommentCreateManyScreenNodeInputEnvelope
+    connect?: NodeCommentWhereUniqueInput | NodeCommentWhereUniqueInput[]
+  }
+
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type ReviewRunUpdateOneRequiredWithoutNodesNestedInput = {
@@ -15813,6 +19369,20 @@ export namespace Prisma {
     deleteMany?: ScreenEdgeScalarWhereInput | ScreenEdgeScalarWhereInput[]
   }
 
+  export type NodeCommentUpdateManyWithoutScreenNodeNestedInput = {
+    create?: XOR<NodeCommentCreateWithoutScreenNodeInput, NodeCommentUncheckedCreateWithoutScreenNodeInput> | NodeCommentCreateWithoutScreenNodeInput[] | NodeCommentUncheckedCreateWithoutScreenNodeInput[]
+    connectOrCreate?: NodeCommentCreateOrConnectWithoutScreenNodeInput | NodeCommentCreateOrConnectWithoutScreenNodeInput[]
+    upsert?: NodeCommentUpsertWithWhereUniqueWithoutScreenNodeInput | NodeCommentUpsertWithWhereUniqueWithoutScreenNodeInput[]
+    createMany?: NodeCommentCreateManyScreenNodeInputEnvelope
+    set?: NodeCommentWhereUniqueInput | NodeCommentWhereUniqueInput[]
+    disconnect?: NodeCommentWhereUniqueInput | NodeCommentWhereUniqueInput[]
+    delete?: NodeCommentWhereUniqueInput | NodeCommentWhereUniqueInput[]
+    connect?: NodeCommentWhereUniqueInput | NodeCommentWhereUniqueInput[]
+    update?: NodeCommentUpdateWithWhereUniqueWithoutScreenNodeInput | NodeCommentUpdateWithWhereUniqueWithoutScreenNodeInput[]
+    updateMany?: NodeCommentUpdateManyWithWhereWithoutScreenNodeInput | NodeCommentUpdateManyWithWhereWithoutScreenNodeInput[]
+    deleteMany?: NodeCommentScalarWhereInput | NodeCommentScalarWhereInput[]
+  }
+
   export type ScreenEdgeUncheckedUpdateManyWithoutFromNodeNestedInput = {
     create?: XOR<ScreenEdgeCreateWithoutFromNodeInput, ScreenEdgeUncheckedCreateWithoutFromNodeInput> | ScreenEdgeCreateWithoutFromNodeInput[] | ScreenEdgeUncheckedCreateWithoutFromNodeInput[]
     connectOrCreate?: ScreenEdgeCreateOrConnectWithoutFromNodeInput | ScreenEdgeCreateOrConnectWithoutFromNodeInput[]
@@ -15839,6 +19409,20 @@ export namespace Prisma {
     update?: ScreenEdgeUpdateWithWhereUniqueWithoutToNodeInput | ScreenEdgeUpdateWithWhereUniqueWithoutToNodeInput[]
     updateMany?: ScreenEdgeUpdateManyWithWhereWithoutToNodeInput | ScreenEdgeUpdateManyWithWhereWithoutToNodeInput[]
     deleteMany?: ScreenEdgeScalarWhereInput | ScreenEdgeScalarWhereInput[]
+  }
+
+  export type NodeCommentUncheckedUpdateManyWithoutScreenNodeNestedInput = {
+    create?: XOR<NodeCommentCreateWithoutScreenNodeInput, NodeCommentUncheckedCreateWithoutScreenNodeInput> | NodeCommentCreateWithoutScreenNodeInput[] | NodeCommentUncheckedCreateWithoutScreenNodeInput[]
+    connectOrCreate?: NodeCommentCreateOrConnectWithoutScreenNodeInput | NodeCommentCreateOrConnectWithoutScreenNodeInput[]
+    upsert?: NodeCommentUpsertWithWhereUniqueWithoutScreenNodeInput | NodeCommentUpsertWithWhereUniqueWithoutScreenNodeInput[]
+    createMany?: NodeCommentCreateManyScreenNodeInputEnvelope
+    set?: NodeCommentWhereUniqueInput | NodeCommentWhereUniqueInput[]
+    disconnect?: NodeCommentWhereUniqueInput | NodeCommentWhereUniqueInput[]
+    delete?: NodeCommentWhereUniqueInput | NodeCommentWhereUniqueInput[]
+    connect?: NodeCommentWhereUniqueInput | NodeCommentWhereUniqueInput[]
+    update?: NodeCommentUpdateWithWhereUniqueWithoutScreenNodeInput | NodeCommentUpdateWithWhereUniqueWithoutScreenNodeInput[]
+    updateMany?: NodeCommentUpdateManyWithWhereWithoutScreenNodeInput | NodeCommentUpdateManyWithWhereWithoutScreenNodeInput[]
+    deleteMany?: NodeCommentScalarWhereInput | NodeCommentScalarWhereInput[]
   }
 
   export type ReviewRunCreateNestedOneWithoutEdgesInput = {
@@ -15883,6 +19467,54 @@ export namespace Prisma {
     upsert?: ScreenNodeUpsertWithoutIncomingEdgesInput
     connect?: ScreenNodeWhereUniqueInput
     update?: XOR<XOR<ScreenNodeUpdateToOneWithWhereWithoutIncomingEdgesInput, ScreenNodeUpdateWithoutIncomingEdgesInput>, ScreenNodeUncheckedUpdateWithoutIncomingEdgesInput>
+  }
+
+  export type ScreenNodeCreateNestedOneWithoutCommentsInput = {
+    create?: XOR<ScreenNodeCreateWithoutCommentsInput, ScreenNodeUncheckedCreateWithoutCommentsInput>
+    connectOrCreate?: ScreenNodeCreateOrConnectWithoutCommentsInput
+    connect?: ScreenNodeWhereUniqueInput
+  }
+
+  export type NullableEnumIssueTypeFieldUpdateOperationsInput = {
+    set?: $Enums.IssueType | null
+  }
+
+  export type EnumCommentStatusFieldUpdateOperationsInput = {
+    set?: $Enums.CommentStatus
+  }
+
+  export type ScreenNodeUpdateOneRequiredWithoutCommentsNestedInput = {
+    create?: XOR<ScreenNodeCreateWithoutCommentsInput, ScreenNodeUncheckedCreateWithoutCommentsInput>
+    connectOrCreate?: ScreenNodeCreateOrConnectWithoutCommentsInput
+    upsert?: ScreenNodeUpsertWithoutCommentsInput
+    connect?: ScreenNodeWhereUniqueInput
+    update?: XOR<XOR<ScreenNodeUpdateToOneWithWhereWithoutCommentsInput, ScreenNodeUpdateWithoutCommentsInput>, ScreenNodeUncheckedUpdateWithoutCommentsInput>
+  }
+
+  export type ReviewRunCreateNestedOneWithoutActionsInput = {
+    create?: XOR<ReviewRunCreateWithoutActionsInput, ReviewRunUncheckedCreateWithoutActionsInput>
+    connectOrCreate?: ReviewRunCreateOrConnectWithoutActionsInput
+    connect?: ReviewRunWhereUniqueInput
+  }
+
+  export type EnumExplorationActionTypeFieldUpdateOperationsInput = {
+    set?: $Enums.ExplorationActionType
+  }
+
+  export type EnumExplorationActionStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ExplorationActionStatus
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
+  export type ReviewRunUpdateOneRequiredWithoutActionsNestedInput = {
+    create?: XOR<ReviewRunCreateWithoutActionsInput, ReviewRunUncheckedCreateWithoutActionsInput>
+    connectOrCreate?: ReviewRunCreateOrConnectWithoutActionsInput
+    upsert?: ReviewRunUpsertWithoutActionsInput
+    connect?: ReviewRunWhereUniqueInput
+    update?: XOR<XOR<ReviewRunUpdateToOneWithWhereWithoutActionsInput, ReviewRunUpdateWithoutActionsInput>, ReviewRunUncheckedUpdateWithoutActionsInput>
   }
 
   export type UserCreateNestedOneWithoutAccountsInput = {
@@ -16224,6 +19856,33 @@ export namespace Prisma {
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
   export type NestedJsonNullableFilter<$PrismaModel = never> =
     | PatchUndefined<
         Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
@@ -16248,6 +19907,87 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type NestedEnumIssueTypeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.IssueType | EnumIssueTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.IssueType[] | ListEnumIssueTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.IssueType[] | ListEnumIssueTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumIssueTypeNullableFilter<$PrismaModel> | $Enums.IssueType | null
+  }
+
+  export type NestedEnumCommentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.CommentStatus | EnumCommentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.CommentStatus[] | ListEnumCommentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CommentStatus[] | ListEnumCommentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumCommentStatusFilter<$PrismaModel> | $Enums.CommentStatus
+  }
+
+  export type NestedEnumIssueTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.IssueType | EnumIssueTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.IssueType[] | ListEnumIssueTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.IssueType[] | ListEnumIssueTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumIssueTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.IssueType | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumIssueTypeNullableFilter<$PrismaModel>
+    _max?: NestedEnumIssueTypeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumCommentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CommentStatus | EnumCommentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.CommentStatus[] | ListEnumCommentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CommentStatus[] | ListEnumCommentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumCommentStatusWithAggregatesFilter<$PrismaModel> | $Enums.CommentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCommentStatusFilter<$PrismaModel>
+    _max?: NestedEnumCommentStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumExplorationActionTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.ExplorationActionType | EnumExplorationActionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ExplorationActionType[] | ListEnumExplorationActionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ExplorationActionType[] | ListEnumExplorationActionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumExplorationActionTypeFilter<$PrismaModel> | $Enums.ExplorationActionType
+  }
+
+  export type NestedEnumExplorationActionStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ExplorationActionStatus | EnumExplorationActionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ExplorationActionStatus[] | ListEnumExplorationActionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ExplorationActionStatus[] | ListEnumExplorationActionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumExplorationActionStatusFilter<$PrismaModel> | $Enums.ExplorationActionStatus
+  }
+
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedEnumExplorationActionTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ExplorationActionType | EnumExplorationActionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ExplorationActionType[] | ListEnumExplorationActionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ExplorationActionType[] | ListEnumExplorationActionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumExplorationActionTypeWithAggregatesFilter<$PrismaModel> | $Enums.ExplorationActionType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumExplorationActionTypeFilter<$PrismaModel>
+    _max?: NestedEnumExplorationActionTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumExplorationActionStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ExplorationActionStatus | EnumExplorationActionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ExplorationActionStatus[] | ListEnumExplorationActionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ExplorationActionStatus[] | ListEnumExplorationActionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumExplorationActionStatusWithAggregatesFilter<$PrismaModel> | $Enums.ExplorationActionStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumExplorationActionStatusFilter<$PrismaModel>
+    _max?: NestedEnumExplorationActionStatusFilter<$PrismaModel>
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -16262,17 +20002,6 @@ export namespace Prisma {
     _sum?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedIntNullableFilter<$PrismaModel>
     _max?: NestedIntNullableFilter<$PrismaModel>
-  }
-
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
   export type UserCreateWithoutPostsInput = {
@@ -16418,6 +20147,7 @@ export namespace Prisma {
     maxDepth?: number
     maxNodes?: number
     maxTapsPerScreen?: number
+    currentNodeId?: string | null
     startedAt?: Date | string | null
     completedAt?: Date | string | null
     errorMessage?: string | null
@@ -16425,6 +20155,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     nodes?: ScreenNodeCreateNestedManyWithoutReviewRunInput
     edges?: ScreenEdgeCreateNestedManyWithoutReviewRunInput
+    actions?: ExplorationActionCreateNestedManyWithoutReviewRunInput
   }
 
   export type ReviewRunUncheckedCreateWithoutApkBuildInput = {
@@ -16433,6 +20164,7 @@ export namespace Prisma {
     maxDepth?: number
     maxNodes?: number
     maxTapsPerScreen?: number
+    currentNodeId?: string | null
     startedAt?: Date | string | null
     completedAt?: Date | string | null
     errorMessage?: string | null
@@ -16440,6 +20172,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     nodes?: ScreenNodeUncheckedCreateNestedManyWithoutReviewRunInput
     edges?: ScreenEdgeUncheckedCreateNestedManyWithoutReviewRunInput
+    actions?: ExplorationActionUncheckedCreateNestedManyWithoutReviewRunInput
   }
 
   export type ReviewRunCreateOrConnectWithoutApkBuildInput = {
@@ -16503,6 +20236,7 @@ export namespace Prisma {
     maxDepth?: IntFilter<"ReviewRun"> | number
     maxNodes?: IntFilter<"ReviewRun"> | number
     maxTapsPerScreen?: IntFilter<"ReviewRun"> | number
+    currentNodeId?: StringNullableFilter<"ReviewRun"> | string | null
     startedAt?: DateTimeNullableFilter<"ReviewRun"> | Date | string | null
     completedAt?: DateTimeNullableFilter<"ReviewRun"> | Date | string | null
     errorMessage?: StringNullableFilter<"ReviewRun"> | string | null
@@ -16542,6 +20276,11 @@ export namespace Prisma {
     screenshotPath: string
     activityName?: string | null
     stateName?: string | null
+    name?: string | null
+    flowName?: string | null
+    nodeType?: string | null
+    positionX?: number | null
+    positionY?: number | null
     uiTreeJson?: NullableJsonNullValueInput | InputJsonValue
     depth: number
     hash: string
@@ -16549,6 +20288,7 @@ export namespace Prisma {
     createdAt?: Date | string
     outgoingEdges?: ScreenEdgeCreateNestedManyWithoutFromNodeInput
     incomingEdges?: ScreenEdgeCreateNestedManyWithoutToNodeInput
+    comments?: NodeCommentCreateNestedManyWithoutScreenNodeInput
   }
 
   export type ScreenNodeUncheckedCreateWithoutReviewRunInput = {
@@ -16556,6 +20296,11 @@ export namespace Prisma {
     screenshotPath: string
     activityName?: string | null
     stateName?: string | null
+    name?: string | null
+    flowName?: string | null
+    nodeType?: string | null
+    positionX?: number | null
+    positionY?: number | null
     uiTreeJson?: NullableJsonNullValueInput | InputJsonValue
     depth: number
     hash: string
@@ -16563,6 +20308,7 @@ export namespace Prisma {
     createdAt?: Date | string
     outgoingEdges?: ScreenEdgeUncheckedCreateNestedManyWithoutFromNodeInput
     incomingEdges?: ScreenEdgeUncheckedCreateNestedManyWithoutToNodeInput
+    comments?: NodeCommentUncheckedCreateNestedManyWithoutScreenNodeInput
   }
 
   export type ScreenNodeCreateOrConnectWithoutReviewRunInput = {
@@ -16604,6 +20350,48 @@ export namespace Prisma {
 
   export type ScreenEdgeCreateManyReviewRunInputEnvelope = {
     data: ScreenEdgeCreateManyReviewRunInput | ScreenEdgeCreateManyReviewRunInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ExplorationActionCreateWithoutReviewRunInput = {
+    id?: string
+    type: $Enums.ExplorationActionType
+    status?: $Enums.ExplorationActionStatus
+    fromNodeId?: string | null
+    targetNodeId?: string | null
+    hotspotKey?: string | null
+    targetLabel?: string | null
+    targetBounds?: NullableJsonNullValueInput | InputJsonValue
+    resultNodeId?: string | null
+    isExistingNode?: boolean
+    errorMessage?: string | null
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+  }
+
+  export type ExplorationActionUncheckedCreateWithoutReviewRunInput = {
+    id?: string
+    type: $Enums.ExplorationActionType
+    status?: $Enums.ExplorationActionStatus
+    fromNodeId?: string | null
+    targetNodeId?: string | null
+    hotspotKey?: string | null
+    targetLabel?: string | null
+    targetBounds?: NullableJsonNullValueInput | InputJsonValue
+    resultNodeId?: string | null
+    isExistingNode?: boolean
+    errorMessage?: string | null
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+  }
+
+  export type ExplorationActionCreateOrConnectWithoutReviewRunInput = {
+    where: ExplorationActionWhereUniqueInput
+    create: XOR<ExplorationActionCreateWithoutReviewRunInput, ExplorationActionUncheckedCreateWithoutReviewRunInput>
+  }
+
+  export type ExplorationActionCreateManyReviewRunInputEnvelope = {
+    data: ExplorationActionCreateManyReviewRunInput | ExplorationActionCreateManyReviewRunInput[]
     skipDuplicates?: boolean
   }
 
@@ -16665,6 +20453,11 @@ export namespace Prisma {
     screenshotPath?: StringFilter<"ScreenNode"> | string
     activityName?: StringNullableFilter<"ScreenNode"> | string | null
     stateName?: StringNullableFilter<"ScreenNode"> | string | null
+    name?: StringNullableFilter<"ScreenNode"> | string | null
+    flowName?: StringNullableFilter<"ScreenNode"> | string | null
+    nodeType?: StringNullableFilter<"ScreenNode"> | string | null
+    positionX?: FloatNullableFilter<"ScreenNode"> | number | null
+    positionY?: FloatNullableFilter<"ScreenNode"> | number | null
     uiTreeJson?: JsonNullableFilter<"ScreenNode">
     depth?: IntFilter<"ScreenNode"> | number
     hash?: StringFilter<"ScreenNode"> | string
@@ -16703,12 +20496,49 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"ScreenEdge"> | Date | string
   }
 
+  export type ExplorationActionUpsertWithWhereUniqueWithoutReviewRunInput = {
+    where: ExplorationActionWhereUniqueInput
+    update: XOR<ExplorationActionUpdateWithoutReviewRunInput, ExplorationActionUncheckedUpdateWithoutReviewRunInput>
+    create: XOR<ExplorationActionCreateWithoutReviewRunInput, ExplorationActionUncheckedCreateWithoutReviewRunInput>
+  }
+
+  export type ExplorationActionUpdateWithWhereUniqueWithoutReviewRunInput = {
+    where: ExplorationActionWhereUniqueInput
+    data: XOR<ExplorationActionUpdateWithoutReviewRunInput, ExplorationActionUncheckedUpdateWithoutReviewRunInput>
+  }
+
+  export type ExplorationActionUpdateManyWithWhereWithoutReviewRunInput = {
+    where: ExplorationActionScalarWhereInput
+    data: XOR<ExplorationActionUpdateManyMutationInput, ExplorationActionUncheckedUpdateManyWithoutReviewRunInput>
+  }
+
+  export type ExplorationActionScalarWhereInput = {
+    AND?: ExplorationActionScalarWhereInput | ExplorationActionScalarWhereInput[]
+    OR?: ExplorationActionScalarWhereInput[]
+    NOT?: ExplorationActionScalarWhereInput | ExplorationActionScalarWhereInput[]
+    id?: StringFilter<"ExplorationAction"> | string
+    reviewRunId?: StringFilter<"ExplorationAction"> | string
+    type?: EnumExplorationActionTypeFilter<"ExplorationAction"> | $Enums.ExplorationActionType
+    status?: EnumExplorationActionStatusFilter<"ExplorationAction"> | $Enums.ExplorationActionStatus
+    fromNodeId?: StringNullableFilter<"ExplorationAction"> | string | null
+    targetNodeId?: StringNullableFilter<"ExplorationAction"> | string | null
+    hotspotKey?: StringNullableFilter<"ExplorationAction"> | string | null
+    targetLabel?: StringNullableFilter<"ExplorationAction"> | string | null
+    targetBounds?: JsonNullableFilter<"ExplorationAction">
+    resultNodeId?: StringNullableFilter<"ExplorationAction"> | string | null
+    isExistingNode?: BoolFilter<"ExplorationAction"> | boolean
+    errorMessage?: StringNullableFilter<"ExplorationAction"> | string | null
+    createdAt?: DateTimeFilter<"ExplorationAction"> | Date | string
+    completedAt?: DateTimeNullableFilter<"ExplorationAction"> | Date | string | null
+  }
+
   export type ReviewRunCreateWithoutNodesInput = {
     id?: string
     status?: $Enums.ReviewRunStatus
     maxDepth?: number
     maxNodes?: number
     maxTapsPerScreen?: number
+    currentNodeId?: string | null
     startedAt?: Date | string | null
     completedAt?: Date | string | null
     errorMessage?: string | null
@@ -16716,6 +20546,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     apkBuild: ApkBuildCreateNestedOneWithoutRunsInput
     edges?: ScreenEdgeCreateNestedManyWithoutReviewRunInput
+    actions?: ExplorationActionCreateNestedManyWithoutReviewRunInput
   }
 
   export type ReviewRunUncheckedCreateWithoutNodesInput = {
@@ -16725,12 +20556,14 @@ export namespace Prisma {
     maxDepth?: number
     maxNodes?: number
     maxTapsPerScreen?: number
+    currentNodeId?: string | null
     startedAt?: Date | string | null
     completedAt?: Date | string | null
     errorMessage?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     edges?: ScreenEdgeUncheckedCreateNestedManyWithoutReviewRunInput
+    actions?: ExplorationActionUncheckedCreateNestedManyWithoutReviewRunInput
   }
 
   export type ReviewRunCreateOrConnectWithoutNodesInput = {
@@ -16802,6 +20635,38 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type NodeCommentCreateWithoutScreenNodeInput = {
+    id?: string
+    body: string
+    issueType?: $Enums.IssueType | null
+    status?: $Enums.CommentStatus
+    createdById?: string | null
+    createdByName?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type NodeCommentUncheckedCreateWithoutScreenNodeInput = {
+    id?: string
+    body: string
+    issueType?: $Enums.IssueType | null
+    status?: $Enums.CommentStatus
+    createdById?: string | null
+    createdByName?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type NodeCommentCreateOrConnectWithoutScreenNodeInput = {
+    where: NodeCommentWhereUniqueInput
+    create: XOR<NodeCommentCreateWithoutScreenNodeInput, NodeCommentUncheckedCreateWithoutScreenNodeInput>
+  }
+
+  export type NodeCommentCreateManyScreenNodeInputEnvelope = {
+    data: NodeCommentCreateManyScreenNodeInput | NodeCommentCreateManyScreenNodeInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ReviewRunUpsertWithoutNodesInput = {
     update: XOR<ReviewRunUpdateWithoutNodesInput, ReviewRunUncheckedUpdateWithoutNodesInput>
     create: XOR<ReviewRunCreateWithoutNodesInput, ReviewRunUncheckedCreateWithoutNodesInput>
@@ -16819,6 +20684,7 @@ export namespace Prisma {
     maxDepth?: IntFieldUpdateOperationsInput | number
     maxNodes?: IntFieldUpdateOperationsInput | number
     maxTapsPerScreen?: IntFieldUpdateOperationsInput | number
+    currentNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16826,6 +20692,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     apkBuild?: ApkBuildUpdateOneRequiredWithoutRunsNestedInput
     edges?: ScreenEdgeUpdateManyWithoutReviewRunNestedInput
+    actions?: ExplorationActionUpdateManyWithoutReviewRunNestedInput
   }
 
   export type ReviewRunUncheckedUpdateWithoutNodesInput = {
@@ -16835,12 +20702,14 @@ export namespace Prisma {
     maxDepth?: IntFieldUpdateOperationsInput | number
     maxNodes?: IntFieldUpdateOperationsInput | number
     maxTapsPerScreen?: IntFieldUpdateOperationsInput | number
+    currentNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     edges?: ScreenEdgeUncheckedUpdateManyWithoutReviewRunNestedInput
+    actions?: ExplorationActionUncheckedUpdateManyWithoutReviewRunNestedInput
   }
 
   export type ScreenEdgeUpsertWithWhereUniqueWithoutFromNodeInput = {
@@ -16875,12 +20744,44 @@ export namespace Prisma {
     data: XOR<ScreenEdgeUpdateManyMutationInput, ScreenEdgeUncheckedUpdateManyWithoutToNodeInput>
   }
 
+  export type NodeCommentUpsertWithWhereUniqueWithoutScreenNodeInput = {
+    where: NodeCommentWhereUniqueInput
+    update: XOR<NodeCommentUpdateWithoutScreenNodeInput, NodeCommentUncheckedUpdateWithoutScreenNodeInput>
+    create: XOR<NodeCommentCreateWithoutScreenNodeInput, NodeCommentUncheckedCreateWithoutScreenNodeInput>
+  }
+
+  export type NodeCommentUpdateWithWhereUniqueWithoutScreenNodeInput = {
+    where: NodeCommentWhereUniqueInput
+    data: XOR<NodeCommentUpdateWithoutScreenNodeInput, NodeCommentUncheckedUpdateWithoutScreenNodeInput>
+  }
+
+  export type NodeCommentUpdateManyWithWhereWithoutScreenNodeInput = {
+    where: NodeCommentScalarWhereInput
+    data: XOR<NodeCommentUpdateManyMutationInput, NodeCommentUncheckedUpdateManyWithoutScreenNodeInput>
+  }
+
+  export type NodeCommentScalarWhereInput = {
+    AND?: NodeCommentScalarWhereInput | NodeCommentScalarWhereInput[]
+    OR?: NodeCommentScalarWhereInput[]
+    NOT?: NodeCommentScalarWhereInput | NodeCommentScalarWhereInput[]
+    id?: StringFilter<"NodeComment"> | string
+    screenNodeId?: StringFilter<"NodeComment"> | string
+    body?: StringFilter<"NodeComment"> | string
+    issueType?: EnumIssueTypeNullableFilter<"NodeComment"> | $Enums.IssueType | null
+    status?: EnumCommentStatusFilter<"NodeComment"> | $Enums.CommentStatus
+    createdById?: StringNullableFilter<"NodeComment"> | string | null
+    createdByName?: StringNullableFilter<"NodeComment"> | string | null
+    createdAt?: DateTimeFilter<"NodeComment"> | Date | string
+    updatedAt?: DateTimeFilter<"NodeComment"> | Date | string
+  }
+
   export type ReviewRunCreateWithoutEdgesInput = {
     id?: string
     status?: $Enums.ReviewRunStatus
     maxDepth?: number
     maxNodes?: number
     maxTapsPerScreen?: number
+    currentNodeId?: string | null
     startedAt?: Date | string | null
     completedAt?: Date | string | null
     errorMessage?: string | null
@@ -16888,6 +20789,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     apkBuild: ApkBuildCreateNestedOneWithoutRunsInput
     nodes?: ScreenNodeCreateNestedManyWithoutReviewRunInput
+    actions?: ExplorationActionCreateNestedManyWithoutReviewRunInput
   }
 
   export type ReviewRunUncheckedCreateWithoutEdgesInput = {
@@ -16897,12 +20799,14 @@ export namespace Prisma {
     maxDepth?: number
     maxNodes?: number
     maxTapsPerScreen?: number
+    currentNodeId?: string | null
     startedAt?: Date | string | null
     completedAt?: Date | string | null
     errorMessage?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     nodes?: ScreenNodeUncheckedCreateNestedManyWithoutReviewRunInput
+    actions?: ExplorationActionUncheckedCreateNestedManyWithoutReviewRunInput
   }
 
   export type ReviewRunCreateOrConnectWithoutEdgesInput = {
@@ -16915,6 +20819,11 @@ export namespace Prisma {
     screenshotPath: string
     activityName?: string | null
     stateName?: string | null
+    name?: string | null
+    flowName?: string | null
+    nodeType?: string | null
+    positionX?: number | null
+    positionY?: number | null
     uiTreeJson?: NullableJsonNullValueInput | InputJsonValue
     depth: number
     hash: string
@@ -16922,6 +20831,7 @@ export namespace Prisma {
     createdAt?: Date | string
     reviewRun: ReviewRunCreateNestedOneWithoutNodesInput
     incomingEdges?: ScreenEdgeCreateNestedManyWithoutToNodeInput
+    comments?: NodeCommentCreateNestedManyWithoutScreenNodeInput
   }
 
   export type ScreenNodeUncheckedCreateWithoutOutgoingEdgesInput = {
@@ -16930,12 +20840,18 @@ export namespace Prisma {
     screenshotPath: string
     activityName?: string | null
     stateName?: string | null
+    name?: string | null
+    flowName?: string | null
+    nodeType?: string | null
+    positionX?: number | null
+    positionY?: number | null
     uiTreeJson?: NullableJsonNullValueInput | InputJsonValue
     depth: number
     hash: string
     clickableCount?: number
     createdAt?: Date | string
     incomingEdges?: ScreenEdgeUncheckedCreateNestedManyWithoutToNodeInput
+    comments?: NodeCommentUncheckedCreateNestedManyWithoutScreenNodeInput
   }
 
   export type ScreenNodeCreateOrConnectWithoutOutgoingEdgesInput = {
@@ -16948,6 +20864,11 @@ export namespace Prisma {
     screenshotPath: string
     activityName?: string | null
     stateName?: string | null
+    name?: string | null
+    flowName?: string | null
+    nodeType?: string | null
+    positionX?: number | null
+    positionY?: number | null
     uiTreeJson?: NullableJsonNullValueInput | InputJsonValue
     depth: number
     hash: string
@@ -16955,6 +20876,7 @@ export namespace Prisma {
     createdAt?: Date | string
     reviewRun: ReviewRunCreateNestedOneWithoutNodesInput
     outgoingEdges?: ScreenEdgeCreateNestedManyWithoutFromNodeInput
+    comments?: NodeCommentCreateNestedManyWithoutScreenNodeInput
   }
 
   export type ScreenNodeUncheckedCreateWithoutIncomingEdgesInput = {
@@ -16963,12 +20885,18 @@ export namespace Prisma {
     screenshotPath: string
     activityName?: string | null
     stateName?: string | null
+    name?: string | null
+    flowName?: string | null
+    nodeType?: string | null
+    positionX?: number | null
+    positionY?: number | null
     uiTreeJson?: NullableJsonNullValueInput | InputJsonValue
     depth: number
     hash: string
     clickableCount?: number
     createdAt?: Date | string
     outgoingEdges?: ScreenEdgeUncheckedCreateNestedManyWithoutFromNodeInput
+    comments?: NodeCommentUncheckedCreateNestedManyWithoutScreenNodeInput
   }
 
   export type ScreenNodeCreateOrConnectWithoutIncomingEdgesInput = {
@@ -16993,6 +20921,7 @@ export namespace Prisma {
     maxDepth?: IntFieldUpdateOperationsInput | number
     maxNodes?: IntFieldUpdateOperationsInput | number
     maxTapsPerScreen?: IntFieldUpdateOperationsInput | number
+    currentNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17000,6 +20929,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     apkBuild?: ApkBuildUpdateOneRequiredWithoutRunsNestedInput
     nodes?: ScreenNodeUpdateManyWithoutReviewRunNestedInput
+    actions?: ExplorationActionUpdateManyWithoutReviewRunNestedInput
   }
 
   export type ReviewRunUncheckedUpdateWithoutEdgesInput = {
@@ -17009,12 +20939,14 @@ export namespace Prisma {
     maxDepth?: IntFieldUpdateOperationsInput | number
     maxNodes?: IntFieldUpdateOperationsInput | number
     maxTapsPerScreen?: IntFieldUpdateOperationsInput | number
+    currentNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     nodes?: ScreenNodeUncheckedUpdateManyWithoutReviewRunNestedInput
+    actions?: ExplorationActionUncheckedUpdateManyWithoutReviewRunNestedInput
   }
 
   export type ScreenNodeUpsertWithoutOutgoingEdgesInput = {
@@ -17033,6 +20965,11 @@ export namespace Prisma {
     screenshotPath?: StringFieldUpdateOperationsInput | string
     activityName?: NullableStringFieldUpdateOperationsInput | string | null
     stateName?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    flowName?: NullableStringFieldUpdateOperationsInput | string | null
+    nodeType?: NullableStringFieldUpdateOperationsInput | string | null
+    positionX?: NullableFloatFieldUpdateOperationsInput | number | null
+    positionY?: NullableFloatFieldUpdateOperationsInput | number | null
     uiTreeJson?: NullableJsonNullValueInput | InputJsonValue
     depth?: IntFieldUpdateOperationsInput | number
     hash?: StringFieldUpdateOperationsInput | string
@@ -17040,6 +20977,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     reviewRun?: ReviewRunUpdateOneRequiredWithoutNodesNestedInput
     incomingEdges?: ScreenEdgeUpdateManyWithoutToNodeNestedInput
+    comments?: NodeCommentUpdateManyWithoutScreenNodeNestedInput
   }
 
   export type ScreenNodeUncheckedUpdateWithoutOutgoingEdgesInput = {
@@ -17048,12 +20986,18 @@ export namespace Prisma {
     screenshotPath?: StringFieldUpdateOperationsInput | string
     activityName?: NullableStringFieldUpdateOperationsInput | string | null
     stateName?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    flowName?: NullableStringFieldUpdateOperationsInput | string | null
+    nodeType?: NullableStringFieldUpdateOperationsInput | string | null
+    positionX?: NullableFloatFieldUpdateOperationsInput | number | null
+    positionY?: NullableFloatFieldUpdateOperationsInput | number | null
     uiTreeJson?: NullableJsonNullValueInput | InputJsonValue
     depth?: IntFieldUpdateOperationsInput | number
     hash?: StringFieldUpdateOperationsInput | string
     clickableCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     incomingEdges?: ScreenEdgeUncheckedUpdateManyWithoutToNodeNestedInput
+    comments?: NodeCommentUncheckedUpdateManyWithoutScreenNodeNestedInput
   }
 
   export type ScreenNodeUpsertWithoutIncomingEdgesInput = {
@@ -17072,6 +21016,11 @@ export namespace Prisma {
     screenshotPath?: StringFieldUpdateOperationsInput | string
     activityName?: NullableStringFieldUpdateOperationsInput | string | null
     stateName?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    flowName?: NullableStringFieldUpdateOperationsInput | string | null
+    nodeType?: NullableStringFieldUpdateOperationsInput | string | null
+    positionX?: NullableFloatFieldUpdateOperationsInput | number | null
+    positionY?: NullableFloatFieldUpdateOperationsInput | number | null
     uiTreeJson?: NullableJsonNullValueInput | InputJsonValue
     depth?: IntFieldUpdateOperationsInput | number
     hash?: StringFieldUpdateOperationsInput | string
@@ -17079,6 +21028,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     reviewRun?: ReviewRunUpdateOneRequiredWithoutNodesNestedInput
     outgoingEdges?: ScreenEdgeUpdateManyWithoutFromNodeNestedInput
+    comments?: NodeCommentUpdateManyWithoutScreenNodeNestedInput
   }
 
   export type ScreenNodeUncheckedUpdateWithoutIncomingEdgesInput = {
@@ -17087,12 +21037,198 @@ export namespace Prisma {
     screenshotPath?: StringFieldUpdateOperationsInput | string
     activityName?: NullableStringFieldUpdateOperationsInput | string | null
     stateName?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    flowName?: NullableStringFieldUpdateOperationsInput | string | null
+    nodeType?: NullableStringFieldUpdateOperationsInput | string | null
+    positionX?: NullableFloatFieldUpdateOperationsInput | number | null
+    positionY?: NullableFloatFieldUpdateOperationsInput | number | null
     uiTreeJson?: NullableJsonNullValueInput | InputJsonValue
     depth?: IntFieldUpdateOperationsInput | number
     hash?: StringFieldUpdateOperationsInput | string
     clickableCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     outgoingEdges?: ScreenEdgeUncheckedUpdateManyWithoutFromNodeNestedInput
+    comments?: NodeCommentUncheckedUpdateManyWithoutScreenNodeNestedInput
+  }
+
+  export type ScreenNodeCreateWithoutCommentsInput = {
+    id?: string
+    screenshotPath: string
+    activityName?: string | null
+    stateName?: string | null
+    name?: string | null
+    flowName?: string | null
+    nodeType?: string | null
+    positionX?: number | null
+    positionY?: number | null
+    uiTreeJson?: NullableJsonNullValueInput | InputJsonValue
+    depth: number
+    hash: string
+    clickableCount?: number
+    createdAt?: Date | string
+    reviewRun: ReviewRunCreateNestedOneWithoutNodesInput
+    outgoingEdges?: ScreenEdgeCreateNestedManyWithoutFromNodeInput
+    incomingEdges?: ScreenEdgeCreateNestedManyWithoutToNodeInput
+  }
+
+  export type ScreenNodeUncheckedCreateWithoutCommentsInput = {
+    id?: string
+    reviewRunId: string
+    screenshotPath: string
+    activityName?: string | null
+    stateName?: string | null
+    name?: string | null
+    flowName?: string | null
+    nodeType?: string | null
+    positionX?: number | null
+    positionY?: number | null
+    uiTreeJson?: NullableJsonNullValueInput | InputJsonValue
+    depth: number
+    hash: string
+    clickableCount?: number
+    createdAt?: Date | string
+    outgoingEdges?: ScreenEdgeUncheckedCreateNestedManyWithoutFromNodeInput
+    incomingEdges?: ScreenEdgeUncheckedCreateNestedManyWithoutToNodeInput
+  }
+
+  export type ScreenNodeCreateOrConnectWithoutCommentsInput = {
+    where: ScreenNodeWhereUniqueInput
+    create: XOR<ScreenNodeCreateWithoutCommentsInput, ScreenNodeUncheckedCreateWithoutCommentsInput>
+  }
+
+  export type ScreenNodeUpsertWithoutCommentsInput = {
+    update: XOR<ScreenNodeUpdateWithoutCommentsInput, ScreenNodeUncheckedUpdateWithoutCommentsInput>
+    create: XOR<ScreenNodeCreateWithoutCommentsInput, ScreenNodeUncheckedCreateWithoutCommentsInput>
+    where?: ScreenNodeWhereInput
+  }
+
+  export type ScreenNodeUpdateToOneWithWhereWithoutCommentsInput = {
+    where?: ScreenNodeWhereInput
+    data: XOR<ScreenNodeUpdateWithoutCommentsInput, ScreenNodeUncheckedUpdateWithoutCommentsInput>
+  }
+
+  export type ScreenNodeUpdateWithoutCommentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    screenshotPath?: StringFieldUpdateOperationsInput | string
+    activityName?: NullableStringFieldUpdateOperationsInput | string | null
+    stateName?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    flowName?: NullableStringFieldUpdateOperationsInput | string | null
+    nodeType?: NullableStringFieldUpdateOperationsInput | string | null
+    positionX?: NullableFloatFieldUpdateOperationsInput | number | null
+    positionY?: NullableFloatFieldUpdateOperationsInput | number | null
+    uiTreeJson?: NullableJsonNullValueInput | InputJsonValue
+    depth?: IntFieldUpdateOperationsInput | number
+    hash?: StringFieldUpdateOperationsInput | string
+    clickableCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reviewRun?: ReviewRunUpdateOneRequiredWithoutNodesNestedInput
+    outgoingEdges?: ScreenEdgeUpdateManyWithoutFromNodeNestedInput
+    incomingEdges?: ScreenEdgeUpdateManyWithoutToNodeNestedInput
+  }
+
+  export type ScreenNodeUncheckedUpdateWithoutCommentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reviewRunId?: StringFieldUpdateOperationsInput | string
+    screenshotPath?: StringFieldUpdateOperationsInput | string
+    activityName?: NullableStringFieldUpdateOperationsInput | string | null
+    stateName?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    flowName?: NullableStringFieldUpdateOperationsInput | string | null
+    nodeType?: NullableStringFieldUpdateOperationsInput | string | null
+    positionX?: NullableFloatFieldUpdateOperationsInput | number | null
+    positionY?: NullableFloatFieldUpdateOperationsInput | number | null
+    uiTreeJson?: NullableJsonNullValueInput | InputJsonValue
+    depth?: IntFieldUpdateOperationsInput | number
+    hash?: StringFieldUpdateOperationsInput | string
+    clickableCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    outgoingEdges?: ScreenEdgeUncheckedUpdateManyWithoutFromNodeNestedInput
+    incomingEdges?: ScreenEdgeUncheckedUpdateManyWithoutToNodeNestedInput
+  }
+
+  export type ReviewRunCreateWithoutActionsInput = {
+    id?: string
+    status?: $Enums.ReviewRunStatus
+    maxDepth?: number
+    maxNodes?: number
+    maxTapsPerScreen?: number
+    currentNodeId?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    errorMessage?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    apkBuild: ApkBuildCreateNestedOneWithoutRunsInput
+    nodes?: ScreenNodeCreateNestedManyWithoutReviewRunInput
+    edges?: ScreenEdgeCreateNestedManyWithoutReviewRunInput
+  }
+
+  export type ReviewRunUncheckedCreateWithoutActionsInput = {
+    id?: string
+    apkBuildId: string
+    status?: $Enums.ReviewRunStatus
+    maxDepth?: number
+    maxNodes?: number
+    maxTapsPerScreen?: number
+    currentNodeId?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    errorMessage?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    nodes?: ScreenNodeUncheckedCreateNestedManyWithoutReviewRunInput
+    edges?: ScreenEdgeUncheckedCreateNestedManyWithoutReviewRunInput
+  }
+
+  export type ReviewRunCreateOrConnectWithoutActionsInput = {
+    where: ReviewRunWhereUniqueInput
+    create: XOR<ReviewRunCreateWithoutActionsInput, ReviewRunUncheckedCreateWithoutActionsInput>
+  }
+
+  export type ReviewRunUpsertWithoutActionsInput = {
+    update: XOR<ReviewRunUpdateWithoutActionsInput, ReviewRunUncheckedUpdateWithoutActionsInput>
+    create: XOR<ReviewRunCreateWithoutActionsInput, ReviewRunUncheckedCreateWithoutActionsInput>
+    where?: ReviewRunWhereInput
+  }
+
+  export type ReviewRunUpdateToOneWithWhereWithoutActionsInput = {
+    where?: ReviewRunWhereInput
+    data: XOR<ReviewRunUpdateWithoutActionsInput, ReviewRunUncheckedUpdateWithoutActionsInput>
+  }
+
+  export type ReviewRunUpdateWithoutActionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumReviewRunStatusFieldUpdateOperationsInput | $Enums.ReviewRunStatus
+    maxDepth?: IntFieldUpdateOperationsInput | number
+    maxNodes?: IntFieldUpdateOperationsInput | number
+    maxTapsPerScreen?: IntFieldUpdateOperationsInput | number
+    currentNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    apkBuild?: ApkBuildUpdateOneRequiredWithoutRunsNestedInput
+    nodes?: ScreenNodeUpdateManyWithoutReviewRunNestedInput
+    edges?: ScreenEdgeUpdateManyWithoutReviewRunNestedInput
+  }
+
+  export type ReviewRunUncheckedUpdateWithoutActionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    apkBuildId?: StringFieldUpdateOperationsInput | string
+    status?: EnumReviewRunStatusFieldUpdateOperationsInput | $Enums.ReviewRunStatus
+    maxDepth?: IntFieldUpdateOperationsInput | number
+    maxNodes?: IntFieldUpdateOperationsInput | number
+    maxTapsPerScreen?: IntFieldUpdateOperationsInput | number
+    currentNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    nodes?: ScreenNodeUncheckedUpdateManyWithoutReviewRunNestedInput
+    edges?: ScreenEdgeUncheckedUpdateManyWithoutReviewRunNestedInput
   }
 
   export type UserCreateWithoutAccountsInput = {
@@ -17428,6 +21564,7 @@ export namespace Prisma {
     maxDepth?: number
     maxNodes?: number
     maxTapsPerScreen?: number
+    currentNodeId?: string | null
     startedAt?: Date | string | null
     completedAt?: Date | string | null
     errorMessage?: string | null
@@ -17441,6 +21578,7 @@ export namespace Prisma {
     maxDepth?: IntFieldUpdateOperationsInput | number
     maxNodes?: IntFieldUpdateOperationsInput | number
     maxTapsPerScreen?: IntFieldUpdateOperationsInput | number
+    currentNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17448,6 +21586,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     nodes?: ScreenNodeUpdateManyWithoutReviewRunNestedInput
     edges?: ScreenEdgeUpdateManyWithoutReviewRunNestedInput
+    actions?: ExplorationActionUpdateManyWithoutReviewRunNestedInput
   }
 
   export type ReviewRunUncheckedUpdateWithoutApkBuildInput = {
@@ -17456,6 +21595,7 @@ export namespace Prisma {
     maxDepth?: IntFieldUpdateOperationsInput | number
     maxNodes?: IntFieldUpdateOperationsInput | number
     maxTapsPerScreen?: IntFieldUpdateOperationsInput | number
+    currentNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17463,6 +21603,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     nodes?: ScreenNodeUncheckedUpdateManyWithoutReviewRunNestedInput
     edges?: ScreenEdgeUncheckedUpdateManyWithoutReviewRunNestedInput
+    actions?: ExplorationActionUncheckedUpdateManyWithoutReviewRunNestedInput
   }
 
   export type ReviewRunUncheckedUpdateManyWithoutApkBuildInput = {
@@ -17471,6 +21612,7 @@ export namespace Prisma {
     maxDepth?: IntFieldUpdateOperationsInput | number
     maxNodes?: IntFieldUpdateOperationsInput | number
     maxTapsPerScreen?: IntFieldUpdateOperationsInput | number
+    currentNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17483,6 +21625,11 @@ export namespace Prisma {
     screenshotPath: string
     activityName?: string | null
     stateName?: string | null
+    name?: string | null
+    flowName?: string | null
+    nodeType?: string | null
+    positionX?: number | null
+    positionY?: number | null
     uiTreeJson?: NullableJsonNullValueInput | InputJsonValue
     depth: number
     hash: string
@@ -17501,11 +21648,32 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type ExplorationActionCreateManyReviewRunInput = {
+    id?: string
+    type: $Enums.ExplorationActionType
+    status?: $Enums.ExplorationActionStatus
+    fromNodeId?: string | null
+    targetNodeId?: string | null
+    hotspotKey?: string | null
+    targetLabel?: string | null
+    targetBounds?: NullableJsonNullValueInput | InputJsonValue
+    resultNodeId?: string | null
+    isExistingNode?: boolean
+    errorMessage?: string | null
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+  }
+
   export type ScreenNodeUpdateWithoutReviewRunInput = {
     id?: StringFieldUpdateOperationsInput | string
     screenshotPath?: StringFieldUpdateOperationsInput | string
     activityName?: NullableStringFieldUpdateOperationsInput | string | null
     stateName?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    flowName?: NullableStringFieldUpdateOperationsInput | string | null
+    nodeType?: NullableStringFieldUpdateOperationsInput | string | null
+    positionX?: NullableFloatFieldUpdateOperationsInput | number | null
+    positionY?: NullableFloatFieldUpdateOperationsInput | number | null
     uiTreeJson?: NullableJsonNullValueInput | InputJsonValue
     depth?: IntFieldUpdateOperationsInput | number
     hash?: StringFieldUpdateOperationsInput | string
@@ -17513,6 +21681,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     outgoingEdges?: ScreenEdgeUpdateManyWithoutFromNodeNestedInput
     incomingEdges?: ScreenEdgeUpdateManyWithoutToNodeNestedInput
+    comments?: NodeCommentUpdateManyWithoutScreenNodeNestedInput
   }
 
   export type ScreenNodeUncheckedUpdateWithoutReviewRunInput = {
@@ -17520,6 +21689,11 @@ export namespace Prisma {
     screenshotPath?: StringFieldUpdateOperationsInput | string
     activityName?: NullableStringFieldUpdateOperationsInput | string | null
     stateName?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    flowName?: NullableStringFieldUpdateOperationsInput | string | null
+    nodeType?: NullableStringFieldUpdateOperationsInput | string | null
+    positionX?: NullableFloatFieldUpdateOperationsInput | number | null
+    positionY?: NullableFloatFieldUpdateOperationsInput | number | null
     uiTreeJson?: NullableJsonNullValueInput | InputJsonValue
     depth?: IntFieldUpdateOperationsInput | number
     hash?: StringFieldUpdateOperationsInput | string
@@ -17527,6 +21701,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     outgoingEdges?: ScreenEdgeUncheckedUpdateManyWithoutFromNodeNestedInput
     incomingEdges?: ScreenEdgeUncheckedUpdateManyWithoutToNodeNestedInput
+    comments?: NodeCommentUncheckedUpdateManyWithoutScreenNodeNestedInput
   }
 
   export type ScreenNodeUncheckedUpdateManyWithoutReviewRunInput = {
@@ -17534,6 +21709,11 @@ export namespace Prisma {
     screenshotPath?: StringFieldUpdateOperationsInput | string
     activityName?: NullableStringFieldUpdateOperationsInput | string | null
     stateName?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    flowName?: NullableStringFieldUpdateOperationsInput | string | null
+    nodeType?: NullableStringFieldUpdateOperationsInput | string | null
+    positionX?: NullableFloatFieldUpdateOperationsInput | number | null
+    positionY?: NullableFloatFieldUpdateOperationsInput | number | null
     uiTreeJson?: NullableJsonNullValueInput | InputJsonValue
     depth?: IntFieldUpdateOperationsInput | number
     hash?: StringFieldUpdateOperationsInput | string
@@ -17574,6 +21754,54 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ExplorationActionUpdateWithoutReviewRunInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumExplorationActionTypeFieldUpdateOperationsInput | $Enums.ExplorationActionType
+    status?: EnumExplorationActionStatusFieldUpdateOperationsInput | $Enums.ExplorationActionStatus
+    fromNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    targetNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    hotspotKey?: NullableStringFieldUpdateOperationsInput | string | null
+    targetLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    targetBounds?: NullableJsonNullValueInput | InputJsonValue
+    resultNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    isExistingNode?: BoolFieldUpdateOperationsInput | boolean
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ExplorationActionUncheckedUpdateWithoutReviewRunInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumExplorationActionTypeFieldUpdateOperationsInput | $Enums.ExplorationActionType
+    status?: EnumExplorationActionStatusFieldUpdateOperationsInput | $Enums.ExplorationActionStatus
+    fromNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    targetNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    hotspotKey?: NullableStringFieldUpdateOperationsInput | string | null
+    targetLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    targetBounds?: NullableJsonNullValueInput | InputJsonValue
+    resultNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    isExistingNode?: BoolFieldUpdateOperationsInput | boolean
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ExplorationActionUncheckedUpdateManyWithoutReviewRunInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumExplorationActionTypeFieldUpdateOperationsInput | $Enums.ExplorationActionType
+    status?: EnumExplorationActionStatusFieldUpdateOperationsInput | $Enums.ExplorationActionStatus
+    fromNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    targetNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    hotspotKey?: NullableStringFieldUpdateOperationsInput | string | null
+    targetLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    targetBounds?: NullableJsonNullValueInput | InputJsonValue
+    resultNodeId?: NullableStringFieldUpdateOperationsInput | string | null
+    isExistingNode?: BoolFieldUpdateOperationsInput | boolean
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
   export type ScreenEdgeCreateManyFromNodeInput = {
     id?: string
     reviewRunId: string
@@ -17594,6 +21822,17 @@ export namespace Prisma {
     targetText?: string | null
     targetBounds?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
+  }
+
+  export type NodeCommentCreateManyScreenNodeInput = {
+    id?: string
+    body: string
+    issueType?: $Enums.IssueType | null
+    status?: $Enums.CommentStatus
+    createdById?: string | null
+    createdByName?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ScreenEdgeUpdateWithoutFromNodeInput = {
@@ -17660,6 +21899,39 @@ export namespace Prisma {
     targetText?: NullableStringFieldUpdateOperationsInput | string | null
     targetBounds?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NodeCommentUpdateWithoutScreenNodeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    issueType?: NullableEnumIssueTypeFieldUpdateOperationsInput | $Enums.IssueType | null
+    status?: EnumCommentStatusFieldUpdateOperationsInput | $Enums.CommentStatus
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByName?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NodeCommentUncheckedUpdateWithoutScreenNodeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    issueType?: NullableEnumIssueTypeFieldUpdateOperationsInput | $Enums.IssueType | null
+    status?: EnumCommentStatusFieldUpdateOperationsInput | $Enums.CommentStatus
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByName?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NodeCommentUncheckedUpdateManyWithoutScreenNodeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    issueType?: NullableEnumIssueTypeFieldUpdateOperationsInput | $Enums.IssueType | null
+    status?: EnumCommentStatusFieldUpdateOperationsInput | $Enums.CommentStatus
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByName?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AccountCreateManyUserInput = {
