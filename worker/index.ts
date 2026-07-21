@@ -1,6 +1,13 @@
 import { promises as fs } from "node:fs";
 
 import type { ReviewRunStatus } from "../generated/prisma";
+import {
+  DEFAULT_DEVICE_ID,
+  deviceAppiumUrl,
+  deviceUdid,
+  getDeviceProfile,
+  type DeviceProfile,
+} from "../src/lib/devices";
 import { absArtifactPath } from "../src/server/artifacts";
 import { AndroidDevice, startEmulator, sleep } from "./appium";
 import { db } from "./db";
@@ -16,8 +23,16 @@ const POLL_MS = 3000;
 const ACTION_POLL_MS = 50;
 const log = createLogger("worker");
 
+/** This worker only claims runs targeting this device profile. */
+const WORKER_DEVICE_ID = process.env.WORKER_DEVICE_ID ?? DEFAULT_DEVICE_ID;
+const deviceProfile: DeviceProfile | undefined =
+  getDeviceProfile(WORKER_DEVICE_ID);
+
 function appiumUrl(): string {
-  return process.env.APPIUM_URL ?? "http://127.0.0.1:4723";
+  // Explicit override wins; otherwise use the device profile's dedicated port.
+  if (process.env.APPIUM_URL) return process.env.APPIUM_URL;
+  if (deviceProfile) return deviceAppiumUrl(deviceProfile);
+  return "http://127.0.0.1:4723";
 }
 
 async function setStatus(
@@ -83,8 +98,13 @@ async function processRun(runId: string): Promise<void> {
     device = await AndroidDevice.waitForDevice({
       appiumUrl: appiumUrl(),
       log: runLog,
+      udid: deviceProfile ? deviceUdid(deviceProfile) : undefined,
+      systemPort: deviceProfile?.systemPort,
     });
-    runLog.info("emulator connected via Appium");
+    runLog.info("emulator connected via Appium", {
+      deviceId: WORKER_DEVICE_ID,
+      udid: deviceProfile ? deviceUdid(deviceProfile) : "(any)",
+    });
 
     const apkPath = absArtifactPath(run.apkBuild.filePath);
     try {
@@ -192,13 +212,15 @@ async function processRun(runId: string): Promise<void> {
 
 async function pollOnce(): Promise<boolean> {
   // Fresh runs first, then orphaned interactive sessions (worker restart).
+  // Only claim runs targeting this worker's device so two workers can run in
+  // parallel against separate emulators.
   const run =
     (await db.reviewRun.findFirst({
-      where: { status: "queued" },
+      where: { status: "queued", deviceId: WORKER_DEVICE_ID },
       orderBy: { createdAt: "asc" },
     })) ??
     (await db.reviewRun.findFirst({
-      where: { status: "awaiting_input" },
+      where: { status: "awaiting_input", deviceId: WORKER_DEVICE_ID },
       orderBy: { updatedAt: "asc" },
     }));
 
@@ -208,7 +230,16 @@ async function pollOnce(): Promise<boolean> {
 }
 
 async function main(): Promise<void> {
-  log.info("APK worker started (V2 interactive)", { appiumUrl: appiumUrl() });
+  if (!deviceProfile) {
+    log.warn(
+      "unknown WORKER_DEVICE_ID; connecting to any device Appium sees",
+      { deviceId: WORKER_DEVICE_ID },
+    );
+  }
+  log.info("APK worker started (V2 interactive)", {
+    deviceId: WORKER_DEVICE_ID,
+    appiumUrl: appiumUrl(),
+  });
 
   for (;;) {
     try {

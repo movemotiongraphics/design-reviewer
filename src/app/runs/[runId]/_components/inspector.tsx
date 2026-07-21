@@ -5,6 +5,7 @@ import {
   ArrowDownRight,
   ArrowUpRight,
   Loader2,
+  RefreshCw,
   RotateCcw,
   Undo2,
   X,
@@ -77,7 +78,7 @@ export function Inspector({
   onSelectNode: (id: string) => void;
 }) {
   const utils = api.useUtils();
-  const { interactive, exploring, onHotspotClick, onPressBack, onResume, onResetRoot } =
+  const { interactive, exploring, onHotspotClick, onPressBack, onResume, onResetRoot, onRefreshScreenshot } =
     exploration;
   const byId = new Map(nodes.map((n) => [n.id, n]));
   const incoming = edges.filter((e) => e.toNodeId === node.id);
@@ -158,6 +159,17 @@ export function Inspector({
 
         {interactive ? (
           <div className="flex flex-wrap gap-1.5">
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              disabled={exploring}
+              onClick={() => void onRefreshScreenshot(node.id)}
+              title="Re-navigate here and overwrite this node's screenshot"
+            >
+              <RefreshCw className="size-3.5" />
+              Refresh screenshot
+            </Button>
             <Button
               type="button"
               size="sm"

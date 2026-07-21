@@ -28,6 +28,7 @@ import {
 } from "~/lib/screen";
 import { api } from "~/trpc/react";
 import { Inspector, type GraphNode } from "./inspector";
+import { LocaleTestDialog } from "./locale-test-dialog";
 import { ScreenNodeCard, type ScreenNodeData } from "./screen-node-card";
 import { useExploration } from "./use-exploration";
 
@@ -159,6 +160,7 @@ export function GraphViewer({
   const [commentFilter, setCommentFilter] = useState("");
   const [groupMode, setGroupMode] = useState<GroupMode>("none");
   const [showHotspots, setShowHotspots] = useState(true);
+  const [localeTestNodeId, setLocaleTestNodeId] = useState<string | null>(null);
 
   const onSelectNode = useCallback((id: string) => {
     setSelectedId(id);
@@ -291,6 +293,12 @@ export function GraphViewer({
             setSelectedId(nodeId);
             void onHotspotClickRef.current(nodeId, hotspot);
           },
+          onTestLocales: exploration.interactive
+            ? () => {
+                setSelectedId(nodeId);
+                setLocaleTestNodeId(nodeId);
+              }
+            : undefined,
         },
       };
     });
@@ -332,6 +340,7 @@ export function GraphViewer({
     hotspotsByNodeId,
     showHotspots,
     hotspotBusy,
+    exploration.interactive,
   ]);
 
   const [nodes, setNodes, onNodesChangeBase] = useNodesState<Node>([]);
@@ -413,6 +422,8 @@ export function GraphViewer({
   }, []);
 
   const selectedNode = rawNodes?.find((n) => n.id === selectedId) ?? null;
+  const localeTestNode =
+    rawNodes?.find((n) => n.id === localeTestNodeId) ?? null;
 
   async function applyLayout(mode: GroupMode, persist: boolean) {
     if (!rawNodes) return;
@@ -558,6 +569,16 @@ export function GraphViewer({
           />
         ) : null}
       </div>
+
+      {localeTestNode ? (
+        <LocaleTestDialog
+          runId={runId}
+          runStatus={runStatus}
+          nodeId={localeTestNode.id}
+          nodeName={displayNodeName(localeTestNode)}
+          onClose={() => setLocaleTestNodeId(null)}
+        />
+      ) : null}
     </div>
   );
 }

@@ -1,6 +1,13 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
+import { DEFAULT_DEVICE_ID, DEVICE_IDS } from "~/lib/devices";
+import {
+  DEFAULT_LOCALE_CODES,
+  MAX_LOCALES_PER_TEST,
+  getLocaleOption,
+  localeLabel,
+} from "~/lib/locales";
 import {
   deriveHotspots,
   displayNodeName,
@@ -52,6 +59,7 @@ export const reviewRunRouter = createTRPCRouter({
     .input(
       z.object({
         apkBuildId: z.string(),
+        deviceId: z.enum(DEVICE_IDS).default(DEFAULT_DEVICE_ID),
         maxDepth: z.number().int().min(1).max(6).optional(),
         maxNodes: z.number().int().min(1).max(200).optional(),
         maxTapsPerScreen: z.number().int().min(1).max(20).optional(),
@@ -61,6 +69,7 @@ export const reviewRunRouter = createTRPCRouter({
       return ctx.db.reviewRun.create({
         data: {
           apkBuildId: input.apkBuildId,
+          deviceId: input.deviceId,
           status: "queued",
           maxDepth: input.maxDepth,
           maxNodes: input.maxNodes,
@@ -163,7 +172,7 @@ export const reviewRunRouter = createTRPCRouter({
           };
           return {
             ...node,
-            screenshotUrl: toArtifactUrl(node.screenshotPath),
+            screenshotUrl: `${toArtifactUrl(node.screenshotPath)}?h=${node.hash.slice(0, 12)}`,
             displayName: displayNodeName(node),
             commentSummary: summary,
             issueCount: Object.values(summary.issueCounts).reduce(
@@ -363,6 +372,241 @@ export const reviewRunRouter = createTRPCRouter({
           targetNodeId: input.nodeId,
         },
       });
+    }),
+
+  /**
+   * Re-navigate to a node and overwrite its screenshot (and UI dump) with a
+   * freshly captured settled frame. Useful when the original capture was early
+   * / mid-skeleton despite the stability wait.
+   */
+  refreshScreenshot: publicProcedure
+    .input(
+      z.object({
+        runId: z.string(),
+        nodeId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await assertInteractiveRun(ctx.db, input.runId);
+
+      const node = await ctx.db.screenNode.findFirst({
+        where: { id: input.nodeId, reviewRunId: input.runId },
+      });
+      if (!node) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Node not found" });
+      }
+
+      const pending = await ctx.db.explorationAction.findFirst({
+        where: {
+          reviewRunId: input.runId,
+          status: { in: ["pending", "running"] },
+        },
+      });
+      if (pending) {
+        throw new TRPCError({
+          code: "PRECONDITION_FAILED",
+          message: "Another exploration action is already in progress",
+        });
+      }
+
+      return ctx.db.explorationAction.create({
+        data: {
+          reviewRunId: input.runId,
+          type: "refresh_screenshot",
+          status: "pending",
+          fromNodeId: input.nodeId,
+        },
+      });
+    }),
+
+  testLocales: publicProcedure
+    .input(
+      z.object({
+        runId: z.string(),
+        nodeId: z.string(),
+        localeCodes: z
+          .array(z.string())
+          .min(1)
+          .max(MAX_LOCALES_PER_TEST)
+          .optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await assertInteractiveRun(ctx.db, input.runId);
+
+      const node = await ctx.db.screenNode.findFirst({
+        where: { id: input.nodeId, reviewRunId: input.runId },
+      });
+      if (!node) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Node not found" });
+      }
+
+      // Keep only recognised locale codes and de-duplicate, preserving order.
+      const requested = input.localeCodes ?? DEFAULT_LOCALE_CODES;
+      const codes = [...new Set(requested)].filter((c) => getLocaleOption(c));
+      if (codes.length === 0) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "No valid locales selected",
+        });
+      }
+
+      const pending = await ctx.db.explorationAction.findFirst({
+        where: {
+          reviewRunId: input.runId,
+          status: { in: ["pending", "running"] },
+        },
+      });
+      if (pending) {
+        throw new TRPCError({
+          code: "PRECONDITION_FAILED",
+          message: "Another exploration action is already in progress",
+        });
+      }
+
+      const action = await ctx.db.explorationAction.create({
+        data: {
+          reviewRunId: input.runId,
+          type: "test_locales",
+          status: "pending",
+          fromNodeId: input.nodeId,
+          localeCodes: codes,
+        },
+      });
+
+      // Pre-create placeholder rows so the UI can render per-locale progress.
+      await ctx.db.localeShot.createMany({
+        data: codes.map((code) => ({
+          reviewRunId: input.runId,
+          actionId: action.id,
+          sourceNodeId: input.nodeId,
+          locale: code,
+          label: localeLabel(code),
+          status: "pending",
+        })),
+      });
+
+      return action;
+    }),
+
+  getLocaleShots: publicProcedure
+    .input(z.object({ nodeId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const action = await ctx.db.explorationAction.findFirst({
+        where: { fromNodeId: input.nodeId, type: "test_locales" },
+        orderBy: { createdAt: "desc" },
+      });
+      if (!action) return null;
+
+      const shots = await ctx.db.localeShot.findMany({
+        where: { actionId: action.id },
+        orderBy: { createdAt: "asc" },
+      });
+
+      return {
+        action: {
+          id: action.id,
+          status: action.status,
+          errorMessage: action.errorMessage,
+        },
+        shots: shots.map((shot) => ({
+          id: shot.id,
+          locale: shot.locale,
+          label: shot.label,
+          status: shot.status,
+          errorMessage: shot.errorMessage,
+          screenshotUrl: shot.screenshotPath
+            ? toArtifactUrl(shot.screenshotPath)
+            : null,
+        })),
+      };
+    }),
+
+  addLocaleShotsToGraph: publicProcedure
+    .input(z.object({ runId: z.string(), nodeId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const source = await ctx.db.screenNode.findFirst({
+        where: { id: input.nodeId, reviewRunId: input.runId },
+      });
+      if (!source) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Node not found" });
+      }
+
+      const action = await ctx.db.explorationAction.findFirst({
+        where: { fromNodeId: input.nodeId, type: "test_locales" },
+        orderBy: { createdAt: "desc" },
+      });
+      if (!action) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "No locale test found for this screen",
+        });
+      }
+
+      const shots = await ctx.db.localeShot.findMany({
+        where: {
+          actionId: action.id,
+          status: "captured",
+          NOT: { screenshotPath: null },
+        },
+        orderBy: { createdAt: "asc" },
+      });
+      if (shots.length === 0) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "No captured locale screenshots to add",
+        });
+      }
+
+      // Skip screenshots already promoted to the graph (idempotent re-clicks).
+      const paths = shots
+        .map((s) => s.screenshotPath)
+        .filter((p): p is string => !!p);
+      const existing = await ctx.db.screenNode.findMany({
+        where: { reviewRunId: input.runId, screenshotPath: { in: paths } },
+        select: { screenshotPath: true },
+      });
+      const existingPaths = new Set(existing.map((e) => e.screenshotPath));
+
+      const baseX = source.positionX ?? source.depth * 300;
+      const baseY = source.positionY ?? 0;
+      const sourceName = displayNodeName(source);
+      const flowName = `Locales: ${sourceName}`;
+
+      let added = 0;
+      let slot = 0;
+      for (const shot of shots) {
+        if (!shot.screenshotPath || existingPaths.has(shot.screenshotPath)) {
+          continue;
+        }
+        const node = await ctx.db.screenNode.create({
+          data: {
+            reviewRunId: input.runId,
+            screenshotPath: shot.screenshotPath,
+            name: `${sourceName} · ${shot.label}`,
+            flowName,
+            nodeType: "page",
+            depth: source.depth + 1,
+            hash: `locale-${shot.id}`,
+            clickableCount: 0,
+            positionX: baseX + 320,
+            positionY: baseY + slot * 400,
+          },
+        });
+        await ctx.db.screenEdge.create({
+          data: {
+            reviewRunId: input.runId,
+            fromNodeId: input.nodeId,
+            toNodeId: node.id,
+            actionType: "locale",
+            targetLabel: shot.label,
+          },
+        });
+        added += 1;
+        slot += 1;
+      }
+
+      return { added, skipped: shots.length - added };
     }),
 
   endSession: publicProcedure

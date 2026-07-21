@@ -67,6 +67,9 @@ model ReviewRun {
   maxNodes         Int             @default(30)
   maxTapsPerScreen Int             @default(6)
 
+  /// Device profile (see src/lib/devices.ts) this run targets.
+  deviceId String @default("pixel_7")
+
   /// Node the emulator is believed to be on during interactive exploration.
   currentNodeId String?
 
@@ -83,6 +86,7 @@ model ReviewRun {
 
   @@index([apkBuildId])
   @@index([status])
+  @@index([deviceId])
 }
 
 enum ReviewRunStatus {
@@ -200,6 +204,9 @@ model ExplorationAction {
   targetLabel  String?
   targetBounds Json?
 
+  /// Requested locale codes for a `test_locales` action.
+  localeCodes Json?
+
   resultNodeId   String?
   isExistingNode Boolean @default(false)
   errorMessage   String?
@@ -216,6 +223,26 @@ enum ExplorationActionType {
   back
   reset_to_root
   resume_from_node
+  test_locales
+  refresh_screenshot
+}
+
+/// A single screenshot of a source screen re-captured in one locale.
+model LocaleShot {
+  id             String   @id @default(cuid())
+  reviewRunId    String
+  actionId       String
+  sourceNodeId   String
+  locale         String
+  label          String
+  /// pending | captured | failed
+  status         String   @default("pending")
+  screenshotPath String?
+  errorMessage   String?
+  createdAt      DateTime @default(now())
+
+  @@index([actionId])
+  @@index([sourceNodeId])
 }
 
 enum ExplorationActionStatus {

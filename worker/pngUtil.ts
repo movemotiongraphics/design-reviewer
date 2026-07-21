@@ -31,6 +31,66 @@ export function isBlankBlackFrame(png: Buffer): boolean {
   return mean < 12 && variance < 40;
 }
 
+/** Side length of the square grayscale thumbnail used for frame comparison. */
+const SIGNATURE_SIZE = 48;
+/** Per-pixel luma delta below which two thumbnail pixels count as equal. */
+const LUMA_TOLERANCE = 10;
+
+/**
+ * Downscale a PNG screenshot to a small grayscale thumbnail (box sampling)
+ * for cheap frame-to-frame comparison. Returns null if decoding fails.
+ */
+export function frameSignature(png: Buffer): Uint8Array | null {
+  const pixels = decodePngRgb(png);
+  if (!pixels || pixels.width === 0 || pixels.height === 0) return null;
+
+  const { data, width, height } = pixels;
+  const out = new Uint8Array(SIGNATURE_SIZE * SIGNATURE_SIZE);
+
+  for (let ty = 0; ty < SIGNATURE_SIZE; ty++) {
+    const y0 = Math.floor((ty * height) / SIGNATURE_SIZE);
+    const y1 = Math.max(
+      y0 + 1,
+      Math.floor(((ty + 1) * height) / SIGNATURE_SIZE),
+    );
+    for (let tx = 0; tx < SIGNATURE_SIZE; tx++) {
+      const x0 = Math.floor((tx * width) / SIGNATURE_SIZE);
+      const x1 = Math.max(
+        x0 + 1,
+        Math.floor(((tx + 1) * width) / SIGNATURE_SIZE),
+      );
+
+      let sum = 0;
+      let n = 0;
+      for (let y = y0; y < y1; y++) {
+        let o = (y * width + x0) * 3;
+        for (let x = x0; x < x1; x++, o += 3) {
+          sum +=
+            0.2126 * data[o]! + 0.7152 * data[o + 1]! + 0.0722 * data[o + 2]!;
+          n += 1;
+        }
+      }
+      out[ty * SIGNATURE_SIZE + tx] = Math.round(sum / n);
+    }
+  }
+
+  return out;
+}
+
+/**
+ * Fraction of thumbnail pixels whose luma differs by more than a small
+ * tolerance. Ignores tiny noise (blinking cursor, clock digits) while
+ * catching real layout/content changes. Returns 1 for incomparable inputs.
+ */
+export function signatureDiffRatio(a: Uint8Array, b: Uint8Array): number {
+  if (a.length !== b.length || a.length === 0) return 1;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) {
+    if (Math.abs(a[i]! - b[i]!) > LUMA_TOLERANCE) diff += 1;
+  }
+  return diff / a.length;
+}
+
 function decodePngRgb(
   png: Buffer,
 ): { data: Uint8Array; width: number; height: number } | null {

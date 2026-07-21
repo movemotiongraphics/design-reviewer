@@ -78,6 +78,14 @@ export function useExploration({
     },
   });
 
+  const refreshScreenshot = api.reviewRun.refreshScreenshot.useMutation({
+    onError: (err) => {
+      setExploring(false);
+      setPendingActionId(null);
+      toast.error(err.message);
+    },
+  });
+
   const tapRef = useRef(tap);
   tapRef.current = tap;
   const pressBackRef = useRef(pressBack);
@@ -86,6 +94,8 @@ export function useExploration({
   resetRootRef.current = resetRoot;
   const resumeRef = useRef(resume);
   resumeRef.current = resume;
+  const refreshScreenshotRef = useRef(refreshScreenshot);
+  refreshScreenshotRef.current = refreshScreenshot;
 
   const finishAction = useCallback(
     async (action: Action) => {
@@ -102,7 +112,11 @@ export function useExploration({
       }
 
       if (action.isExistingNode) {
-        toast.message("Existing screen found");
+        if (action.type === "refresh_screenshot") {
+          toast.success("Screenshot refreshed");
+        } else {
+          toast.message("Existing screen found");
+        }
       } else if (action.type === "resume_from_node") {
         toast.success("Resumed at this node");
       } else if (action.type === "reset_to_root") {
@@ -192,6 +206,23 @@ export function useExploration({
     }
   }, [runId]);
 
+  const onRefreshScreenshot = useCallback(
+    async (nodeId: string) => {
+      if (!interactiveRef.current || exploringRef.current) return;
+      setExploring(true);
+      try {
+        const action = await refreshScreenshotRef.current.mutateAsync({
+          runId,
+          nodeId,
+        });
+        startAction(action.id);
+      } catch {
+        setExploring(false);
+      }
+    },
+    [runId],
+  );
+
   return {
     interactive,
     exploring,
@@ -199,6 +230,7 @@ export function useExploration({
     onPressBack,
     onResume,
     onResetRoot,
+    onRefreshScreenshot,
   };
 }
 

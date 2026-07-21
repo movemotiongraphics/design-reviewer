@@ -17,24 +17,24 @@ import {
 import { sleep, type AndroidDevice } from "./appium";
 import { db } from "./db";
 import { hashScreenshot } from "./hash";
+import { runLocaleTest } from "./localeTest";
 import type { Logger } from "./log";
 import { isBlankBlackFrame } from "./pngUtil";
+import {
+  captureStableScreenshot,
+  waitForStableScreen,
+} from "./stability";
 import { boundsCenter } from "./safeTap";
 import { parseClickables, type ClickableElement } from "./uiParser";
 
 /** Between path-replay taps (screen must settle before the next tap). */
-const SETTLE_MS = 900;
+const SETTLE_MS = 350;
 /** Max time to wait for the app to become foreground after install/launch. */
 const APP_FOREGROUND_TIMEOUT_MS = 12_000;
 /** Max time to wait for a non-blank first paint (TWA/WebView). */
 const FIRST_PAINT_TIMEOUT_MS = 15_000;
 /** Poll interval while waiting for the first real frame. */
 const FIRST_PAINT_POLL_MS = 400;
-/**
- * Brief pause after a tap before reading package / capturing.
- * Screen-load wait lives in `screenshotBuffer()` — keep this tiny.
- */
-const POST_TAP_MS = 0;
 
 export interface ScreenRecord {
   id: string;
@@ -88,12 +88,14 @@ export async function captureScreen(
   ctx: CaptureContext,
   depth: number,
   activity: string | null,
+  /** Pre-captured settled frame (from `waitForStableScreen`); avoids re-capturing. */
+  pngIn?: Buffer,
 ): Promise<{ record: ScreenRecord; isExisting: boolean } | null> {
   const { reviewRunId, device, log: runLog } = ctx;
 
   if (ctx.hashToNode.size >= ctx.maxNodes) {
     // Still allow matching an existing hash even at the cap.
-    const pngProbe = await device.screenshotBuffer();
+    const pngProbe = pngIn ?? (await device.screenshotBuffer());
     const hashProbe = hashScreenshot(pngProbe);
     const existing = ctx.hashToNode.get(hashProbe);
     if (existing) return { record: existing, isExisting: true };
@@ -113,7 +115,10 @@ export async function captureScreen(
 
   let png: Buffer;
   try {
-    png = await device.captureScreenshot(shotAbs);
+    png = await captureStableScreenshot(device, shotAbs, {
+      log: runLog,
+      pngIn,
+    });
     runLog.info("screenshot captured", { index: idx, depth });
   } catch (err) {
     throw new Error(
@@ -291,7 +296,7 @@ export async function captureRootOnly(opts: {
 /**
  * Poll until the installed app is in the foreground.
  */
-async function waitForAppForeground(
+export async function waitForAppForeground(
   device: AndroidDevice,
   appPackage: string,
   log: Logger,
@@ -319,7 +324,7 @@ async function waitForAppForeground(
  * which yields a solid-black screenshot. Poll until we get a real frame
  * (or UI clickables appear).
  */
-async function waitForFirstPaint(
+export async function waitForFirstPaint(
   device: AndroidDevice,
   log: Logger,
 ): Promise<void> {
@@ -443,6 +448,10 @@ export async function replayPathToNode(opts: {
   await setCurrentNode(reviewRunId, nodeId);
 }
 
+/**
+ * Tap a hotspot and wait for the resulting screen to visually settle.
+ * Returns the settled frame so the caller can persist it without re-capturing.
+ */
 export async function performTapFromHotspot(opts: {
   reviewRunId: string;
   nodeId: string;
@@ -451,7 +460,7 @@ export async function performTapFromHotspot(opts: {
   appPackage: string;
   log: Logger;
   currentNodeId: string | null;
-}): Promise<void> {
+}): Promise<Buffer> {
   await ensureSessionForNode({
     reviewRunId: opts.reviewRunId,
     nodeId: opts.nodeId,
@@ -461,10 +470,14 @@ export async function performTapFromHotspot(opts: {
     currentNodeId: opts.currentNodeId,
   });
 
+  const preTap = await opts.device.screenshotBuffer();
   const { x, y } = boundsCenter(opts.bounds);
   opts.log.info("tapping hotspot", { x, y, nodeId: opts.nodeId });
   await opts.device.tap(x, y);
-  if (POST_TAP_MS > 0) await sleep(POST_TAP_MS);
+  const settled = await waitForStableScreen(opts.device, {
+    log: opts.log,
+    changedFrom: preTap,
+  });
 
   const pkg = await opts.device.getCurrentPackage();
   if (pkg && pkg !== opts.appPackage) {
@@ -473,6 +486,8 @@ export async function performTapFromHotspot(opts: {
     await sleep(SETTLE_MS);
     throw new Error("Tap left the app under test");
   }
+
+  return settled;
 }
 
 export async function captureCurrentScreenAsNode(opts: {
@@ -486,6 +501,8 @@ export async function captureCurrentScreenAsNode(opts: {
   device: AndroidDevice;
   maxNodes: number;
   log: Logger;
+  /** Pre-captured settled frame from a stability wait, if the caller has one. */
+  png?: Buffer;
 }): Promise<{ record: ScreenRecord; isExisting: boolean }> {
   const { hashToNode, nextIndex } = await loadHashMap(opts.reviewRunId);
   const ctx: CaptureContext = {
@@ -498,7 +515,7 @@ export async function captureCurrentScreenAsNode(opts: {
   };
 
   const activity = await opts.device.getCurrentActivity();
-  const result = await captureScreen(ctx, opts.depth, activity);
+  const result = await captureScreen(ctx, opts.depth, activity, opts.png);
   if (!result) {
     throw new Error("Failed to capture screen (max nodes reached?)");
   }
@@ -566,7 +583,7 @@ export async function processExplorationAction(opts: {
         });
         if (!parent) throw new Error("Parent node not found");
 
-        await performTapFromHotspot({
+        const settled = await performTapFromHotspot({
           reviewRunId: action.reviewRunId,
           nodeId: action.fromNodeId,
           bounds,
@@ -586,6 +603,7 @@ export async function processExplorationAction(opts: {
           device: opts.device,
           maxNodes: opts.maxNodes,
           log,
+          png: settled,
         });
         resultNodeId = captured.record.id;
         isExisting = captured.isExisting;
@@ -609,8 +627,12 @@ export async function processExplorationAction(opts: {
           });
         }
 
+        const preBack = await opts.device.screenshotBuffer();
         await opts.device.pressBack();
-        if (POST_TAP_MS > 0) await sleep(POST_TAP_MS);
+        const settled = await waitForStableScreen(opts.device, {
+          log,
+          changedFrom: preBack,
+        });
 
         const captured = await captureCurrentScreenAsNode({
           reviewRunId: action.reviewRunId,
@@ -620,6 +642,7 @@ export async function processExplorationAction(opts: {
           device: opts.device,
           maxNodes: opts.maxNodes,
           log,
+          png: settled,
         });
         resultNodeId = captured.record.id;
         isExisting = captured.isExisting;
@@ -676,6 +699,85 @@ export async function processExplorationAction(opts: {
           log,
         });
         resultNodeId = action.targetNodeId;
+        isExisting = true;
+        break;
+      }
+
+      case "refresh_screenshot": {
+        if (!action.fromNodeId) {
+          throw new Error("Refresh screenshot missing fromNodeId");
+        }
+        const node = await db.screenNode.findUnique({
+          where: { id: action.fromNodeId },
+        });
+        if (!node) throw new Error("Node not found");
+
+        await ensureSessionForNode({
+          reviewRunId: action.reviewRunId,
+          nodeId: action.fromNodeId,
+          device: opts.device,
+          appPackage: opts.appPackage,
+          log,
+          currentNodeId: run.currentNodeId,
+        });
+
+        const shotAbs = absArtifactPath(node.screenshotPath);
+        const png = await captureStableScreenshot(opts.device, shotAbs, { log });
+        const hash = hashScreenshot(png);
+
+        let xml = "";
+        try {
+          xml = await opts.device.dumpUiHierarchy();
+        } catch (err) {
+          log.warn("UI hierarchy dump failed during refresh", {
+            error: err instanceof Error ? err.message : String(err),
+          });
+        }
+        const clickables = parseClickables(xml);
+        const activity = await opts.device.getCurrentActivity();
+        const uiSummary = buildUiSummary(activity, clickables);
+
+        const uiRelPath = node.screenshotPath
+          .replace("/screenshots/", "/ui/")
+          .replace(/\.png$/i, ".json");
+        const uiAbs = absArtifactPath(uiRelPath);
+        await ensureDir(path.dirname(uiAbs));
+        await fs.writeFile(
+          uiAbs,
+          JSON.stringify({ xml, summary: uiSummary }, null, 2),
+        );
+
+        await db.screenNode.update({
+          where: { id: node.id },
+          data: {
+            hash,
+            activityName: activity,
+            stateName: activity ?? node.stateName,
+            uiTreeJson: uiSummary as unknown as Prisma.InputJsonValue,
+            clickableCount: clickables.length,
+          },
+        });
+
+        log.info("screenshot refreshed", {
+          nodeId: node.id,
+          hash: hash.slice(0, 12),
+        });
+        resultNodeId = node.id;
+        isExisting = true;
+        break;
+      }
+
+      case "test_locales": {
+        if (!action.fromNodeId) {
+          throw new Error("Locale test missing source node");
+        }
+        await runLocaleTest({
+          action,
+          device: opts.device,
+          appPackage: opts.appPackage,
+          log,
+        });
+        resultNodeId = action.fromNodeId;
         isExisting = true;
         break;
       }

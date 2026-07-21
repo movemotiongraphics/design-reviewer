@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { RunStatusBadge } from "~/components/run-status-badge";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
+import { deviceLabel } from "~/lib/devices";
 import { isRunInProgress, isRunInteractive } from "~/lib/run-status";
 import { api } from "~/trpc/react";
 import { GraphViewer } from "./graph-viewer";
@@ -66,7 +67,8 @@ export function RunClient({ runId }: { runId: string }) {
             </Link>
             <h1 className="text-lg font-semibold">{data.apkBuild.fileName}</h1>
             <p className="text-xs text-muted-foreground">
-              {data._count.nodes} nodes · {data._count.edges} edges
+              {deviceLabel(data.deviceId)} · {data._count.nodes} nodes ·{" "}
+              {data._count.edges} edges
               {interactive ? " · click hotspots to explore" : ""}
             </p>
           </div>

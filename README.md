@@ -38,6 +38,36 @@ Then in the UI: project → upload APK (if needed) → **Start UI review**. The 
 
 **Stop:** `Ctrl+C` in Appium / worker / web terminals; quit the emulator window (or `adb emu kill`).
 
+## Multiple devices (small-screen edge cases)
+
+Each review run is pinned to a **device profile** defined in [`src/lib/devices.ts`](src/lib/devices.ts). Two profiles ship by default:
+
+| Profile id | AVD name | Emulator port / serial | Appium port |
+|------------|----------|------------------------|-------------|
+| `pixel_7` (default) | `Pixel_7` | 5554 / `emulator-5554` | 4723 |
+| `small_phone` | `Small_Phone` | 5556 / `emulator-5556` | 4724 |
+
+Pick the device in the UI on the project page before **Start UI review**. A worker only runs jobs for the device it was started for, so you can run **both emulators in parallel** — one worker per device.
+
+**One-time:** create the smaller AVD (reuses an installed system image, or set `SYS_IMAGE`):
+
+```bash
+./scripts/create-small-avd.sh
+```
+
+**Run both devices** (each command boots its AVD on a fixed port, starts a dedicated Appium server, and a worker pinned to that device):
+
+```bash
+# terminal A
+DEVICE=pixel_7 ./start-worker.sh
+# terminal B
+DEVICE=small_phone ./start-worker.sh
+# terminal C
+npm run dev   # http://localhost:3000
+```
+
+To add another device, add an entry to `DEVICE_PROFILES` in `src/lib/devices.ts` (unique `emulatorPort`, `appiumPort`, `systemPort`), create a matching AVD, and add a `case` to the profile block in `start-worker.sh`.
+
 ## Stack
 
 - [T3 Stack](https://create.t3.gg/) — Next.js 15 (App Router), TypeScript, Tailwind, tRPC, Prisma, PostgreSQL

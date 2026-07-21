@@ -12,11 +12,15 @@ import {
 import { AndroidDevice, sleep } from "./appium";
 import { hashScreenshot } from "./hash";
 import type { Logger } from "./log";
+import {
+  captureStableScreenshot,
+  waitForStableScreen,
+} from "./stability";
 import { boundsCenter, filterSafe } from "./safeTap";
 import { parseClickables, type ClickableElement } from "./uiParser";
 import { db } from "./db";
 
-const SETTLE_MS = 900;
+const SETTLE_MS = 350;
 
 export interface ExploreOptions {
   reviewRunId: string;
@@ -78,6 +82,8 @@ export async function exploreApp(opts: ExploreOptions): Promise<void> {
   async function captureScreen(
     depth: number,
     activity: string | null,
+    /** Pre-captured settled frame (from `waitForStableScreen`), if available. */
+    pngIn?: Buffer,
   ): Promise<ScreenRecord | null> {
     if (hashToNode.size >= opts.maxNodes) {
       runLog.info("maxNodes reached, skipping capture");
@@ -96,7 +102,10 @@ export async function exploreApp(opts: ExploreOptions): Promise<void> {
 
     let png: Buffer;
     try {
-      png = await device.captureScreenshot(shotAbs);
+      png = await captureStableScreenshot(device, shotAbs, {
+        log: runLog,
+        pngIn,
+      });
       runLog.info("screenshot captured", { index: idx, depth });
     } catch (err) {
       throw new Error(
@@ -183,11 +192,12 @@ export async function exploreApp(opts: ExploreOptions): Promise<void> {
     depth: number,
     fromNodeId: string | null,
     viaElement: ClickableElement | null,
+    pngIn?: Buffer,
   ): Promise<ScreenRecord | null> {
     if (hashToNode.size >= opts.maxNodes) return null;
 
     const activity = await device.getCurrentActivity();
-    const screen = await captureScreen(depth, activity);
+    const screen = await captureScreen(depth, activity, pngIn);
     if (!screen) return null;
 
     if (viaElement && fromNodeId) {
@@ -242,6 +252,7 @@ export async function exploreApp(opts: ExploreOptions): Promise<void> {
       const label = elementLabel(el);
       runLog.info("tapping element", { label, x, y });
 
+      const preTap = await device.screenshotBuffer();
       try {
         await device.tap(x, y);
       } catch (err) {
@@ -252,7 +263,10 @@ export async function exploreApp(opts: ExploreOptions): Promise<void> {
         continue;
       }
 
-      await sleep(SETTLE_MS);
+      const settled = await waitForStableScreen(device, {
+        log: runLog,
+        changedFrom: preTap,
+      });
 
       const childPkg = await device.getCurrentPackage();
       if (childPkg && childPkg !== appPackage) {
@@ -264,7 +278,7 @@ export async function exploreApp(opts: ExploreOptions): Promise<void> {
         continue;
       }
 
-      const childHashBefore = hashScreenshot(await device.screenshotBuffer());
+      const childHashBefore = hashScreenshot(settled);
       const childExisting = hashToNode.get(childHashBefore);
 
       if (childExisting) {
@@ -274,7 +288,7 @@ export async function exploreApp(opts: ExploreOptions): Promise<void> {
           nodeId: childExisting.id,
         });
       } else {
-        await visitScreen(depth + 1, screen.id, el);
+        await visitScreen(depth + 1, screen.id, el, settled);
       }
 
       await device.pressBack();

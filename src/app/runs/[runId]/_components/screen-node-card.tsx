@@ -1,9 +1,10 @@
 "use client";
 
 import { Handle, Position, type NodeProps } from "@xyflow/react";
-import { MessageSquare, MousePointerClick } from "lucide-react";
+import { Globe, MessageSquare, MousePointerClick } from "lucide-react";
 
 import { Badge } from "~/components/ui/badge";
+import { Button } from "~/components/ui/button";
 import type { Hotspot } from "~/lib/screen";
 import { cn } from "~/lib/utils";
 import { HotspotOverlay } from "./hotspot-overlay";
@@ -23,6 +24,7 @@ export interface ScreenNodeData {
   showHotspots?: boolean;
   hotspotBusy?: boolean;
   onHotspotClick?: (hotspot: Hotspot) => void;
+  onTestLocales?: () => void;
   [key: string]: unknown;
 }
 
@@ -85,6 +87,21 @@ export function ScreenNodeCard({ data }: NodeProps) {
           <p className="text-[10px] text-amber-700 dark:text-amber-400">
             {node.issueCount} issue{node.issueCount === 1 ? "" : "s"}
           </p>
+        ) : null}
+        {node.onTestLocales ? (
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            className="nodrag nopan mt-1 h-7 w-full gap-1 text-[11px]"
+            onClick={(e) => {
+              e.stopPropagation();
+              node.onTestLocales?.();
+            }}
+          >
+            <Globe className="size-3" />
+            Test in different locales
+          </Button>
         ) : null}
       </div>
       <Handle type="source" position={Position.Right} className="!bg-muted-foreground" />

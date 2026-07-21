@@ -51,6 +51,22 @@ export function uiRel(reviewRunId: string, index: number): string {
   return path.posix.join("runs", reviewRunId, "ui", `${nodeBaseName(index)}.json`);
 }
 
+/** Relative path (POSIX) to a locale-test screenshot for a source screen. */
+export function localeShotRel(
+  reviewRunId: string,
+  sourceNodeId: string,
+  locale: string,
+): string {
+  const safeLocale = locale.replace(/[^a-zA-Z0-9_-]/g, "_");
+  return path.posix.join(
+    "runs",
+    reviewRunId,
+    "locales",
+    sourceNodeId,
+    `${safeLocale}.png`,
+  );
+}
+
 /** Browser URL for a DB-stored relative artifact path. */
 export function toArtifactUrl(relPath: string): string {
   const clean = relPath.split(path.sep).join("/");

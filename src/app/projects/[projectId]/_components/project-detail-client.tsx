@@ -8,10 +8,17 @@ import {
   Loader2,
   Play,
   Rocket,
+  Smartphone,
   Upload,
 } from "lucide-react";
 
 import { RunStatusBadge } from "~/components/run-status-badge";
+import {
+  DEFAULT_DEVICE_ID,
+  DEVICE_PROFILES,
+  type DeviceId,
+  deviceLabel,
+} from "~/lib/devices";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -40,6 +47,9 @@ export function ProjectDetailClient({ projectId }: { projectId: string }) {
   const [maxDepth, setMaxDepth] = useState(2);
   const [maxNodes, setMaxNodes] = useState(30);
   const [maxTapsPerScreen, setMaxTapsPerScreen] = useState(6);
+
+  // Which emulator profile new runs target.
+  const [deviceId, setDeviceId] = useState<DeviceId>(DEFAULT_DEVICE_ID);
 
   const startRun = api.reviewRun.create.useMutation({
     onSuccess: (run) => {
@@ -130,6 +140,29 @@ export function ProjectDetailClient({ projectId }: { projectId: string }) {
           <h2 className="text-lg font-semibold">Builds</h2>
         </div>
 
+        <div className="space-y-1 rounded-md border p-3 text-sm">
+          <Label htmlFor="device" className="flex items-center gap-1.5">
+            <Smartphone className="size-4" />
+            Device
+          </Label>
+          <select
+            id="device"
+            value={deviceId}
+            onChange={(e) => setDeviceId(e.target.value as DeviceId)}
+            className="h-9 w-full max-w-sm rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          >
+            {DEVICE_PROFILES.map((device) => (
+              <option key={device.id} value={device.id}>
+                {device.label} — {device.description}
+              </option>
+            ))}
+          </select>
+          <p className="text-xs text-muted-foreground">
+            Each run targets one emulator. Both devices can review in parallel
+            when a worker is running for each.
+          </p>
+        </div>
+
         <details className="rounded-md border p-3 text-sm">
           <summary className="cursor-pointer font-medium">
             Exploration limits
@@ -192,6 +225,7 @@ export function ProjectDetailClient({ projectId }: { projectId: string }) {
                   onClick={() =>
                     startRun.mutate({
                       apkBuildId: build.id,
+                      deviceId,
                       maxDepth,
                       maxNodes,
                       maxTapsPerScreen,
@@ -236,7 +270,8 @@ export function ProjectDetailClient({ projectId }: { projectId: string }) {
                           {run.apkBuild.fileName}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          {run._count.nodes} nodes · {run._count.edges} edges ·{" "}
+                          {deviceLabel(run.deviceId)} · {run._count.nodes} nodes
+                          · {run._count.edges} edges ·{" "}
                           {new Date(run.createdAt).toLocaleString()}
                         </p>
                       </div>

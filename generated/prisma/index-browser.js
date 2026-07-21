@@ -154,6 +154,7 @@ exports.Prisma.ReviewRunScalarFieldEnum = {
   maxDepth: 'maxDepth',
   maxNodes: 'maxNodes',
   maxTapsPerScreen: 'maxTapsPerScreen',
+  deviceId: 'deviceId',
   currentNodeId: 'currentNodeId',
   startedAt: 'startedAt',
   completedAt: 'completedAt',
@@ -214,11 +215,25 @@ exports.Prisma.ExplorationActionScalarFieldEnum = {
   hotspotKey: 'hotspotKey',
   targetLabel: 'targetLabel',
   targetBounds: 'targetBounds',
+  localeCodes: 'localeCodes',
   resultNodeId: 'resultNodeId',
   isExistingNode: 'isExistingNode',
   errorMessage: 'errorMessage',
   createdAt: 'createdAt',
   completedAt: 'completedAt'
+};
+
+exports.Prisma.LocaleShotScalarFieldEnum = {
+  id: 'id',
+  reviewRunId: 'reviewRunId',
+  actionId: 'actionId',
+  sourceNodeId: 'sourceNodeId',
+  locale: 'locale',
+  label: 'label',
+  status: 'status',
+  screenshotPath: 'screenshotPath',
+  errorMessage: 'errorMessage',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.AccountScalarFieldEnum = {
@@ -315,7 +330,9 @@ exports.ExplorationActionType = exports.$Enums.ExplorationActionType = {
   tap: 'tap',
   back: 'back',
   reset_to_root: 'reset_to_root',
-  resume_from_node: 'resume_from_node'
+  resume_from_node: 'resume_from_node',
+  test_locales: 'test_locales',
+  refresh_screenshot: 'refresh_screenshot'
 };
 
 exports.ExplorationActionStatus = exports.$Enums.ExplorationActionStatus = {
@@ -334,6 +351,7 @@ exports.Prisma.ModelName = {
   ScreenEdge: 'ScreenEdge',
   NodeComment: 'NodeComment',
   ExplorationAction: 'ExplorationAction',
+  LocaleShot: 'LocaleShot',
   Account: 'Account',
   Session: 'Session',
   User: 'User',

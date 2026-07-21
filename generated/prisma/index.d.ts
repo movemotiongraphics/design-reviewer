@@ -54,6 +54,11 @@ export type NodeComment = $Result.DefaultSelection<Prisma.$NodeCommentPayload>
  */
 export type ExplorationAction = $Result.DefaultSelection<Prisma.$ExplorationActionPayload>
 /**
+ * Model LocaleShot
+ * A single screenshot of a source screen re-captured in one locale.
+ */
+export type LocaleShot = $Result.DefaultSelection<Prisma.$LocaleShotPayload>
+/**
  * Model Account
  * 
  */
@@ -119,7 +124,9 @@ export const ExplorationActionType: {
   tap: 'tap',
   back: 'back',
   reset_to_root: 'reset_to_root',
-  resume_from_node: 'resume_from_node'
+  resume_from_node: 'resume_from_node',
+  test_locales: 'test_locales',
+  refresh_screenshot: 'refresh_screenshot'
 };
 
 export type ExplorationActionType = (typeof ExplorationActionType)[keyof typeof ExplorationActionType]
@@ -353,6 +360,16 @@ export class PrismaClient<
     * ```
     */
   get explorationAction(): Prisma.ExplorationActionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.localeShot`: Exposes CRUD operations for the **LocaleShot** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more LocaleShots
+    * const localeShots = await prisma.localeShot.findMany()
+    * ```
+    */
+  get localeShot(): Prisma.LocaleShotDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.account`: Exposes CRUD operations for the **Account** model.
@@ -842,6 +859,7 @@ export namespace Prisma {
     ScreenEdge: 'ScreenEdge',
     NodeComment: 'NodeComment',
     ExplorationAction: 'ExplorationAction',
+    LocaleShot: 'LocaleShot',
     Account: 'Account',
     Session: 'Session',
     User: 'User',
@@ -864,7 +882,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "post" | "project" | "apkBuild" | "reviewRun" | "screenNode" | "screenEdge" | "nodeComment" | "explorationAction" | "account" | "session" | "user" | "verificationToken"
+      modelProps: "post" | "project" | "apkBuild" | "reviewRun" | "screenNode" | "screenEdge" | "nodeComment" | "explorationAction" | "localeShot" | "account" | "session" | "user" | "verificationToken"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1460,6 +1478,80 @@ export namespace Prisma {
           }
         }
       }
+      LocaleShot: {
+        payload: Prisma.$LocaleShotPayload<ExtArgs>
+        fields: Prisma.LocaleShotFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.LocaleShotFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LocaleShotPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.LocaleShotFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LocaleShotPayload>
+          }
+          findFirst: {
+            args: Prisma.LocaleShotFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LocaleShotPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.LocaleShotFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LocaleShotPayload>
+          }
+          findMany: {
+            args: Prisma.LocaleShotFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LocaleShotPayload>[]
+          }
+          create: {
+            args: Prisma.LocaleShotCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LocaleShotPayload>
+          }
+          createMany: {
+            args: Prisma.LocaleShotCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.LocaleShotCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LocaleShotPayload>[]
+          }
+          delete: {
+            args: Prisma.LocaleShotDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LocaleShotPayload>
+          }
+          update: {
+            args: Prisma.LocaleShotUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LocaleShotPayload>
+          }
+          deleteMany: {
+            args: Prisma.LocaleShotDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.LocaleShotUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.LocaleShotUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LocaleShotPayload>[]
+          }
+          upsert: {
+            args: Prisma.LocaleShotUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LocaleShotPayload>
+          }
+          aggregate: {
+            args: Prisma.LocaleShotAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateLocaleShot>
+          }
+          groupBy: {
+            args: Prisma.LocaleShotGroupByArgs<ExtArgs>
+            result: $Utils.Optional<LocaleShotGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.LocaleShotCountArgs<ExtArgs>
+            result: $Utils.Optional<LocaleShotCountAggregateOutputType> | number
+          }
+        }
+      }
       Account: {
         payload: Prisma.$AccountPayload<ExtArgs>
         fields: Prisma.AccountFieldRefs
@@ -1860,6 +1952,7 @@ export namespace Prisma {
     screenEdge?: ScreenEdgeOmit
     nodeComment?: NodeCommentOmit
     explorationAction?: ExplorationActionOmit
+    localeShot?: LocaleShotOmit
     account?: AccountOmit
     session?: SessionOmit
     user?: UserOmit
@@ -5459,6 +5552,7 @@ export namespace Prisma {
     maxDepth: number | null
     maxNodes: number | null
     maxTapsPerScreen: number | null
+    deviceId: string | null
     currentNodeId: string | null
     startedAt: Date | null
     completedAt: Date | null
@@ -5474,6 +5568,7 @@ export namespace Prisma {
     maxDepth: number | null
     maxNodes: number | null
     maxTapsPerScreen: number | null
+    deviceId: string | null
     currentNodeId: string | null
     startedAt: Date | null
     completedAt: Date | null
@@ -5489,6 +5584,7 @@ export namespace Prisma {
     maxDepth: number
     maxNodes: number
     maxTapsPerScreen: number
+    deviceId: number
     currentNodeId: number
     startedAt: number
     completedAt: number
@@ -5518,6 +5614,7 @@ export namespace Prisma {
     maxDepth?: true
     maxNodes?: true
     maxTapsPerScreen?: true
+    deviceId?: true
     currentNodeId?: true
     startedAt?: true
     completedAt?: true
@@ -5533,6 +5630,7 @@ export namespace Prisma {
     maxDepth?: true
     maxNodes?: true
     maxTapsPerScreen?: true
+    deviceId?: true
     currentNodeId?: true
     startedAt?: true
     completedAt?: true
@@ -5548,6 +5646,7 @@ export namespace Prisma {
     maxDepth?: true
     maxNodes?: true
     maxTapsPerScreen?: true
+    deviceId?: true
     currentNodeId?: true
     startedAt?: true
     completedAt?: true
@@ -5650,6 +5749,7 @@ export namespace Prisma {
     maxDepth: number
     maxNodes: number
     maxTapsPerScreen: number
+    deviceId: string
     currentNodeId: string | null
     startedAt: Date | null
     completedAt: Date | null
@@ -5684,6 +5784,7 @@ export namespace Prisma {
     maxDepth?: boolean
     maxNodes?: boolean
     maxTapsPerScreen?: boolean
+    deviceId?: boolean
     currentNodeId?: boolean
     startedAt?: boolean
     completedAt?: boolean
@@ -5704,6 +5805,7 @@ export namespace Prisma {
     maxDepth?: boolean
     maxNodes?: boolean
     maxTapsPerScreen?: boolean
+    deviceId?: boolean
     currentNodeId?: boolean
     startedAt?: boolean
     completedAt?: boolean
@@ -5720,6 +5822,7 @@ export namespace Prisma {
     maxDepth?: boolean
     maxNodes?: boolean
     maxTapsPerScreen?: boolean
+    deviceId?: boolean
     currentNodeId?: boolean
     startedAt?: boolean
     completedAt?: boolean
@@ -5736,6 +5839,7 @@ export namespace Prisma {
     maxDepth?: boolean
     maxNodes?: boolean
     maxTapsPerScreen?: boolean
+    deviceId?: boolean
     currentNodeId?: boolean
     startedAt?: boolean
     completedAt?: boolean
@@ -5744,7 +5848,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ReviewRunOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "apkBuildId" | "status" | "maxDepth" | "maxNodes" | "maxTapsPerScreen" | "currentNodeId" | "startedAt" | "completedAt" | "errorMessage" | "createdAt" | "updatedAt", ExtArgs["result"]["reviewRun"]>
+  export type ReviewRunOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "apkBuildId" | "status" | "maxDepth" | "maxNodes" | "maxTapsPerScreen" | "deviceId" | "currentNodeId" | "startedAt" | "completedAt" | "errorMessage" | "createdAt" | "updatedAt", ExtArgs["result"]["reviewRun"]>
   export type ReviewRunInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     apkBuild?: boolean | ApkBuildDefaultArgs<ExtArgs>
     nodes?: boolean | ReviewRun$nodesArgs<ExtArgs>
@@ -5774,6 +5878,10 @@ export namespace Prisma {
       maxDepth: number
       maxNodes: number
       maxTapsPerScreen: number
+      /**
+       * Device profile (see src/lib/devices.ts) this run targets.
+       */
+      deviceId: string
       /**
        * Node the emulator is believed to be on during interactive exploration.
        */
@@ -6216,6 +6324,7 @@ export namespace Prisma {
     readonly maxDepth: FieldRef<"ReviewRun", 'Int'>
     readonly maxNodes: FieldRef<"ReviewRun", 'Int'>
     readonly maxTapsPerScreen: FieldRef<"ReviewRun", 'Int'>
+    readonly deviceId: FieldRef<"ReviewRun", 'String'>
     readonly currentNodeId: FieldRef<"ReviewRun", 'String'>
     readonly startedAt: FieldRef<"ReviewRun", 'DateTime'>
     readonly completedAt: FieldRef<"ReviewRun", 'DateTime'>
@@ -10333,6 +10442,7 @@ export namespace Prisma {
     hotspotKey: number
     targetLabel: number
     targetBounds: number
+    localeCodes: number
     resultNodeId: number
     isExistingNode: number
     errorMessage: number
@@ -10384,6 +10494,7 @@ export namespace Prisma {
     hotspotKey?: true
     targetLabel?: true
     targetBounds?: true
+    localeCodes?: true
     resultNodeId?: true
     isExistingNode?: true
     errorMessage?: true
@@ -10474,6 +10585,7 @@ export namespace Prisma {
     hotspotKey: string | null
     targetLabel: string | null
     targetBounds: JsonValue | null
+    localeCodes: JsonValue | null
     resultNodeId: string | null
     isExistingNode: boolean
     errorMessage: string | null
@@ -10508,6 +10620,7 @@ export namespace Prisma {
     hotspotKey?: boolean
     targetLabel?: boolean
     targetBounds?: boolean
+    localeCodes?: boolean
     resultNodeId?: boolean
     isExistingNode?: boolean
     errorMessage?: boolean
@@ -10526,6 +10639,7 @@ export namespace Prisma {
     hotspotKey?: boolean
     targetLabel?: boolean
     targetBounds?: boolean
+    localeCodes?: boolean
     resultNodeId?: boolean
     isExistingNode?: boolean
     errorMessage?: boolean
@@ -10544,6 +10658,7 @@ export namespace Prisma {
     hotspotKey?: boolean
     targetLabel?: boolean
     targetBounds?: boolean
+    localeCodes?: boolean
     resultNodeId?: boolean
     isExistingNode?: boolean
     errorMessage?: boolean
@@ -10562,6 +10677,7 @@ export namespace Prisma {
     hotspotKey?: boolean
     targetLabel?: boolean
     targetBounds?: boolean
+    localeCodes?: boolean
     resultNodeId?: boolean
     isExistingNode?: boolean
     errorMessage?: boolean
@@ -10569,7 +10685,7 @@ export namespace Prisma {
     completedAt?: boolean
   }
 
-  export type ExplorationActionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "reviewRunId" | "type" | "status" | "fromNodeId" | "targetNodeId" | "hotspotKey" | "targetLabel" | "targetBounds" | "resultNodeId" | "isExistingNode" | "errorMessage" | "createdAt" | "completedAt", ExtArgs["result"]["explorationAction"]>
+  export type ExplorationActionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "reviewRunId" | "type" | "status" | "fromNodeId" | "targetNodeId" | "hotspotKey" | "targetLabel" | "targetBounds" | "localeCodes" | "resultNodeId" | "isExistingNode" | "errorMessage" | "createdAt" | "completedAt", ExtArgs["result"]["explorationAction"]>
   export type ExplorationActionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     reviewRun?: boolean | ReviewRunDefaultArgs<ExtArgs>
   }
@@ -10595,6 +10711,10 @@ export namespace Prisma {
       hotspotKey: string | null
       targetLabel: string | null
       targetBounds: Prisma.JsonValue | null
+      /**
+       * Requested locale codes for a `test_locales` action.
+       */
+      localeCodes: Prisma.JsonValue | null
       resultNodeId: string | null
       isExistingNode: boolean
       errorMessage: string | null
@@ -11033,6 +11153,7 @@ export namespace Prisma {
     readonly hotspotKey: FieldRef<"ExplorationAction", 'String'>
     readonly targetLabel: FieldRef<"ExplorationAction", 'String'>
     readonly targetBounds: FieldRef<"ExplorationAction", 'Json'>
+    readonly localeCodes: FieldRef<"ExplorationAction", 'Json'>
     readonly resultNodeId: FieldRef<"ExplorationAction", 'String'>
     readonly isExistingNode: FieldRef<"ExplorationAction", 'Boolean'>
     readonly errorMessage: FieldRef<"ExplorationAction", 'String'>
@@ -11449,6 +11570,1069 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ExplorationActionInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model LocaleShot
+   */
+
+  export type AggregateLocaleShot = {
+    _count: LocaleShotCountAggregateOutputType | null
+    _min: LocaleShotMinAggregateOutputType | null
+    _max: LocaleShotMaxAggregateOutputType | null
+  }
+
+  export type LocaleShotMinAggregateOutputType = {
+    id: string | null
+    reviewRunId: string | null
+    actionId: string | null
+    sourceNodeId: string | null
+    locale: string | null
+    label: string | null
+    status: string | null
+    screenshotPath: string | null
+    errorMessage: string | null
+    createdAt: Date | null
+  }
+
+  export type LocaleShotMaxAggregateOutputType = {
+    id: string | null
+    reviewRunId: string | null
+    actionId: string | null
+    sourceNodeId: string | null
+    locale: string | null
+    label: string | null
+    status: string | null
+    screenshotPath: string | null
+    errorMessage: string | null
+    createdAt: Date | null
+  }
+
+  export type LocaleShotCountAggregateOutputType = {
+    id: number
+    reviewRunId: number
+    actionId: number
+    sourceNodeId: number
+    locale: number
+    label: number
+    status: number
+    screenshotPath: number
+    errorMessage: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type LocaleShotMinAggregateInputType = {
+    id?: true
+    reviewRunId?: true
+    actionId?: true
+    sourceNodeId?: true
+    locale?: true
+    label?: true
+    status?: true
+    screenshotPath?: true
+    errorMessage?: true
+    createdAt?: true
+  }
+
+  export type LocaleShotMaxAggregateInputType = {
+    id?: true
+    reviewRunId?: true
+    actionId?: true
+    sourceNodeId?: true
+    locale?: true
+    label?: true
+    status?: true
+    screenshotPath?: true
+    errorMessage?: true
+    createdAt?: true
+  }
+
+  export type LocaleShotCountAggregateInputType = {
+    id?: true
+    reviewRunId?: true
+    actionId?: true
+    sourceNodeId?: true
+    locale?: true
+    label?: true
+    status?: true
+    screenshotPath?: true
+    errorMessage?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type LocaleShotAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which LocaleShot to aggregate.
+     */
+    where?: LocaleShotWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LocaleShots to fetch.
+     */
+    orderBy?: LocaleShotOrderByWithRelationInput | LocaleShotOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: LocaleShotWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LocaleShots from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LocaleShots.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned LocaleShots
+    **/
+    _count?: true | LocaleShotCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: LocaleShotMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: LocaleShotMaxAggregateInputType
+  }
+
+  export type GetLocaleShotAggregateType<T extends LocaleShotAggregateArgs> = {
+        [P in keyof T & keyof AggregateLocaleShot]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateLocaleShot[P]>
+      : GetScalarType<T[P], AggregateLocaleShot[P]>
+  }
+
+
+
+
+  export type LocaleShotGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LocaleShotWhereInput
+    orderBy?: LocaleShotOrderByWithAggregationInput | LocaleShotOrderByWithAggregationInput[]
+    by: LocaleShotScalarFieldEnum[] | LocaleShotScalarFieldEnum
+    having?: LocaleShotScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: LocaleShotCountAggregateInputType | true
+    _min?: LocaleShotMinAggregateInputType
+    _max?: LocaleShotMaxAggregateInputType
+  }
+
+  export type LocaleShotGroupByOutputType = {
+    id: string
+    reviewRunId: string
+    actionId: string
+    sourceNodeId: string
+    locale: string
+    label: string
+    status: string
+    screenshotPath: string | null
+    errorMessage: string | null
+    createdAt: Date
+    _count: LocaleShotCountAggregateOutputType | null
+    _min: LocaleShotMinAggregateOutputType | null
+    _max: LocaleShotMaxAggregateOutputType | null
+  }
+
+  type GetLocaleShotGroupByPayload<T extends LocaleShotGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<LocaleShotGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof LocaleShotGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], LocaleShotGroupByOutputType[P]>
+            : GetScalarType<T[P], LocaleShotGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type LocaleShotSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    reviewRunId?: boolean
+    actionId?: boolean
+    sourceNodeId?: boolean
+    locale?: boolean
+    label?: boolean
+    status?: boolean
+    screenshotPath?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["localeShot"]>
+
+  export type LocaleShotSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    reviewRunId?: boolean
+    actionId?: boolean
+    sourceNodeId?: boolean
+    locale?: boolean
+    label?: boolean
+    status?: boolean
+    screenshotPath?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["localeShot"]>
+
+  export type LocaleShotSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    reviewRunId?: boolean
+    actionId?: boolean
+    sourceNodeId?: boolean
+    locale?: boolean
+    label?: boolean
+    status?: boolean
+    screenshotPath?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["localeShot"]>
+
+  export type LocaleShotSelectScalar = {
+    id?: boolean
+    reviewRunId?: boolean
+    actionId?: boolean
+    sourceNodeId?: boolean
+    locale?: boolean
+    label?: boolean
+    status?: boolean
+    screenshotPath?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+  }
+
+  export type LocaleShotOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "reviewRunId" | "actionId" | "sourceNodeId" | "locale" | "label" | "status" | "screenshotPath" | "errorMessage" | "createdAt", ExtArgs["result"]["localeShot"]>
+
+  export type $LocaleShotPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "LocaleShot"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      reviewRunId: string
+      actionId: string
+      sourceNodeId: string
+      locale: string
+      label: string
+      /**
+       * pending | captured | failed
+       */
+      status: string
+      screenshotPath: string | null
+      errorMessage: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["localeShot"]>
+    composites: {}
+  }
+
+  type LocaleShotGetPayload<S extends boolean | null | undefined | LocaleShotDefaultArgs> = $Result.GetResult<Prisma.$LocaleShotPayload, S>
+
+  type LocaleShotCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<LocaleShotFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: LocaleShotCountAggregateInputType | true
+    }
+
+  export interface LocaleShotDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['LocaleShot'], meta: { name: 'LocaleShot' } }
+    /**
+     * Find zero or one LocaleShot that matches the filter.
+     * @param {LocaleShotFindUniqueArgs} args - Arguments to find a LocaleShot
+     * @example
+     * // Get one LocaleShot
+     * const localeShot = await prisma.localeShot.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends LocaleShotFindUniqueArgs>(args: SelectSubset<T, LocaleShotFindUniqueArgs<ExtArgs>>): Prisma__LocaleShotClient<$Result.GetResult<Prisma.$LocaleShotPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one LocaleShot that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {LocaleShotFindUniqueOrThrowArgs} args - Arguments to find a LocaleShot
+     * @example
+     * // Get one LocaleShot
+     * const localeShot = await prisma.localeShot.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends LocaleShotFindUniqueOrThrowArgs>(args: SelectSubset<T, LocaleShotFindUniqueOrThrowArgs<ExtArgs>>): Prisma__LocaleShotClient<$Result.GetResult<Prisma.$LocaleShotPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first LocaleShot that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LocaleShotFindFirstArgs} args - Arguments to find a LocaleShot
+     * @example
+     * // Get one LocaleShot
+     * const localeShot = await prisma.localeShot.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends LocaleShotFindFirstArgs>(args?: SelectSubset<T, LocaleShotFindFirstArgs<ExtArgs>>): Prisma__LocaleShotClient<$Result.GetResult<Prisma.$LocaleShotPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first LocaleShot that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LocaleShotFindFirstOrThrowArgs} args - Arguments to find a LocaleShot
+     * @example
+     * // Get one LocaleShot
+     * const localeShot = await prisma.localeShot.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends LocaleShotFindFirstOrThrowArgs>(args?: SelectSubset<T, LocaleShotFindFirstOrThrowArgs<ExtArgs>>): Prisma__LocaleShotClient<$Result.GetResult<Prisma.$LocaleShotPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more LocaleShots that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LocaleShotFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all LocaleShots
+     * const localeShots = await prisma.localeShot.findMany()
+     * 
+     * // Get first 10 LocaleShots
+     * const localeShots = await prisma.localeShot.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const localeShotWithIdOnly = await prisma.localeShot.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends LocaleShotFindManyArgs>(args?: SelectSubset<T, LocaleShotFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LocaleShotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a LocaleShot.
+     * @param {LocaleShotCreateArgs} args - Arguments to create a LocaleShot.
+     * @example
+     * // Create one LocaleShot
+     * const LocaleShot = await prisma.localeShot.create({
+     *   data: {
+     *     // ... data to create a LocaleShot
+     *   }
+     * })
+     * 
+     */
+    create<T extends LocaleShotCreateArgs>(args: SelectSubset<T, LocaleShotCreateArgs<ExtArgs>>): Prisma__LocaleShotClient<$Result.GetResult<Prisma.$LocaleShotPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many LocaleShots.
+     * @param {LocaleShotCreateManyArgs} args - Arguments to create many LocaleShots.
+     * @example
+     * // Create many LocaleShots
+     * const localeShot = await prisma.localeShot.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends LocaleShotCreateManyArgs>(args?: SelectSubset<T, LocaleShotCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many LocaleShots and returns the data saved in the database.
+     * @param {LocaleShotCreateManyAndReturnArgs} args - Arguments to create many LocaleShots.
+     * @example
+     * // Create many LocaleShots
+     * const localeShot = await prisma.localeShot.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many LocaleShots and only return the `id`
+     * const localeShotWithIdOnly = await prisma.localeShot.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends LocaleShotCreateManyAndReturnArgs>(args?: SelectSubset<T, LocaleShotCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LocaleShotPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a LocaleShot.
+     * @param {LocaleShotDeleteArgs} args - Arguments to delete one LocaleShot.
+     * @example
+     * // Delete one LocaleShot
+     * const LocaleShot = await prisma.localeShot.delete({
+     *   where: {
+     *     // ... filter to delete one LocaleShot
+     *   }
+     * })
+     * 
+     */
+    delete<T extends LocaleShotDeleteArgs>(args: SelectSubset<T, LocaleShotDeleteArgs<ExtArgs>>): Prisma__LocaleShotClient<$Result.GetResult<Prisma.$LocaleShotPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one LocaleShot.
+     * @param {LocaleShotUpdateArgs} args - Arguments to update one LocaleShot.
+     * @example
+     * // Update one LocaleShot
+     * const localeShot = await prisma.localeShot.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends LocaleShotUpdateArgs>(args: SelectSubset<T, LocaleShotUpdateArgs<ExtArgs>>): Prisma__LocaleShotClient<$Result.GetResult<Prisma.$LocaleShotPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more LocaleShots.
+     * @param {LocaleShotDeleteManyArgs} args - Arguments to filter LocaleShots to delete.
+     * @example
+     * // Delete a few LocaleShots
+     * const { count } = await prisma.localeShot.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends LocaleShotDeleteManyArgs>(args?: SelectSubset<T, LocaleShotDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more LocaleShots.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LocaleShotUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many LocaleShots
+     * const localeShot = await prisma.localeShot.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends LocaleShotUpdateManyArgs>(args: SelectSubset<T, LocaleShotUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more LocaleShots and returns the data updated in the database.
+     * @param {LocaleShotUpdateManyAndReturnArgs} args - Arguments to update many LocaleShots.
+     * @example
+     * // Update many LocaleShots
+     * const localeShot = await prisma.localeShot.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more LocaleShots and only return the `id`
+     * const localeShotWithIdOnly = await prisma.localeShot.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends LocaleShotUpdateManyAndReturnArgs>(args: SelectSubset<T, LocaleShotUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LocaleShotPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one LocaleShot.
+     * @param {LocaleShotUpsertArgs} args - Arguments to update or create a LocaleShot.
+     * @example
+     * // Update or create a LocaleShot
+     * const localeShot = await prisma.localeShot.upsert({
+     *   create: {
+     *     // ... data to create a LocaleShot
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the LocaleShot we want to update
+     *   }
+     * })
+     */
+    upsert<T extends LocaleShotUpsertArgs>(args: SelectSubset<T, LocaleShotUpsertArgs<ExtArgs>>): Prisma__LocaleShotClient<$Result.GetResult<Prisma.$LocaleShotPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of LocaleShots.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LocaleShotCountArgs} args - Arguments to filter LocaleShots to count.
+     * @example
+     * // Count the number of LocaleShots
+     * const count = await prisma.localeShot.count({
+     *   where: {
+     *     // ... the filter for the LocaleShots we want to count
+     *   }
+     * })
+    **/
+    count<T extends LocaleShotCountArgs>(
+      args?: Subset<T, LocaleShotCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], LocaleShotCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a LocaleShot.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LocaleShotAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends LocaleShotAggregateArgs>(args: Subset<T, LocaleShotAggregateArgs>): Prisma.PrismaPromise<GetLocaleShotAggregateType<T>>
+
+    /**
+     * Group by LocaleShot.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LocaleShotGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends LocaleShotGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: LocaleShotGroupByArgs['orderBy'] }
+        : { orderBy?: LocaleShotGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, LocaleShotGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetLocaleShotGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the LocaleShot model
+   */
+  readonly fields: LocaleShotFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for LocaleShot.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__LocaleShotClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the LocaleShot model
+   */
+  interface LocaleShotFieldRefs {
+    readonly id: FieldRef<"LocaleShot", 'String'>
+    readonly reviewRunId: FieldRef<"LocaleShot", 'String'>
+    readonly actionId: FieldRef<"LocaleShot", 'String'>
+    readonly sourceNodeId: FieldRef<"LocaleShot", 'String'>
+    readonly locale: FieldRef<"LocaleShot", 'String'>
+    readonly label: FieldRef<"LocaleShot", 'String'>
+    readonly status: FieldRef<"LocaleShot", 'String'>
+    readonly screenshotPath: FieldRef<"LocaleShot", 'String'>
+    readonly errorMessage: FieldRef<"LocaleShot", 'String'>
+    readonly createdAt: FieldRef<"LocaleShot", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * LocaleShot findUnique
+   */
+  export type LocaleShotFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LocaleShot
+     */
+    select?: LocaleShotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LocaleShot
+     */
+    omit?: LocaleShotOmit<ExtArgs> | null
+    /**
+     * Filter, which LocaleShot to fetch.
+     */
+    where: LocaleShotWhereUniqueInput
+  }
+
+  /**
+   * LocaleShot findUniqueOrThrow
+   */
+  export type LocaleShotFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LocaleShot
+     */
+    select?: LocaleShotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LocaleShot
+     */
+    omit?: LocaleShotOmit<ExtArgs> | null
+    /**
+     * Filter, which LocaleShot to fetch.
+     */
+    where: LocaleShotWhereUniqueInput
+  }
+
+  /**
+   * LocaleShot findFirst
+   */
+  export type LocaleShotFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LocaleShot
+     */
+    select?: LocaleShotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LocaleShot
+     */
+    omit?: LocaleShotOmit<ExtArgs> | null
+    /**
+     * Filter, which LocaleShot to fetch.
+     */
+    where?: LocaleShotWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LocaleShots to fetch.
+     */
+    orderBy?: LocaleShotOrderByWithRelationInput | LocaleShotOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for LocaleShots.
+     */
+    cursor?: LocaleShotWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LocaleShots from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LocaleShots.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LocaleShots.
+     */
+    distinct?: LocaleShotScalarFieldEnum | LocaleShotScalarFieldEnum[]
+  }
+
+  /**
+   * LocaleShot findFirstOrThrow
+   */
+  export type LocaleShotFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LocaleShot
+     */
+    select?: LocaleShotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LocaleShot
+     */
+    omit?: LocaleShotOmit<ExtArgs> | null
+    /**
+     * Filter, which LocaleShot to fetch.
+     */
+    where?: LocaleShotWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LocaleShots to fetch.
+     */
+    orderBy?: LocaleShotOrderByWithRelationInput | LocaleShotOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for LocaleShots.
+     */
+    cursor?: LocaleShotWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LocaleShots from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LocaleShots.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LocaleShots.
+     */
+    distinct?: LocaleShotScalarFieldEnum | LocaleShotScalarFieldEnum[]
+  }
+
+  /**
+   * LocaleShot findMany
+   */
+  export type LocaleShotFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LocaleShot
+     */
+    select?: LocaleShotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LocaleShot
+     */
+    omit?: LocaleShotOmit<ExtArgs> | null
+    /**
+     * Filter, which LocaleShots to fetch.
+     */
+    where?: LocaleShotWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LocaleShots to fetch.
+     */
+    orderBy?: LocaleShotOrderByWithRelationInput | LocaleShotOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing LocaleShots.
+     */
+    cursor?: LocaleShotWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LocaleShots from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LocaleShots.
+     */
+    skip?: number
+    distinct?: LocaleShotScalarFieldEnum | LocaleShotScalarFieldEnum[]
+  }
+
+  /**
+   * LocaleShot create
+   */
+  export type LocaleShotCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LocaleShot
+     */
+    select?: LocaleShotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LocaleShot
+     */
+    omit?: LocaleShotOmit<ExtArgs> | null
+    /**
+     * The data needed to create a LocaleShot.
+     */
+    data: XOR<LocaleShotCreateInput, LocaleShotUncheckedCreateInput>
+  }
+
+  /**
+   * LocaleShot createMany
+   */
+  export type LocaleShotCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many LocaleShots.
+     */
+    data: LocaleShotCreateManyInput | LocaleShotCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * LocaleShot createManyAndReturn
+   */
+  export type LocaleShotCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LocaleShot
+     */
+    select?: LocaleShotSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the LocaleShot
+     */
+    omit?: LocaleShotOmit<ExtArgs> | null
+    /**
+     * The data used to create many LocaleShots.
+     */
+    data: LocaleShotCreateManyInput | LocaleShotCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * LocaleShot update
+   */
+  export type LocaleShotUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LocaleShot
+     */
+    select?: LocaleShotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LocaleShot
+     */
+    omit?: LocaleShotOmit<ExtArgs> | null
+    /**
+     * The data needed to update a LocaleShot.
+     */
+    data: XOR<LocaleShotUpdateInput, LocaleShotUncheckedUpdateInput>
+    /**
+     * Choose, which LocaleShot to update.
+     */
+    where: LocaleShotWhereUniqueInput
+  }
+
+  /**
+   * LocaleShot updateMany
+   */
+  export type LocaleShotUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update LocaleShots.
+     */
+    data: XOR<LocaleShotUpdateManyMutationInput, LocaleShotUncheckedUpdateManyInput>
+    /**
+     * Filter which LocaleShots to update
+     */
+    where?: LocaleShotWhereInput
+    /**
+     * Limit how many LocaleShots to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * LocaleShot updateManyAndReturn
+   */
+  export type LocaleShotUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LocaleShot
+     */
+    select?: LocaleShotSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the LocaleShot
+     */
+    omit?: LocaleShotOmit<ExtArgs> | null
+    /**
+     * The data used to update LocaleShots.
+     */
+    data: XOR<LocaleShotUpdateManyMutationInput, LocaleShotUncheckedUpdateManyInput>
+    /**
+     * Filter which LocaleShots to update
+     */
+    where?: LocaleShotWhereInput
+    /**
+     * Limit how many LocaleShots to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * LocaleShot upsert
+   */
+  export type LocaleShotUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LocaleShot
+     */
+    select?: LocaleShotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LocaleShot
+     */
+    omit?: LocaleShotOmit<ExtArgs> | null
+    /**
+     * The filter to search for the LocaleShot to update in case it exists.
+     */
+    where: LocaleShotWhereUniqueInput
+    /**
+     * In case the LocaleShot found by the `where` argument doesn't exist, create a new LocaleShot with this data.
+     */
+    create: XOR<LocaleShotCreateInput, LocaleShotUncheckedCreateInput>
+    /**
+     * In case the LocaleShot was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<LocaleShotUpdateInput, LocaleShotUncheckedUpdateInput>
+  }
+
+  /**
+   * LocaleShot delete
+   */
+  export type LocaleShotDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LocaleShot
+     */
+    select?: LocaleShotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LocaleShot
+     */
+    omit?: LocaleShotOmit<ExtArgs> | null
+    /**
+     * Filter which LocaleShot to delete.
+     */
+    where: LocaleShotWhereUniqueInput
+  }
+
+  /**
+   * LocaleShot deleteMany
+   */
+  export type LocaleShotDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which LocaleShots to delete
+     */
+    where?: LocaleShotWhereInput
+    /**
+     * Limit how many LocaleShots to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * LocaleShot without action
+   */
+  export type LocaleShotDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LocaleShot
+     */
+    select?: LocaleShotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LocaleShot
+     */
+    omit?: LocaleShotOmit<ExtArgs> | null
   }
 
 
@@ -15848,6 +17032,7 @@ export namespace Prisma {
     maxDepth: 'maxDepth',
     maxNodes: 'maxNodes',
     maxTapsPerScreen: 'maxTapsPerScreen',
+    deviceId: 'deviceId',
     currentNodeId: 'currentNodeId',
     startedAt: 'startedAt',
     completedAt: 'completedAt',
@@ -15920,6 +17105,7 @@ export namespace Prisma {
     hotspotKey: 'hotspotKey',
     targetLabel: 'targetLabel',
     targetBounds: 'targetBounds',
+    localeCodes: 'localeCodes',
     resultNodeId: 'resultNodeId',
     isExistingNode: 'isExistingNode',
     errorMessage: 'errorMessage',
@@ -15928,6 +17114,22 @@ export namespace Prisma {
   };
 
   export type ExplorationActionScalarFieldEnum = (typeof ExplorationActionScalarFieldEnum)[keyof typeof ExplorationActionScalarFieldEnum]
+
+
+  export const LocaleShotScalarFieldEnum: {
+    id: 'id',
+    reviewRunId: 'reviewRunId',
+    actionId: 'actionId',
+    sourceNodeId: 'sourceNodeId',
+    locale: 'locale',
+    label: 'label',
+    status: 'status',
+    screenshotPath: 'screenshotPath',
+    errorMessage: 'errorMessage',
+    createdAt: 'createdAt'
+  };
+
+  export type LocaleShotScalarFieldEnum = (typeof LocaleShotScalarFieldEnum)[keyof typeof LocaleShotScalarFieldEnum]
 
 
   export const AccountScalarFieldEnum: {
@@ -16365,6 +17567,7 @@ export namespace Prisma {
     maxDepth?: IntFilter<"ReviewRun"> | number
     maxNodes?: IntFilter<"ReviewRun"> | number
     maxTapsPerScreen?: IntFilter<"ReviewRun"> | number
+    deviceId?: StringFilter<"ReviewRun"> | string
     currentNodeId?: StringNullableFilter<"ReviewRun"> | string | null
     startedAt?: DateTimeNullableFilter<"ReviewRun"> | Date | string | null
     completedAt?: DateTimeNullableFilter<"ReviewRun"> | Date | string | null
@@ -16384,6 +17587,7 @@ export namespace Prisma {
     maxDepth?: SortOrder
     maxNodes?: SortOrder
     maxTapsPerScreen?: SortOrder
+    deviceId?: SortOrder
     currentNodeId?: SortOrderInput | SortOrder
     startedAt?: SortOrderInput | SortOrder
     completedAt?: SortOrderInput | SortOrder
@@ -16406,6 +17610,7 @@ export namespace Prisma {
     maxDepth?: IntFilter<"ReviewRun"> | number
     maxNodes?: IntFilter<"ReviewRun"> | number
     maxTapsPerScreen?: IntFilter<"ReviewRun"> | number
+    deviceId?: StringFilter<"ReviewRun"> | string
     currentNodeId?: StringNullableFilter<"ReviewRun"> | string | null
     startedAt?: DateTimeNullableFilter<"ReviewRun"> | Date | string | null
     completedAt?: DateTimeNullableFilter<"ReviewRun"> | Date | string | null
@@ -16425,6 +17630,7 @@ export namespace Prisma {
     maxDepth?: SortOrder
     maxNodes?: SortOrder
     maxTapsPerScreen?: SortOrder
+    deviceId?: SortOrder
     currentNodeId?: SortOrderInput | SortOrder
     startedAt?: SortOrderInput | SortOrder
     completedAt?: SortOrderInput | SortOrder
@@ -16448,6 +17654,7 @@ export namespace Prisma {
     maxDepth?: IntWithAggregatesFilter<"ReviewRun"> | number
     maxNodes?: IntWithAggregatesFilter<"ReviewRun"> | number
     maxTapsPerScreen?: IntWithAggregatesFilter<"ReviewRun"> | number
+    deviceId?: StringWithAggregatesFilter<"ReviewRun"> | string
     currentNodeId?: StringNullableWithAggregatesFilter<"ReviewRun"> | string | null
     startedAt?: DateTimeNullableWithAggregatesFilter<"ReviewRun"> | Date | string | null
     completedAt?: DateTimeNullableWithAggregatesFilter<"ReviewRun"> | Date | string | null
@@ -16741,6 +17948,7 @@ export namespace Prisma {
     hotspotKey?: StringNullableFilter<"ExplorationAction"> | string | null
     targetLabel?: StringNullableFilter<"ExplorationAction"> | string | null
     targetBounds?: JsonNullableFilter<"ExplorationAction">
+    localeCodes?: JsonNullableFilter<"ExplorationAction">
     resultNodeId?: StringNullableFilter<"ExplorationAction"> | string | null
     isExistingNode?: BoolFilter<"ExplorationAction"> | boolean
     errorMessage?: StringNullableFilter<"ExplorationAction"> | string | null
@@ -16759,6 +17967,7 @@ export namespace Prisma {
     hotspotKey?: SortOrderInput | SortOrder
     targetLabel?: SortOrderInput | SortOrder
     targetBounds?: SortOrderInput | SortOrder
+    localeCodes?: SortOrderInput | SortOrder
     resultNodeId?: SortOrderInput | SortOrder
     isExistingNode?: SortOrder
     errorMessage?: SortOrderInput | SortOrder
@@ -16780,6 +17989,7 @@ export namespace Prisma {
     hotspotKey?: StringNullableFilter<"ExplorationAction"> | string | null
     targetLabel?: StringNullableFilter<"ExplorationAction"> | string | null
     targetBounds?: JsonNullableFilter<"ExplorationAction">
+    localeCodes?: JsonNullableFilter<"ExplorationAction">
     resultNodeId?: StringNullableFilter<"ExplorationAction"> | string | null
     isExistingNode?: BoolFilter<"ExplorationAction"> | boolean
     errorMessage?: StringNullableFilter<"ExplorationAction"> | string | null
@@ -16798,6 +18008,7 @@ export namespace Prisma {
     hotspotKey?: SortOrderInput | SortOrder
     targetLabel?: SortOrderInput | SortOrder
     targetBounds?: SortOrderInput | SortOrder
+    localeCodes?: SortOrderInput | SortOrder
     resultNodeId?: SortOrderInput | SortOrder
     isExistingNode?: SortOrder
     errorMessage?: SortOrderInput | SortOrder
@@ -16821,11 +18032,89 @@ export namespace Prisma {
     hotspotKey?: StringNullableWithAggregatesFilter<"ExplorationAction"> | string | null
     targetLabel?: StringNullableWithAggregatesFilter<"ExplorationAction"> | string | null
     targetBounds?: JsonNullableWithAggregatesFilter<"ExplorationAction">
+    localeCodes?: JsonNullableWithAggregatesFilter<"ExplorationAction">
     resultNodeId?: StringNullableWithAggregatesFilter<"ExplorationAction"> | string | null
     isExistingNode?: BoolWithAggregatesFilter<"ExplorationAction"> | boolean
     errorMessage?: StringNullableWithAggregatesFilter<"ExplorationAction"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"ExplorationAction"> | Date | string
     completedAt?: DateTimeNullableWithAggregatesFilter<"ExplorationAction"> | Date | string | null
+  }
+
+  export type LocaleShotWhereInput = {
+    AND?: LocaleShotWhereInput | LocaleShotWhereInput[]
+    OR?: LocaleShotWhereInput[]
+    NOT?: LocaleShotWhereInput | LocaleShotWhereInput[]
+    id?: StringFilter<"LocaleShot"> | string
+    reviewRunId?: StringFilter<"LocaleShot"> | string
+    actionId?: StringFilter<"LocaleShot"> | string
+    sourceNodeId?: StringFilter<"LocaleShot"> | string
+    locale?: StringFilter<"LocaleShot"> | string
+    label?: StringFilter<"LocaleShot"> | string
+    status?: StringFilter<"LocaleShot"> | string
+    screenshotPath?: StringNullableFilter<"LocaleShot"> | string | null
+    errorMessage?: StringNullableFilter<"LocaleShot"> | string | null
+    createdAt?: DateTimeFilter<"LocaleShot"> | Date | string
+  }
+
+  export type LocaleShotOrderByWithRelationInput = {
+    id?: SortOrder
+    reviewRunId?: SortOrder
+    actionId?: SortOrder
+    sourceNodeId?: SortOrder
+    locale?: SortOrder
+    label?: SortOrder
+    status?: SortOrder
+    screenshotPath?: SortOrderInput | SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type LocaleShotWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: LocaleShotWhereInput | LocaleShotWhereInput[]
+    OR?: LocaleShotWhereInput[]
+    NOT?: LocaleShotWhereInput | LocaleShotWhereInput[]
+    reviewRunId?: StringFilter<"LocaleShot"> | string
+    actionId?: StringFilter<"LocaleShot"> | string
+    sourceNodeId?: StringFilter<"LocaleShot"> | string
+    locale?: StringFilter<"LocaleShot"> | string
+    label?: StringFilter<"LocaleShot"> | string
+    status?: StringFilter<"LocaleShot"> | string
+    screenshotPath?: StringNullableFilter<"LocaleShot"> | string | null
+    errorMessage?: StringNullableFilter<"LocaleShot"> | string | null
+    createdAt?: DateTimeFilter<"LocaleShot"> | Date | string
+  }, "id">
+
+  export type LocaleShotOrderByWithAggregationInput = {
+    id?: SortOrder
+    reviewRunId?: SortOrder
+    actionId?: SortOrder
+    sourceNodeId?: SortOrder
+    locale?: SortOrder
+    label?: SortOrder
+    status?: SortOrder
+    screenshotPath?: SortOrderInput | SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: LocaleShotCountOrderByAggregateInput
+    _max?: LocaleShotMaxOrderByAggregateInput
+    _min?: LocaleShotMinOrderByAggregateInput
+  }
+
+  export type LocaleShotScalarWhereWithAggregatesInput = {
+    AND?: LocaleShotScalarWhereWithAggregatesInput | LocaleShotScalarWhereWithAggregatesInput[]
+    OR?: LocaleShotScalarWhereWithAggregatesInput[]
+    NOT?: LocaleShotScalarWhereWithAggregatesInput | LocaleShotScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"LocaleShot"> | string
+    reviewRunId?: StringWithAggregatesFilter<"LocaleShot"> | string
+    actionId?: StringWithAggregatesFilter<"LocaleShot"> | string
+    sourceNodeId?: StringWithAggregatesFilter<"LocaleShot"> | string
+    locale?: StringWithAggregatesFilter<"LocaleShot"> | string
+    label?: StringWithAggregatesFilter<"LocaleShot"> | string
+    status?: StringWithAggregatesFilter<"LocaleShot"> | string
+    screenshotPath?: StringNullableWithAggregatesFilter<"LocaleShot"> | string | null
+    errorMessage?: StringNullableWithAggregatesFilter<"LocaleShot"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"LocaleShot"> | Date | string
   }
 
   export type AccountWhereInput = {
@@ -17271,6 +18560,7 @@ export namespace Prisma {
     maxDepth?: number
     maxNodes?: number
     maxTapsPerScreen?: number
+    deviceId?: string
     currentNodeId?: string | null
     startedAt?: Date | string | null
     completedAt?: Date | string | null
@@ -17290,6 +18580,7 @@ export namespace Prisma {
     maxDepth?: number
     maxNodes?: number
     maxTapsPerScreen?: number
+    deviceId?: string
     currentNodeId?: string | null
     startedAt?: Date | string | null
     completedAt?: Date | string | null
@@ -17307,6 +18598,7 @@ export namespace Prisma {
     maxDepth?: IntFieldUpdateOperationsInput | number
     maxNodes?: IntFieldUpdateOperationsInput | number
     maxTapsPerScreen?: IntFieldUpdateOperationsInput | number
+    deviceId?: StringFieldUpdateOperationsInput | string
     currentNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -17326,6 +18618,7 @@ export namespace Prisma {
     maxDepth?: IntFieldUpdateOperationsInput | number
     maxNodes?: IntFieldUpdateOperationsInput | number
     maxTapsPerScreen?: IntFieldUpdateOperationsInput | number
+    deviceId?: StringFieldUpdateOperationsInput | string
     currentNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -17344,6 +18637,7 @@ export namespace Prisma {
     maxDepth?: number
     maxNodes?: number
     maxTapsPerScreen?: number
+    deviceId?: string
     currentNodeId?: string | null
     startedAt?: Date | string | null
     completedAt?: Date | string | null
@@ -17358,6 +18652,7 @@ export namespace Prisma {
     maxDepth?: IntFieldUpdateOperationsInput | number
     maxNodes?: IntFieldUpdateOperationsInput | number
     maxTapsPerScreen?: IntFieldUpdateOperationsInput | number
+    deviceId?: StringFieldUpdateOperationsInput | string
     currentNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -17373,6 +18668,7 @@ export namespace Prisma {
     maxDepth?: IntFieldUpdateOperationsInput | number
     maxNodes?: IntFieldUpdateOperationsInput | number
     maxTapsPerScreen?: IntFieldUpdateOperationsInput | number
+    deviceId?: StringFieldUpdateOperationsInput | string
     currentNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -17691,6 +18987,7 @@ export namespace Prisma {
     hotspotKey?: string | null
     targetLabel?: string | null
     targetBounds?: NullableJsonNullValueInput | InputJsonValue
+    localeCodes?: NullableJsonNullValueInput | InputJsonValue
     resultNodeId?: string | null
     isExistingNode?: boolean
     errorMessage?: string | null
@@ -17709,6 +19006,7 @@ export namespace Prisma {
     hotspotKey?: string | null
     targetLabel?: string | null
     targetBounds?: NullableJsonNullValueInput | InputJsonValue
+    localeCodes?: NullableJsonNullValueInput | InputJsonValue
     resultNodeId?: string | null
     isExistingNode?: boolean
     errorMessage?: string | null
@@ -17725,6 +19023,7 @@ export namespace Prisma {
     hotspotKey?: NullableStringFieldUpdateOperationsInput | string | null
     targetLabel?: NullableStringFieldUpdateOperationsInput | string | null
     targetBounds?: NullableJsonNullValueInput | InputJsonValue
+    localeCodes?: NullableJsonNullValueInput | InputJsonValue
     resultNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     isExistingNode?: BoolFieldUpdateOperationsInput | boolean
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17743,6 +19042,7 @@ export namespace Prisma {
     hotspotKey?: NullableStringFieldUpdateOperationsInput | string | null
     targetLabel?: NullableStringFieldUpdateOperationsInput | string | null
     targetBounds?: NullableJsonNullValueInput | InputJsonValue
+    localeCodes?: NullableJsonNullValueInput | InputJsonValue
     resultNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     isExistingNode?: BoolFieldUpdateOperationsInput | boolean
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17760,6 +19060,7 @@ export namespace Prisma {
     hotspotKey?: string | null
     targetLabel?: string | null
     targetBounds?: NullableJsonNullValueInput | InputJsonValue
+    localeCodes?: NullableJsonNullValueInput | InputJsonValue
     resultNodeId?: string | null
     isExistingNode?: boolean
     errorMessage?: string | null
@@ -17776,6 +19077,7 @@ export namespace Prisma {
     hotspotKey?: NullableStringFieldUpdateOperationsInput | string | null
     targetLabel?: NullableStringFieldUpdateOperationsInput | string | null
     targetBounds?: NullableJsonNullValueInput | InputJsonValue
+    localeCodes?: NullableJsonNullValueInput | InputJsonValue
     resultNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     isExistingNode?: BoolFieldUpdateOperationsInput | boolean
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17793,11 +19095,103 @@ export namespace Prisma {
     hotspotKey?: NullableStringFieldUpdateOperationsInput | string | null
     targetLabel?: NullableStringFieldUpdateOperationsInput | string | null
     targetBounds?: NullableJsonNullValueInput | InputJsonValue
+    localeCodes?: NullableJsonNullValueInput | InputJsonValue
     resultNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     isExistingNode?: BoolFieldUpdateOperationsInput | boolean
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type LocaleShotCreateInput = {
+    id?: string
+    reviewRunId: string
+    actionId: string
+    sourceNodeId: string
+    locale: string
+    label: string
+    status?: string
+    screenshotPath?: string | null
+    errorMessage?: string | null
+    createdAt?: Date | string
+  }
+
+  export type LocaleShotUncheckedCreateInput = {
+    id?: string
+    reviewRunId: string
+    actionId: string
+    sourceNodeId: string
+    locale: string
+    label: string
+    status?: string
+    screenshotPath?: string | null
+    errorMessage?: string | null
+    createdAt?: Date | string
+  }
+
+  export type LocaleShotUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reviewRunId?: StringFieldUpdateOperationsInput | string
+    actionId?: StringFieldUpdateOperationsInput | string
+    sourceNodeId?: StringFieldUpdateOperationsInput | string
+    locale?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    screenshotPath?: NullableStringFieldUpdateOperationsInput | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LocaleShotUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reviewRunId?: StringFieldUpdateOperationsInput | string
+    actionId?: StringFieldUpdateOperationsInput | string
+    sourceNodeId?: StringFieldUpdateOperationsInput | string
+    locale?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    screenshotPath?: NullableStringFieldUpdateOperationsInput | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LocaleShotCreateManyInput = {
+    id?: string
+    reviewRunId: string
+    actionId: string
+    sourceNodeId: string
+    locale: string
+    label: string
+    status?: string
+    screenshotPath?: string | null
+    errorMessage?: string | null
+    createdAt?: Date | string
+  }
+
+  export type LocaleShotUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reviewRunId?: StringFieldUpdateOperationsInput | string
+    actionId?: StringFieldUpdateOperationsInput | string
+    sourceNodeId?: StringFieldUpdateOperationsInput | string
+    locale?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    screenshotPath?: NullableStringFieldUpdateOperationsInput | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LocaleShotUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reviewRunId?: StringFieldUpdateOperationsInput | string
+    actionId?: StringFieldUpdateOperationsInput | string
+    sourceNodeId?: StringFieldUpdateOperationsInput | string
+    locale?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    screenshotPath?: NullableStringFieldUpdateOperationsInput | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AccountCreateInput = {
@@ -18368,6 +19762,7 @@ export namespace Prisma {
     maxDepth?: SortOrder
     maxNodes?: SortOrder
     maxTapsPerScreen?: SortOrder
+    deviceId?: SortOrder
     currentNodeId?: SortOrder
     startedAt?: SortOrder
     completedAt?: SortOrder
@@ -18389,6 +19784,7 @@ export namespace Prisma {
     maxDepth?: SortOrder
     maxNodes?: SortOrder
     maxTapsPerScreen?: SortOrder
+    deviceId?: SortOrder
     currentNodeId?: SortOrder
     startedAt?: SortOrder
     completedAt?: SortOrder
@@ -18404,6 +19800,7 @@ export namespace Prisma {
     maxDepth?: SortOrder
     maxNodes?: SortOrder
     maxTapsPerScreen?: SortOrder
+    deviceId?: SortOrder
     currentNodeId?: SortOrder
     startedAt?: SortOrder
     completedAt?: SortOrder
@@ -18742,6 +20139,7 @@ export namespace Prisma {
     hotspotKey?: SortOrder
     targetLabel?: SortOrder
     targetBounds?: SortOrder
+    localeCodes?: SortOrder
     resultNodeId?: SortOrder
     isExistingNode?: SortOrder
     errorMessage?: SortOrder
@@ -18807,6 +20205,45 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type LocaleShotCountOrderByAggregateInput = {
+    id?: SortOrder
+    reviewRunId?: SortOrder
+    actionId?: SortOrder
+    sourceNodeId?: SortOrder
+    locale?: SortOrder
+    label?: SortOrder
+    status?: SortOrder
+    screenshotPath?: SortOrder
+    errorMessage?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type LocaleShotMaxOrderByAggregateInput = {
+    id?: SortOrder
+    reviewRunId?: SortOrder
+    actionId?: SortOrder
+    sourceNodeId?: SortOrder
+    locale?: SortOrder
+    label?: SortOrder
+    status?: SortOrder
+    screenshotPath?: SortOrder
+    errorMessage?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type LocaleShotMinOrderByAggregateInput = {
+    id?: SortOrder
+    reviewRunId?: SortOrder
+    actionId?: SortOrder
+    sourceNodeId?: SortOrder
+    locale?: SortOrder
+    label?: SortOrder
+    status?: SortOrder
+    screenshotPath?: SortOrder
+    errorMessage?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type IntNullableFilter<$PrismaModel = never> = {
@@ -20147,6 +21584,7 @@ export namespace Prisma {
     maxDepth?: number
     maxNodes?: number
     maxTapsPerScreen?: number
+    deviceId?: string
     currentNodeId?: string | null
     startedAt?: Date | string | null
     completedAt?: Date | string | null
@@ -20164,6 +21602,7 @@ export namespace Prisma {
     maxDepth?: number
     maxNodes?: number
     maxTapsPerScreen?: number
+    deviceId?: string
     currentNodeId?: string | null
     startedAt?: Date | string | null
     completedAt?: Date | string | null
@@ -20236,6 +21675,7 @@ export namespace Prisma {
     maxDepth?: IntFilter<"ReviewRun"> | number
     maxNodes?: IntFilter<"ReviewRun"> | number
     maxTapsPerScreen?: IntFilter<"ReviewRun"> | number
+    deviceId?: StringFilter<"ReviewRun"> | string
     currentNodeId?: StringNullableFilter<"ReviewRun"> | string | null
     startedAt?: DateTimeNullableFilter<"ReviewRun"> | Date | string | null
     completedAt?: DateTimeNullableFilter<"ReviewRun"> | Date | string | null
@@ -20362,6 +21802,7 @@ export namespace Prisma {
     hotspotKey?: string | null
     targetLabel?: string | null
     targetBounds?: NullableJsonNullValueInput | InputJsonValue
+    localeCodes?: NullableJsonNullValueInput | InputJsonValue
     resultNodeId?: string | null
     isExistingNode?: boolean
     errorMessage?: string | null
@@ -20378,6 +21819,7 @@ export namespace Prisma {
     hotspotKey?: string | null
     targetLabel?: string | null
     targetBounds?: NullableJsonNullValueInput | InputJsonValue
+    localeCodes?: NullableJsonNullValueInput | InputJsonValue
     resultNodeId?: string | null
     isExistingNode?: boolean
     errorMessage?: string | null
@@ -20525,6 +21967,7 @@ export namespace Prisma {
     hotspotKey?: StringNullableFilter<"ExplorationAction"> | string | null
     targetLabel?: StringNullableFilter<"ExplorationAction"> | string | null
     targetBounds?: JsonNullableFilter<"ExplorationAction">
+    localeCodes?: JsonNullableFilter<"ExplorationAction">
     resultNodeId?: StringNullableFilter<"ExplorationAction"> | string | null
     isExistingNode?: BoolFilter<"ExplorationAction"> | boolean
     errorMessage?: StringNullableFilter<"ExplorationAction"> | string | null
@@ -20538,6 +21981,7 @@ export namespace Prisma {
     maxDepth?: number
     maxNodes?: number
     maxTapsPerScreen?: number
+    deviceId?: string
     currentNodeId?: string | null
     startedAt?: Date | string | null
     completedAt?: Date | string | null
@@ -20556,6 +22000,7 @@ export namespace Prisma {
     maxDepth?: number
     maxNodes?: number
     maxTapsPerScreen?: number
+    deviceId?: string
     currentNodeId?: string | null
     startedAt?: Date | string | null
     completedAt?: Date | string | null
@@ -20684,6 +22129,7 @@ export namespace Prisma {
     maxDepth?: IntFieldUpdateOperationsInput | number
     maxNodes?: IntFieldUpdateOperationsInput | number
     maxTapsPerScreen?: IntFieldUpdateOperationsInput | number
+    deviceId?: StringFieldUpdateOperationsInput | string
     currentNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -20702,6 +22148,7 @@ export namespace Prisma {
     maxDepth?: IntFieldUpdateOperationsInput | number
     maxNodes?: IntFieldUpdateOperationsInput | number
     maxTapsPerScreen?: IntFieldUpdateOperationsInput | number
+    deviceId?: StringFieldUpdateOperationsInput | string
     currentNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -20781,6 +22228,7 @@ export namespace Prisma {
     maxDepth?: number
     maxNodes?: number
     maxTapsPerScreen?: number
+    deviceId?: string
     currentNodeId?: string | null
     startedAt?: Date | string | null
     completedAt?: Date | string | null
@@ -20799,6 +22247,7 @@ export namespace Prisma {
     maxDepth?: number
     maxNodes?: number
     maxTapsPerScreen?: number
+    deviceId?: string
     currentNodeId?: string | null
     startedAt?: Date | string | null
     completedAt?: Date | string | null
@@ -20921,6 +22370,7 @@ export namespace Prisma {
     maxDepth?: IntFieldUpdateOperationsInput | number
     maxNodes?: IntFieldUpdateOperationsInput | number
     maxTapsPerScreen?: IntFieldUpdateOperationsInput | number
+    deviceId?: StringFieldUpdateOperationsInput | string
     currentNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -20939,6 +22389,7 @@ export namespace Prisma {
     maxDepth?: IntFieldUpdateOperationsInput | number
     maxNodes?: IntFieldUpdateOperationsInput | number
     maxTapsPerScreen?: IntFieldUpdateOperationsInput | number
+    deviceId?: StringFieldUpdateOperationsInput | string
     currentNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -21153,6 +22604,7 @@ export namespace Prisma {
     maxDepth?: number
     maxNodes?: number
     maxTapsPerScreen?: number
+    deviceId?: string
     currentNodeId?: string | null
     startedAt?: Date | string | null
     completedAt?: Date | string | null
@@ -21171,6 +22623,7 @@ export namespace Prisma {
     maxDepth?: number
     maxNodes?: number
     maxTapsPerScreen?: number
+    deviceId?: string
     currentNodeId?: string | null
     startedAt?: Date | string | null
     completedAt?: Date | string | null
@@ -21203,6 +22656,7 @@ export namespace Prisma {
     maxDepth?: IntFieldUpdateOperationsInput | number
     maxNodes?: IntFieldUpdateOperationsInput | number
     maxTapsPerScreen?: IntFieldUpdateOperationsInput | number
+    deviceId?: StringFieldUpdateOperationsInput | string
     currentNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -21221,6 +22675,7 @@ export namespace Prisma {
     maxDepth?: IntFieldUpdateOperationsInput | number
     maxNodes?: IntFieldUpdateOperationsInput | number
     maxTapsPerScreen?: IntFieldUpdateOperationsInput | number
+    deviceId?: StringFieldUpdateOperationsInput | string
     currentNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -21564,6 +23019,7 @@ export namespace Prisma {
     maxDepth?: number
     maxNodes?: number
     maxTapsPerScreen?: number
+    deviceId?: string
     currentNodeId?: string | null
     startedAt?: Date | string | null
     completedAt?: Date | string | null
@@ -21578,6 +23034,7 @@ export namespace Prisma {
     maxDepth?: IntFieldUpdateOperationsInput | number
     maxNodes?: IntFieldUpdateOperationsInput | number
     maxTapsPerScreen?: IntFieldUpdateOperationsInput | number
+    deviceId?: StringFieldUpdateOperationsInput | string
     currentNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -21595,6 +23052,7 @@ export namespace Prisma {
     maxDepth?: IntFieldUpdateOperationsInput | number
     maxNodes?: IntFieldUpdateOperationsInput | number
     maxTapsPerScreen?: IntFieldUpdateOperationsInput | number
+    deviceId?: StringFieldUpdateOperationsInput | string
     currentNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -21612,6 +23070,7 @@ export namespace Prisma {
     maxDepth?: IntFieldUpdateOperationsInput | number
     maxNodes?: IntFieldUpdateOperationsInput | number
     maxTapsPerScreen?: IntFieldUpdateOperationsInput | number
+    deviceId?: StringFieldUpdateOperationsInput | string
     currentNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -21657,6 +23116,7 @@ export namespace Prisma {
     hotspotKey?: string | null
     targetLabel?: string | null
     targetBounds?: NullableJsonNullValueInput | InputJsonValue
+    localeCodes?: NullableJsonNullValueInput | InputJsonValue
     resultNodeId?: string | null
     isExistingNode?: boolean
     errorMessage?: string | null
@@ -21763,6 +23223,7 @@ export namespace Prisma {
     hotspotKey?: NullableStringFieldUpdateOperationsInput | string | null
     targetLabel?: NullableStringFieldUpdateOperationsInput | string | null
     targetBounds?: NullableJsonNullValueInput | InputJsonValue
+    localeCodes?: NullableJsonNullValueInput | InputJsonValue
     resultNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     isExistingNode?: BoolFieldUpdateOperationsInput | boolean
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21779,6 +23240,7 @@ export namespace Prisma {
     hotspotKey?: NullableStringFieldUpdateOperationsInput | string | null
     targetLabel?: NullableStringFieldUpdateOperationsInput | string | null
     targetBounds?: NullableJsonNullValueInput | InputJsonValue
+    localeCodes?: NullableJsonNullValueInput | InputJsonValue
     resultNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     isExistingNode?: BoolFieldUpdateOperationsInput | boolean
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21795,6 +23257,7 @@ export namespace Prisma {
     hotspotKey?: NullableStringFieldUpdateOperationsInput | string | null
     targetLabel?: NullableStringFieldUpdateOperationsInput | string | null
     targetBounds?: NullableJsonNullValueInput | InputJsonValue
+    localeCodes?: NullableJsonNullValueInput | InputJsonValue
     resultNodeId?: NullableStringFieldUpdateOperationsInput | string | null
     isExistingNode?: BoolFieldUpdateOperationsInput | boolean
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null

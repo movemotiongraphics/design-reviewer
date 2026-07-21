@@ -1,11 +1,16 @@
 #!/usr/bin/env bash
-# Start Appium + the APK exploration worker for a local review session.
-# Boots an AVD if none is already online. Leaves the emulator running on exit.
+# Start Appium + the APK exploration worker for one device profile.
+# Boots the device's AVD (on a fixed port) if it is not already online, then
+# starts a dedicated Appium server and a worker pinned to that device.
+# Leaves the emulator running on exit.
 # Run the web app yourself in another terminal: npm run dev
 #
 # Usage (from repo root):
-#   ./start-worker.sh
-#   ANDROID_AVD=Pixel_7 ./start-worker.sh   # pick a specific AVD
+#   ./start-worker.sh                        # defaults to DEVICE=pixel_7
+#   DEVICE=small_phone ./start-worker.sh     # boot the smaller-screen profile
+#
+# Run two emulators in parallel by launching this in two terminals with a
+# different DEVICE each. Profiles are defined in src/lib/devices.ts.
 #
 # Stop with Ctrl+C (kills Appium + worker; emulator stays up).
 
@@ -34,17 +39,43 @@ fi
 export ANDROID_HOME="${ANDROID_HOME:-$ANDROID_SDK_ROOT}"
 export PATH="$PATH:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$ANDROID_HOME/cmdline-tools/latest/bin"
 
-APPIUM_URL="${APPIUM_URL:-http://127.0.0.1:4723}"
+# ---------------------------------------------------------------------------
+# Device profile (keep in sync with src/lib/devices.ts).
+# ---------------------------------------------------------------------------
+DEVICE="${DEVICE:-pixel_7}"
+case "$DEVICE" in
+  pixel_7)
+    DEFAULT_AVD="Pixel_7"
+    EMU_PORT=5554
+    APPIUM_PORT=4723
+    ;;
+  small_phone)
+    DEFAULT_AVD="Small_Phone"
+    EMU_PORT=5556
+    APPIUM_PORT=4724
+    ;;
+  *)
+    echo "Unknown DEVICE '$DEVICE'. Use one of: pixel_7, small_phone."
+    exit 1
+    ;;
+esac
+
+# ANDROID_AVD overrides the profile's default AVD name if set.
+AVD_NAME="${ANDROID_AVD:-$DEFAULT_AVD}"
+SERIAL="emulator-$EMU_PORT"
+APPIUM_URL="${APPIUM_URL:-http://127.0.0.1:$APPIUM_PORT}"
 DB_CONTAINER="${DB_CONTAINER:-design-reviewer-db}"
 APPIUM_PID=""
 EMULATOR_PID=""
 
+# Is this specific device's emulator online (by serial)?
 device_ready() {
-  adb devices 2>/dev/null | awk 'NR>1 && $2=="device" { found=1 } END { exit !found }'
+  adb devices 2>/dev/null \
+    | awk -v s="$SERIAL" 'NR>1 && $1==s && $2=="device" { found=1 } END { exit !found }'
 }
 
 boot_completed() {
-  [[ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" == "1" ]]
+  [[ "$(adb -s "$SERIAL" shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" == "1" ]]
 }
 
 db_ready() {
@@ -132,19 +163,20 @@ if ! command -v emulator >/dev/null 2>&1; then
 fi
 
 if device_ready; then
-  echo "Android device already ready."
+  echo "Device $SERIAL ($DEVICE) already ready."
 else
-  AVD_NAME="${ANDROID_AVD:-}"
-  if [[ -z "$AVD_NAME" ]]; then
-    AVD_NAME="$(emulator -list-avds 2>/dev/null | head -n 1 || true)"
-  fi
-  if [[ -z "$AVD_NAME" ]]; then
-    echo "No AVD found. Create one in Android Studio Device Manager, then retry."
+  if ! emulator -list-avds 2>/dev/null | grep -qx "$AVD_NAME"; then
+    echo "AVD '$AVD_NAME' not found for device '$DEVICE'."
+    if [[ "$DEVICE" == "small_phone" ]]; then
+      echo "Create it with: ./scripts/create-small-avd.sh"
+    else
+      echo "Create it in Android Studio Device Manager, then retry."
+    fi
     exit 1
   fi
 
-  echo "No device online — starting emulator -avd $AVD_NAME ..."
-  emulator -avd "$AVD_NAME" -netdelay none -netspeed full >/dev/null 2>&1 &
+  echo "No $SERIAL online — starting emulator -avd $AVD_NAME -port $EMU_PORT ..."
+  emulator -avd "$AVD_NAME" -port "$EMU_PORT" -netdelay none -netspeed full >/dev/null 2>&1 &
   EMULATOR_PID=$!
 
   for _ in $(seq 1 120); do
@@ -163,14 +195,14 @@ else
     adb devices || true
     exit 1
   fi
-  echo "Emulator is ready."
+  echo "Emulator $SERIAL ($DEVICE) is ready."
 fi
 
 if curl -sf "$APPIUM_URL/status" >/dev/null 2>&1; then
   echo "Appium already running at $APPIUM_URL — reusing it."
 else
   echo "Starting Appium at $APPIUM_URL ..."
-  npm run appium &
+  npm run appium -- -p "$APPIUM_PORT" &
   APPIUM_PID=$!
 
   for _ in $(seq 1 60); do
@@ -191,6 +223,6 @@ else
   echo "Appium is up."
 fi
 
-echo "Starting worker (Ctrl+C to stop)..."
+echo "Starting worker for device '$DEVICE' ($SERIAL) — Ctrl+C to stop..."
 echo "In another terminal: npm run dev → http://localhost:3000"
-npm run worker:apk
+WORKER_DEVICE_ID="$DEVICE" APPIUM_URL="$APPIUM_URL" npm run worker:apk
