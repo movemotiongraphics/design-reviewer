@@ -34,8 +34,9 @@ import {
   waitForAppForeground,
   waitForFirstPaint,
 } from "./manualExplore";
+import { frameSignature, signatureDiffRatio } from "./pngUtil";
 import { boundsCenter } from "./safeTap";
-import { captureStableScreenshot } from "./stability";
+import { captureStableScreenshot, waitForStableScreen } from "./stability";
 import { parseClickables, type ClickableElement } from "./uiParser";
 
 /** Minimum number of language-name matches for a node to count as the Language screen. */
@@ -43,13 +44,88 @@ const LANGUAGE_NODE_MIN_MATCHES = 3;
 /** Max swipe attempts when hunting for an off-screen option. */
 const MAX_SCROLLS = 6;
 /**
- * The app's Settings live behind the bottom-right item of the bottom nav bar,
- * which is a ViewGroup (not a labelled button), so we open it by position.
- * Fractions of the window: right-most of a 5-tab bar, on the icon row (above
- * the gesture/home indicator).
+ * The app's Settings live behind the bottom-right item of the bottom nav bar
+ * (a ViewGroup or Button without a useful label), so we open it by finding
+ * the nav row (aligned bottom tabs), then tapping the rightmost tab's center
+ * — or tapping by position as a fallback.
  */
 const BOTTOM_NAV_SETTINGS_X_FRAC = 0.9;
-const BOTTOM_NAV_SETTINGS_Y_FRAC = 0.93;
+/** ~0.96: matches the tab-center tap (972, 2307) proven to work on CoinGecko. */
+const BOTTOM_NAV_SETTINGS_Y_FRAC = 0.96;
+/** Nav tabs sit on (or very near) the bottom edge of the window. */
+const BOTTOM_NAV_BOTTOM_EDGE_FRAC = 0.92;
+/** A single tab is a fraction of the width, not a full-bleed bar/row. */
+const BOTTOM_NAV_MAX_WIDTH_FRAC = 0.4;
+/** Tabs whose top edges differ by no more than this belong to the same row. */
+const BOTTOM_NAV_ROW_TOLERANCE_PX = 24;
+/** Attempts for the nav tap (WebView tap handlers may not be attached yet). */
+const NAV_TAP_MAX_ATTEMPTS = 3;
+/** Wait before retrying a nav tap that had no visible effect. */
+const NAV_TAP_RETRY_WAIT_MS = 2000;
+/**
+ * Screens differing by more than this thumbnail fraction count as "changed".
+ * Deliberately well above ticker noise (live prices on the homepage) — a real
+ * homepage -> Settings navigation redraws most of the screen.
+ */
+const SCREEN_CHANGED_MIN_DIFF = 0.05;
+
+function isBottomNavClass(className: string | null): boolean {
+  if (!className) return false;
+  return (
+    className.endsWith("ViewGroup") ||
+    className.endsWith("Button") ||
+    className.endsWith("ImageButton")
+  );
+}
+
+/** True for a bottom-tab shaped ViewGroup/Button (not ad chrome or list rows). */
+function isLikelyBottomNavTab(
+  el: ClickableElement,
+  width: number,
+  height: number,
+): boolean {
+  if (!isBottomNavClass(el.className)) return false;
+  const [x1, y1, x2, y2] = el.bounds;
+  const w = x2 - x1;
+  const h = y2 - y1;
+  if (y2 < height * BOTTOM_NAV_BOTTOM_EDGE_FRAC) return false;
+  if (w > width * BOTTOM_NAV_MAX_WIDTH_FRAC) return false;
+  if (h < 48 || h > height * 0.25) return false;
+  return true;
+}
+
+/**
+ * From bottom-tab candidates, keep only those forming the bottommost aligned
+ * row (same top edge within tolerance) — the actual nav bar. Filters out ad
+ * chrome or stray clickables that merely sit near the bottom.
+ */
+function bottomNavRow(candidates: ClickableElement[]): ClickableElement[] {
+  if (candidates.length === 0) return [];
+  const rowTop = Math.max(...candidates.map((el) => el.bounds[1]));
+  return candidates.filter(
+    (el) => rowTop - el.bounds[1] <= BOTTOM_NAV_ROW_TOLERANCE_PX,
+  );
+}
+
+/**
+ * Tap point for a nav tab: its geometric center. Exploration edges recorded
+ * with center taps (e.g. (972, 2307) on CoinGecko) are proven to open the tab.
+ */
+function bottomNavTapPoint(bounds: ClickableElement["bounds"]): {
+  x: number;
+  y: number;
+} {
+  const { x, y } = boundsCenter(bounds);
+  return { x: Math.round(x), y: Math.round(y) };
+}
+
+/** Did the screen visibly change between two frames? (True when undecidable.) */
+function screenVisiblyChanged(before: Buffer, after: Buffer): boolean {
+  const a = frameSignature(before);
+  const b = frameSignature(after);
+  if (!a || !b) return true;
+  return signatureDiffRatio(a, b) > SCREEN_CHANGED_MIN_DIFF;
+}
 
 function elementLabel(el: ClickableElement): string | null {
   const text = el.text?.trim();
@@ -215,17 +291,75 @@ async function replayPathFromHome(opts: {
   await setCurrentNode(reviewRunId, nodeId);
 }
 
-/** Open Settings by tapping the bottom-right nav item (a ViewGroup, not a button). */
+/** Locate the bottom-right nav tap point: rightmost tab of the nav row, or positional. */
+async function findBottomRightNavPoint(
+  device: AndroidDevice,
+  log: Logger,
+): Promise<{ x: number; y: number }> {
+  const { width, height } = await device.windowSize();
+
+  const clickables = await dumpClickables(device);
+  const candidates = clickables.filter((el) =>
+    isLikelyBottomNavTab(el, width, height),
+  );
+  // The nav bar is the bottommost row of aligned tabs (Buttons on CoinGecko,
+  // ViewGroups on GeckoTerminal); the Settings/profile tab is its rightmost.
+  const row = bottomNavRow(candidates);
+  if (row.length > 0) {
+    const best = row.reduce((a, b) =>
+      boundsCenter(b.bounds).x > boundsCenter(a.bounds).x ? b : a,
+    );
+    const point = bottomNavTapPoint(best.bounds);
+    log.info("bottom-right nav element located", {
+      ...point,
+      className: best.className,
+      bounds: best.bounds,
+      rowTabs: row.length,
+    });
+    return point;
+  }
+
+  const point = {
+    x: Math.round(width * BOTTOM_NAV_SETTINGS_X_FRAC),
+    y: Math.round(height * BOTTOM_NAV_SETTINGS_Y_FRAC),
+  };
+  log.info("bottom-right nav not found in tree; using positional tap", point);
+  return point;
+}
+
+/**
+ * Open Settings by tapping the bottom-right nav item (ViewGroup or Button).
+ *
+ * On TWA/WebView apps the nav can appear in the UI tree before the web
+ * content's tap handlers are attached, so an early tap silently does nothing
+ * and we'd carry on believing we're on Settings. After each tap we verify the
+ * screen actually changed, and retry (re-locating the tab) when it didn't.
+ */
 async function tapBottomRightNav(
   device: AndroidDevice,
   log: Logger,
 ): Promise<void> {
-  const { width, height } = await device.windowSize();
-  const x = Math.round(width * BOTTOM_NAV_SETTINGS_X_FRAC);
-  const y = Math.round(height * BOTTOM_NAV_SETTINGS_Y_FRAC);
-  log.info("tapping bottom-right nav to open Settings", { x, y });
-  await device.tap(x, y);
-  await sleep(SETTLE_MS);
+  for (let attempt = 1; attempt <= NAV_TAP_MAX_ATTEMPTS; attempt += 1) {
+    const { x, y } = await findBottomRightNavPoint(device, log);
+    const before = await device.screenshotBuffer();
+    log.info("tapping bottom-right nav to open Settings", { x, y, attempt });
+    await device.tap(x, y);
+    const settled = await waitForStableScreen(device, {
+      log,
+      changedFrom: before,
+    });
+    if (screenVisiblyChanged(before, settled)) {
+      await sleep(SETTLE_MS);
+      return;
+    }
+    if (attempt < NAV_TAP_MAX_ATTEMPTS) {
+      log.warn("nav tap had no visible effect (app may not be interactive yet)", {
+        attempt,
+      });
+      await sleep(NAV_TAP_RETRY_WAIT_MS);
+    }
+  }
+  log.warn("bottom-right nav tap never changed the screen; continuing anyway");
 }
 
 async function navigateToLanguageScreen(opts: {
